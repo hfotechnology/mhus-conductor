@@ -1,0 +1,112 @@
+
+project:
+  import:
+  - mvn:de.mhus.deploy/deploy-configuration/1.0.0/root.yml
+
+projects:
+  - name: parent
+    path: .
+    labels:
+      group: parent
+      sort: 0
+  - name: core
+    path: ../sample-lib
+    lables:
+      group: bundles
+      sort: 1
+  - name: api
+    path: ../sample-product
+    lables:
+      group: bundles
+      sort: 2
+  - name: itest
+    path: ../sample-product
+    lables:
+      group: itests
+lifecycle:
+  - name: default
+    execute:
+      steps:
+      # reset and pull all projects
+      - target: git
+        parameters: reset --HARD
+      - plugin: git
+        parameters: pull
+      # update and compile parent
+      - target: newVersion
+        selector:
+          - group: parent
+      - target: validateSnapshots
+        selector:
+          - group: parent
+      - target: maven
+        parameters: clean install
+        selector:
+          - group: parent
+      # update and compile projects
+      - target: newParent
+        selector:
+          - group: bundles
+        sort: sort
+      - target: newVersion
+        selector:
+          - group: bundles
+        sort: sort
+      - target: validateSnapshots
+        selector:
+          - group: bundles
+        sort: sort
+      - target: maven
+        parameters: clean install
+        selector:
+          - group: bundles
+        sort: sort
+      # execute integration tests
+      - target: maven
+        parameters: test
+        selector:
+          - group: itests
+      # deploy packages
+      - target: maven
+        parameters: deploy
+        selector:
+          - group: bundles
+        sort: sort
+      # deploy parent
+      - target: maven
+        parameters: deploy
+        selector:
+          - group: parent
+      # prepare git
+      - target: git
+        parameters: add *
+      - target: git
+        parameters: commit -m "${version}"
+      - target: git
+        parameters: tag "${version}"
+      - target: git
+        parameters: push
+      # next snapshot
+      - target: incraseToSnapshots
+      - target: newParent
+      - target: newVersion
+      - target: maven
+        parameters: install
+        sort: sort
+      - target: git
+        parameters: add *
+      - target: git
+        parameters: commit -m "${version}"
+      - target: git
+        parameters: push
+    
+plugins:
+  - target: newVersion
+    url: mvn:de.mhus.deploy/deploy-plugins/1.0.0
+    mojo: newVersion
+  - target: newParent
+    url: mvn:de.mhus.deploy/deploy-plugins/1.0.0
+    mojo: newParent
+    
+
+  
