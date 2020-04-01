@@ -1,5 +1,7 @@
 package de.mhus.bwk.core;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.mhus.lib.core.MCast;
+import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MValidator;
@@ -28,6 +31,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 		overwrite(MUri.toUri(uri.toString()));
 		initEntries();
 		validate();
+		((BwkImpl)bwk).schemes = schemes;
 	}
 
 	protected void initEntries() {
@@ -55,12 +59,19 @@ public class ConfiguratorDefault extends MLog implements Configurator {
         }
     }
 
-    protected void overwrite(MUri uri) throws NotFoundException {
+    protected void overwrite(MUri uri) throws MException {
 		log().d("load uri",uri);
 		loadedUris.add(uri.toString());
 		// 1 load resource
 		Scheme scheme = schemes.get(uri);
-		String content = scheme.load(bwk, uri);
+		String content = null;
+		try {
+		    File cf = scheme.load(bwk, uri);
+		    if (cf != null)
+		        content = MFile.readFile(cf);
+		} catch (IOException e) {
+		    throw new MException(e);
+		}
 		if (content == null) throw new NotFoundException("configuration not found", uri);
 		ConfigType type = types.get(uri);
 		YMap docE = type.create(bwk, content);
@@ -174,7 +185,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
         ((PluginsImpl)bwk.getPlugins()).put(plugin.getTarget(), plugin);
     }
 
-    protected void loadImports(YList importE) throws NotFoundException {
+    protected void loadImports(YList importE) throws MException {
 	    if (importE == null) return;
 		for (String uriStr : importE.toStringList()) {
 		    MUri uri = MUri.toUri(uriStr);

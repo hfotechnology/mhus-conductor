@@ -12,6 +12,7 @@ public class BwkImpl implements Bwk {
     protected ProjectsImpl projects = new ProjectsImpl();
     protected MProperties parameters = new MProperties();
     protected File root;
+    protected Schemes schemes = new SchemesImpl();
     
     public BwkImpl(File rootDir) {
         this.root = rootDir.getAbsoluteFile();

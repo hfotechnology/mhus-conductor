@@ -1,7 +1,5 @@
 package de.mhus.bwk.core;
 
-import de.mhus.lib.core.util.MUri;
-
 public class PluginImpl implements Plugin {
 
     private String target;

@@ -5,6 +5,7 @@ parameters:
 
 lifecycles:
   - name: default
+    control: deploy
     execute:
       steps:
       # reset and pull all projects
@@ -86,3 +87,8 @@ lifecycles:
         parameters: commit -m "${version}"
       - target: git
         parameters: push
+
+plugins:
+  - target: deploy
+    url: mvn:de.mhus.deploy/deploy-plugins/${newVersion.version}
+    mojo: deploy

@@ -67,7 +67,7 @@ public class ConfiguratorTest {
         Context context = new ContextImpl(bwk);
         
         // test plugins
-        assertEquals(2, bwk.getPlugins().size());
+        assertEquals(3, bwk.getPlugins().size());
         assertEquals("2.0.0", TestUtil.getPluginVersion( context.make(bwk.getPlugins().get("newParent").getUrl()) ) );
 
         // test lifecycle
