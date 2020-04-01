@@ -1,6 +1,7 @@
 package de.mhus.bwk.core.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.net.URI;
@@ -11,7 +12,11 @@ import de.mhus.bwk.core.Bwk;
 import de.mhus.bwk.core.BwkImpl;
 import de.mhus.bwk.core.ConfigTypesImpl;
 import de.mhus.bwk.core.ConfiguratorDefault;
+import de.mhus.bwk.core.Context;
+import de.mhus.bwk.core.ContextImpl;
 import de.mhus.bwk.core.FileScheme;
+import de.mhus.bwk.core.LabelsImpl;
+import de.mhus.bwk.core.Lifecycle;
 import de.mhus.bwk.core.ProjectsValidator;
 import de.mhus.bwk.core.SchemesImpl;
 import de.mhus.bwk.core.YmlConfigType;
@@ -45,11 +50,31 @@ public class ConfiguratorTest {
         
         // test projects
         assertEquals(4, bwk.getProjects().size());
+        {
+            LabelsImpl labels = new LabelsImpl();
+            labels.put("group", "bundles");
+            assertEquals(2, bwk.getProjects().select(labels).size());
+        }
+        {
+            LabelsImpl labels = new LabelsImpl();
+            labels.put("group", "parent");
+            assertEquals(1, bwk.getProjects().select(labels).size());
+        }
+        {
+            LabelsImpl labels = new LabelsImpl();
+            assertEquals(4, bwk.getProjects().select(labels).size());
+        }
+        Context context = new ContextImpl(bwk);
         
         // test plugins
         assertEquals(2, bwk.getPlugins().size());
-        assertEquals(, bwk.getPlugins().get("newParent").getVersion());
+        assertEquals("2.0.0", TestUtil.getPluginVersion( context.make(bwk.getPlugins().get("newParent").getUrl()) ) );
 
+        // test lifecycle
+        assertEquals(1, bwk.getLifecycles().size());
+        Lifecycle lc = bwk.getLifecycles().get("default");
+        assertNotNull(lc);
+        assertEquals(23, lc.getSteps().size());
         
         
     }

@@ -3,7 +3,7 @@ parameters:
   defaultLifecycleWasThere: 1
   overwriteMe: 3
 
-lifecycle:
+lifecycles:
   - name: default
     execute:
       steps:
@@ -26,7 +26,7 @@ lifecycle:
         - clean 
         - install
         selector:
-          - group: parent
+          group: parent
       # update and compile projects
       - target: newParent
         selector:

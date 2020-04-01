@@ -1,5 +1,6 @@
 package de.mhus.bwk.core;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,6 +56,21 @@ public class YMap {
 
     public boolean isEmpty() {
         return map == null || map.size() == 0;
+    }
+
+    public boolean isString(String key) {
+        Object val = map.get(key);
+        return val instanceof String;
+    }
+    
+    public boolean isList(String key) {
+        Object val = map.get(key);
+        return val instanceof List;
+    }
+
+    public boolean isMap(String key) {
+        Object val = map.get(key);
+        return val instanceof Map;
     }
     
 }

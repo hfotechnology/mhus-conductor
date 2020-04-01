@@ -15,7 +15,7 @@ public class ProjectsImpl extends XCollection<Project> implements Projects {
 			if (v.getLabels().matches(labels))
 				ret.add(v);
 		});
-		return null;
+		return ret;
 	}
 
     public void init(Bwk bwk) {

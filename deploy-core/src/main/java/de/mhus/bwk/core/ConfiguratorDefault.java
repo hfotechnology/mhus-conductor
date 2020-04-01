@@ -111,7 +111,8 @@ public class ConfiguratorDefault extends MLog implements Configurator {
     protected void loadLifecycle(YMap map) {
         String name = map.getString("name");
         boolean merge = map.getBoolean("_merge");
-        YList executeE = map.getList("execute");
+        YMap executeE = map.getMap("execute");
+        YList stepsE = executeE.getList("steps");
         
         StepsImpl steps = new StepsImpl();
         if (merge) {
@@ -120,7 +121,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
                 steps = (StepsImpl) parent.getSteps();
         }
 
-        loadSteps(executeE, steps);
+        loadSteps(stepsE, steps);
         
         ((LifecyclesImpl)bwk.getLifecycles()).put(name, new LifecycleImpl(name, steps));
         

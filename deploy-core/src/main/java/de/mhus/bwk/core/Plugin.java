@@ -1,7 +1,5 @@
 package de.mhus.bwk.core;
 
-import de.mhus.lib.core.util.MUri;
-
 public interface Plugin {
 
     String getTarget();
@@ -10,6 +8,4 @@ public interface Plugin {
 
     String getMojo();
 
-    MUri getMUri();
-    
 }

@@ -17,15 +17,15 @@ projects:
       sort: 0
   - name: core
     path: ../sample-core
-    lables:
+    labels:
       group: bundles
       sort: 1
   - name: api
     path: ../sample-product
-    lables:
+    labels:
       group: bundles
       sort: 2
   - name: itest
     path: ../sample-test
-    lables:
+    labels:
       group: itests

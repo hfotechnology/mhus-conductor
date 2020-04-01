@@ -40,9 +40,4 @@ public class PluginImpl implements Plugin {
         return target;
     }
 
-    @Override
-    public MUri getMUri() {
-        return MUri.toUri( );
-    }
-
 }
