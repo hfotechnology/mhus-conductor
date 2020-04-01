@@ -1,0 +1,88 @@
+
+parameters:
+  defaultLifecycleWasThere: 1
+  overwriteMe: 3
+
+lifecycle:
+  - name: default
+    execute:
+      steps:
+      # reset and pull all projects
+      - target: git
+        parameters:
+          reset --HARD
+      - plugin: git
+        parameters: 
+        - pull
+      # update and compile parent
+      - target: newVersion
+        selector:
+          group: parent
+      - target: validateSnapshots
+        selector:
+          group: parent
+      - target: maven
+        parameters: 
+        - clean 
+        - install
+        selector:
+          - group: parent
+      # update and compile projects
+      - target: newParent
+        selector:
+          group: bundles
+        order: sort
+      - target: newVersion
+        selector:
+          group: bundles
+        order: sort
+      - target: validateSnapshots
+        selector:
+          group: bundles
+        order: sort
+      - target: maven
+        parameters: 
+        - clean
+        - install
+        selector:
+          group: bundles
+        order: sort
+      # execute integration tests
+      - target: maven
+        parameters: test
+        selector:
+          group: itests
+      # deploy packages
+      - target: maven
+        parameters: deploy
+        selector:
+          group: bundles
+        order: sort
+      # deploy parent
+      - target: maven
+        parameters: deploy
+        selector:
+          group: parent
+      # prepare git
+      - target: git
+        parameters: add *
+      - target: git
+        parameters: commit -m "${version}"
+      - target: git
+        parameters: tag "${version}"
+      - target: git
+        parameters: push
+      # next snapshot
+      - target: incraseToSnapshots
+      - target: newParent
+      - target: newVersion
+      - target: maven
+        parameters: 
+          install
+        sort: sort
+      - target: git
+        parameters: add *
+      - target: git
+        parameters: commit -m "${version}"
+      - target: git
+        parameters: push
