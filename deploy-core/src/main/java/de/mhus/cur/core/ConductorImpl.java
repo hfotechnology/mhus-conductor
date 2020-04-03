@@ -43,4 +43,14 @@ public class ConductorImpl implements Conductor {
         return root;
     }
 
+    @Override
+	public Schemes getSchemes() {
+		return schemes;
+	}
+
+	@Override
+	public ClassLoader getClassLoader() {
+		return getClass().getClassLoader();
+	}
+
 }

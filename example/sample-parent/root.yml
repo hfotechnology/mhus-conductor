@@ -6,8 +6,8 @@ parameters:
 
 plugins:
   - target: newVersion
-    url: mvn:de.mhus.deploy/deploy-plugins/${newVersion.version}
+    uri: mvn:de.mhus.deploy/deploy-plugins/${newVersion.version}
     mojo: newVersion
   - target: newParent
-    url: mvn:de.mhus.deploy/deploy-plugins/1.0.0
+    uri: mvn:de.mhus.deploy/deploy-plugins/1.0.0
     mojo: newParent

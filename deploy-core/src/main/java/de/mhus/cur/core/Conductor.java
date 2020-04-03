@@ -15,7 +15,9 @@ public interface Conductor {
     IReadProperties getProperties();
 
     File getRoot();
-	
-	
+
+	Schemes getSchemes();
+
+	ClassLoader getClassLoader();
 	
 }

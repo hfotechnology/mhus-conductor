@@ -258,7 +258,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
     	Plugin merge = map.getBoolean("_merge") ? cur.getPlugins().getOrNull(map.getString("target")) : null;
     	
     	plugin.target = map.getString("target");
-    	plugin.url = map.getString("url", merge == null ? null : merge.getUrl());
+    	plugin.uri = map.getString("uri", merge == null ? null : merge.getUri());
     	plugin.mojo = map.getString("mojo", merge == null ? null : merge.getMojo());
 
         ((PluginsImpl)cur.getPlugins()).put(plugin.getTarget(), plugin);

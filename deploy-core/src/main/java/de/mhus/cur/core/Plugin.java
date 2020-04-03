@@ -4,7 +4,7 @@ public interface Plugin {
 
     String getTarget();
 
-    String getUrl();
+    String getUri();
 
     String getMojo();
 

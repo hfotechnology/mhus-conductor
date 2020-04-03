@@ -68,7 +68,7 @@ public class ConfiguratorTest {
         
         // test plugins
         assertEquals(3, cur.getPlugins().size());
-        assertEquals("2.0.0", TestUtil.getPluginVersion( context.make(cur.getPlugins().get("newParent").getUrl()) ) );
+        assertEquals("2.0.0", TestUtil.getPluginVersion( context.make(cur.getPlugins().get("newParent").getUri()) ) );
 
         // test lifecycle
         assertEquals(1, cur.getLifecycles().size());
