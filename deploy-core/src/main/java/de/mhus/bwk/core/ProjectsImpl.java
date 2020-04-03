@@ -22,4 +22,9 @@ public class ProjectsImpl extends XCollection<Project> implements Projects {
         this.bwk = bwk;
     }
 
+    @Override
+    public List<Project> getAll() {
+        return new LinkedList<Project>(collection.values());
+    }
+
 }
