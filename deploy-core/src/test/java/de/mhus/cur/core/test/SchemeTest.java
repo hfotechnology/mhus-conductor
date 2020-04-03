@@ -7,7 +7,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 import de.mhus.cur.core.ConductorImpl;
 import de.mhus.cur.core.ConfigTypesImpl;
@@ -55,10 +58,10 @@ public class SchemeTest {
 	}
 	
 	@Test
-	public void loadPlugin() throws IOException, MException {
+	public void loadPlugin() throws IOException, MException, ParserConfigurationException, SAXException {
         ConductorImpl cur = new ConductorImpl(new File("../example/sample-parent"));
 
-        String mvnPath = "/usr/local/bin/mvn"; //XXX
+        String mvnPath = TestUtil.mvnLocation();
         if (new File(mvnPath).exists()) {
 
 	        ConfiguratorDefault config = new ConfiguratorDefault();
@@ -71,7 +74,7 @@ public class SchemeTest {
 	        config.configure(uri, cur);
 
 	        ((MProperties)cur.getProperties()).put(CurUtil.PROPERTY_MVN_PATH, mvnPath);
-	        ((MProperties)cur.getProperties()).put("deploy.version", "1.0.0-SNAPSHOT");
+	        ((MProperties)cur.getProperties()).put("deploy.version", TestUtil.currentVersion());
 	        ((SchemesImpl)cur.getSchemes()).put("mvn", new MavenScheme());
 
 	        ContextImpl context = new ContextImpl(cur);
