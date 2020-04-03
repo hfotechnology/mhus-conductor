@@ -7,7 +7,6 @@ import de.mhus.deploy.api.Project;
 import de.mhus.deploy.api.Step;
 import de.mhus.lib.core.IReadProperties;
 import de.mhus.lib.core.MProperties;
-import de.mhus.lib.core.parser.CompiledString;
 import de.mhus.lib.core.parser.StringCompiler;
 import de.mhus.lib.errors.MException;
 import de.mhus.lib.errors.MRuntimeException;
