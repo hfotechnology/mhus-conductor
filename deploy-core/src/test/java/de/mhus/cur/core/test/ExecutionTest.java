@@ -5,7 +5,6 @@ import java.net.URI;
 
 import org.junit.jupiter.api.Test;
 
-import de.mhus.cur.core.Conductor;
 import de.mhus.cur.core.ConductorImpl;
 import de.mhus.cur.core.ConfigTypesImpl;
 import de.mhus.cur.core.ConfiguratorDefault;
@@ -14,6 +13,7 @@ import de.mhus.cur.core.FileScheme;
 import de.mhus.cur.core.ProjectsValidator;
 import de.mhus.cur.core.SchemesImpl;
 import de.mhus.cur.core.YmlConfigType;
+import de.mhus.deploy.api.Conductor;
 import de.mhus.lib.errors.MException;
 
 public class ExecutionTest {
@@ -32,7 +32,7 @@ public class ExecutionTest {
         config.getValidators().add(new ProjectsValidator());
         
         
-        URI uri = URI.create("file:deploy.yml");
+        URI uri = URI.create("file:conductor.yml");
         config.configure(uri, cur);
 
         ExecutorDefault executor = new ExecutorDefault();

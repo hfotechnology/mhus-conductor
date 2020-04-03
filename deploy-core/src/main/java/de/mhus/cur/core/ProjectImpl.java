@@ -2,6 +2,9 @@ package de.mhus.cur.core;
 
 import java.io.File;
 
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Labels;
+import de.mhus.deploy.api.Project;
 import de.mhus.lib.core.IProperties;
 import de.mhus.lib.core.MProperties;
 

@@ -3,6 +3,8 @@ package de.mhus.cur.core;
 import java.io.File;
 import java.io.IOException;
 
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Scheme;
 import de.mhus.lib.core.util.MUri;
 
 public class FileScheme implements Scheme {

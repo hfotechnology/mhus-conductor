@@ -1,5 +1,9 @@
 package de.mhus.cur.core;
 
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Lifecycle;
+import de.mhus.deploy.api.Steps;
+
 public class LifecycleImpl implements Lifecycle {
 
     private Steps steps;

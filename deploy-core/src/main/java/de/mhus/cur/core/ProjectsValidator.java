@@ -2,6 +2,9 @@ package de.mhus.cur.core;
 
 import java.io.File;
 
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Project;
+import de.mhus.deploy.api.Validator;
 import de.mhus.lib.errors.MException;
 
 public class ProjectsValidator implements Validator {

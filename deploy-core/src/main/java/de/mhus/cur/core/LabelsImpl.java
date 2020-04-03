@@ -1,5 +1,7 @@
 package de.mhus.cur.core;
 
+import de.mhus.deploy.api.Labels;
+
 public class LabelsImpl extends XCollection<String> implements Labels {
 
     @Override

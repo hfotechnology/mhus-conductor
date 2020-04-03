@@ -3,6 +3,8 @@ package de.mhus.cur.core;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import de.mhus.deploy.api.IList;
+
 public class XList<T> implements IList<T>{
 
 	protected LinkedList<T> list = new LinkedList<>();

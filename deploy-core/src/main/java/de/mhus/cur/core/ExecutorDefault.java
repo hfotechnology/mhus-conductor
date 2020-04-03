@@ -13,6 +13,18 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.ConductorPlugin;
+import de.mhus.deploy.api.ErrorInfo;
+import de.mhus.deploy.api.Executor;
+import de.mhus.deploy.api.Labels;
+import de.mhus.deploy.api.Lifecycle;
+import de.mhus.deploy.api.Mojo;
+import de.mhus.deploy.api.Plugin;
+import de.mhus.deploy.api.Project;
+import de.mhus.deploy.api.Scheme;
+import de.mhus.deploy.api.Step;
+import de.mhus.deploy.api.Steps;
 import de.mhus.lib.core.IReadProperties;
 import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MString;
@@ -93,7 +105,7 @@ public class ExecutorDefault implements Executor {
         }
     }
 
-	private ConductorPlugin loadMojo(ContextImpl context) {
+    public ConductorPlugin loadMojo(ContextImpl context) {
 		ConductorPlugin impl = mojos.get(context.getPlugin().getTarget());
 		if (impl != null) return impl;
         try {
@@ -105,7 +117,7 @@ public class ExecutorDefault implements Executor {
         return impl;
 	}
 
-	private ConductorPlugin createMojo(Conductor cur, Plugin plugin) throws IOException, NotFoundException {
+	public ConductorPlugin createMojo(Conductor cur, Plugin plugin) throws IOException, NotFoundException {
 
 		
 		String mojoName = plugin.getMojo();

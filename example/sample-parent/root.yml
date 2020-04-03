@@ -1,5 +1,5 @@
 
-parameters:
+properties:
   rootWasThere: 1
   overwriteMe: 1
   newVersion.version: 1.0.0
@@ -11,3 +11,7 @@ plugins:
   - target: newParent
     uri: mvn:de.mhus.deploy/deploy-plugins/1.0.0
     mojo: newParent
+  - target: test
+    uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
+    mojo: test
+    

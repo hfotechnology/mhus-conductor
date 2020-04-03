@@ -1,5 +1,10 @@
 package de.mhus.cur.core;
 
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Context;
+import de.mhus.deploy.api.Plugin;
+import de.mhus.deploy.api.Project;
+import de.mhus.deploy.api.Step;
 import de.mhus.lib.core.IReadProperties;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.parser.CompiledString;
@@ -9,7 +14,6 @@ import de.mhus.lib.errors.MRuntimeException;
 
 public class ContextImpl implements Context {
 
-    private StringCompiler compiler = new StringCompiler();
     private MProperties parameters;
 	private Plugin plugin;
 	private Project project;
@@ -30,9 +34,7 @@ public class ContextImpl implements Context {
     public String make(String in) {
     	if (in == null) return null;
     	try {
-	        CompiledString cs = compiler.compileString(in);
-	        String ret = cs.execute(parameters);
-	        return ret;
+	        return StringCompiler.compile(in).execute(parameters);
 		} catch (MException e) {
 			throw new MRuntimeException(in, e);
 		}

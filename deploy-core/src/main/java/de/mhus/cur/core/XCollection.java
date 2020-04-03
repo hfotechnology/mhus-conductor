@@ -3,6 +3,7 @@ package de.mhus.cur.core;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import de.mhus.deploy.api.ICollection;
 import de.mhus.lib.errors.MRuntimeException;
 
 public class XCollection<T> implements ICollection<T> {

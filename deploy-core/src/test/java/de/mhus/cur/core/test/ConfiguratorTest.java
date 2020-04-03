@@ -8,18 +8,18 @@ import java.net.URI;
 
 import org.junit.jupiter.api.Test;
 
-import de.mhus.cur.core.Conductor;
 import de.mhus.cur.core.ConductorImpl;
 import de.mhus.cur.core.ConfigTypesImpl;
 import de.mhus.cur.core.ConfiguratorDefault;
-import de.mhus.cur.core.Context;
 import de.mhus.cur.core.ContextImpl;
 import de.mhus.cur.core.FileScheme;
 import de.mhus.cur.core.LabelsImpl;
-import de.mhus.cur.core.Lifecycle;
 import de.mhus.cur.core.ProjectsValidator;
 import de.mhus.cur.core.SchemesImpl;
 import de.mhus.cur.core.YmlConfigType;
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Context;
+import de.mhus.deploy.api.Lifecycle;
 import de.mhus.lib.errors.MException;
 
 public class ConfiguratorTest {
@@ -67,7 +67,7 @@ public class ConfiguratorTest {
         Context context = new ContextImpl(cur);
         
         // test plugins
-        assertEquals(3, cur.getPlugins().size());
+        assertEquals(4, cur.getPlugins().size());
         assertEquals("2.0.0", TestUtil.getPluginVersion( context.make(cur.getPlugins().get("newParent").getUri()) ) );
 
         // test lifecycle

@@ -3,6 +3,8 @@ package de.mhus.cur.core;
 import java.io.File;
 import java.io.IOException;
 
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Scheme;
 import de.mhus.lib.core.MApi;
 import de.mhus.lib.core.base.SingleBaseStrategy;
 import de.mhus.lib.core.logging.Log;
@@ -25,10 +27,13 @@ public class MavenScheme implements Scheme {
 		if (location.exists())
 			return location;
 		
+		String mvnUrl = uri.getPath().replace('/', ':');
+		CurUtil.log.i("Load Maven Resource",location,mvnUrl);
+		
 		// mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get -Dartifact=com.google.guava:guava:15.0 -DrepoUrl=
 		String mvnPath = cur.getProperties().getString(CurUtil.PROPERTY_MVN_PATH, "mvn");
 		CurUtil.execute(cur, mvnPath + " org.apache.maven.plugins:maven-dependency-plugin:2.1:get -Dartifact="
-			+uri.getPath().replace('/', ':').substring(1)
+			+mvnUrl
 			+" -DrepoUrl=");
 		
 		if (location.exists())
@@ -54,10 +59,10 @@ public class MavenScheme implements Scheme {
 		
 		String[] parts = uri.getPath().split("/");
 		
-		String path = parts[1].replace('.', '/') + "/" + parts[2] + "/" + parts[3] + "/" + parts[2] + "-" + parts[3];
+		String path = parts[0].replace('.', '/') + "/" + parts[1] + "/" + parts[2] + "/" + parts[1] + "-" + parts[2];
 		
-		String ext = parts.length > 4 ? parts[4] : "jar";
-		String x = parts.length > 5 ? parts[5] : null;
+		String ext = parts.length > 3 ? parts[3] : "jar";
+		String x = parts.length > 4 ? parts[4] : null;
 		if (x != null)
 			path = path + "-" + x;
 		path = path + "." + ext;

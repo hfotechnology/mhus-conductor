@@ -1,5 +1,8 @@
 package de.mhus.cur.core;
 
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Plugin;
+
 public class PluginImpl implements Plugin {
 
 	protected String target;

@@ -1,5 +1,7 @@
 package de.mhus.cur.core;
 
+import de.mhus.deploy.api.Plugin;
+
 public class ContextPlugin implements Plugin {
 
 	private ContextImpl context;

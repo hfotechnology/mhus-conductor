@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.mhus.lib</groupId>
-        <version>3.6.0</version>
+        <version>6.4.0</version>
         <artifactId>mhus-oss</artifactId>
     </parent>
 	<groupId>de.mhus.deploy</groupId>
@@ -56,6 +56,7 @@
 
 	<modules>
 		<module>deploy-api</module>
+		<module>deploy-plugin</module>
 		<module>deploy-core</module>
 		<module>versioning-maven-plugin</module>
 	</modules>

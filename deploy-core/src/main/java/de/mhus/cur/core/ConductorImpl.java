@@ -2,6 +2,11 @@ package de.mhus.cur.core;
 
 import java.io.File;
 
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Lifecycles;
+import de.mhus.deploy.api.Plugins;
+import de.mhus.deploy.api.Projects;
+import de.mhus.deploy.api.Schemes;
 import de.mhus.lib.core.IReadProperties;
 import de.mhus.lib.core.MProperties;
 

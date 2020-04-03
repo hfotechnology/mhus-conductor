@@ -3,6 +3,11 @@ package de.mhus.cur.core;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Labels;
+import de.mhus.deploy.api.Project;
+import de.mhus.deploy.api.Projects;
+
 public class ProjectsImpl extends XCollection<Project> implements Projects {
 
 	@SuppressWarnings("unused")

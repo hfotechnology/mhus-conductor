@@ -2,6 +2,8 @@ package de.mhus.cur.core;
 
 import java.util.Iterator;
 
+import de.mhus.deploy.api.Labels;
+
 public class ContextLabels implements Labels {
 
 	private ContextImpl context;

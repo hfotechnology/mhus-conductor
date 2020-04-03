@@ -3,6 +3,8 @@ package de.mhus.cur.core;
 import java.io.File;
 import java.util.Map.Entry;
 
+import de.mhus.deploy.api.Labels;
+import de.mhus.deploy.api.Project;
 import de.mhus.lib.core.IReadProperties;
 import de.mhus.lib.core.MProperties;
 

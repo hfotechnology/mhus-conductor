@@ -2,6 +2,10 @@ package de.mhus.cur.core;
 
 import java.util.LinkedList;
 
+import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Labels;
+import de.mhus.deploy.api.Step;
+
 public class StepImpl implements Step {
 
 	protected LinkedList<String> parameters;
