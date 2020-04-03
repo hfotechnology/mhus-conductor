@@ -15,6 +15,7 @@ import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MValidator;
 import de.mhus.lib.core.util.MUri;
 import de.mhus.lib.errors.MException;
+import de.mhus.lib.errors.MRuntimeException;
 import de.mhus.lib.errors.NotFoundException;
 
 public class ConfiguratorDefault extends MLog implements Configurator {
@@ -84,8 +85,8 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 		// load imports FIRST and fill before processing
 		loadImports(importE);
 
-		YMap parametersE = docE.getMap("parameters");
-		loadParameters(parametersE);
+		YMap propertiesE = docE.getMap("properties");
+		loadProperties(propertiesE);
 		
 		YList pluginsE = docE.getList("plugins");
 	    loadPlugins(pluginsE);
@@ -99,19 +100,32 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 		
 	}
 
-    private void loadParameters(YMap parametersE) {
-        if (parametersE == null) return;
+    private void loadProperties(YMap propertiesE) {
+        if (propertiesE == null) return;
         
-        if (parametersE.getBoolean("_clear"))
-            ((MProperties)cur.getParameters()).clear();
+        if (propertiesE.getBoolean("_clear"))
+            ((MProperties)cur.getProperties()).clear();
         
-        for (String key : parametersE.getKeys()) {
+        for (String key : propertiesE.getKeys()) {
             if (key.equals("_clear")) continue;
-            ((MProperties)cur.getParameters()).put(key, parametersE.getString(key));
+            ((MProperties)cur.getProperties()).put(key, propertiesE.getString(key));
         }
         
     }
 
+    private void loadProjectProperties(YMap propertiesE, ProjectImpl project) {
+        if (propertiesE == null) return;
+        
+        if (propertiesE.getBoolean("_clear"))
+            ((MProperties)project.getProperties()).clear();
+        
+        for (String key : propertiesE.getKeys()) {
+            if (key.equals("_clear")) continue;
+            ((MProperties)project.getProperties()).put(key, propertiesE.getString(key));
+        }
+        
+    }
+    
     protected void loadLifecycles(YList lifecyclesE) {
         if (lifecyclesE == null) return;
         for (YMap map : lifecyclesE.toMapList()) {
@@ -157,7 +171,48 @@ public class ConfiguratorDefault extends MLog implements Configurator {
     }
 
     protected Step loadStep(YMap map) {
-        Step step = new StepImpl(map);
+        StepImpl step = new StepImpl();
+        
+        // target:
+        step.target = map.getString("target");
+        
+        try {
+            // parameters:
+        	step.parameters = new LinkedList<>();
+            if (map.isString("parameters")) {
+            	step.parameters.add(map.getString("parameters"));
+            } else
+            if (map.isList("parameters")) {
+                YList parametersE = map.getList("parameters");
+                if (parametersE != null) {
+                    parametersE.toStringList().forEach(v -> step.parameters.add(v));
+                }
+            }
+            
+            // selector:
+            YMap selectorE = map.getMap("selector");
+            step.selector = new LabelsImpl();
+            if (selectorE != null) {
+        	    for (String key : map.getKeys())
+        	    	step.selector.put(key, map.getString(key));
+            }
+            
+            // order:
+            step.order = map.getString("order");
+            if (step.order != null) {
+            	step.order = step.order.trim();
+                if (step.order.toLowerCase().endsWith(" asc")) {
+                	step.order = step.order.substring(0, step.order.length()-4);
+                	step.orderAsc  = true;
+                } else if (step.order.toLowerCase().endsWith(" desc")) {
+                	step.order = step.order.substring(0, step.order.length()-5);
+                	step.orderAsc = false;
+                }
+            }
+        } catch (Throwable t) {
+            throw new MRuntimeException("step",step.target,t);
+        }
+        
         return step;
     }
 
@@ -169,7 +224,24 @@ public class ConfiguratorDefault extends MLog implements Configurator {
     }
 
     protected void loadProject(YMap map) {
-        Project project = new ProjectImpl(map, map.getBoolean("_merge") ? cur.getProjects().getOrNull(map.getString("target")) : null );
+        ProjectImpl project = new ProjectImpl();
+        
+        Project merge = map.getBoolean("_merge") ? cur.getProjects().getOrNull(map.getString("target")) : null;
+        project.name = map.getString("name");
+        project.path = map.getString("path", merge == null ? null : merge.getPath());
+        YMap l = map.getMap("labels");
+        if (l == null && merge == null)
+        	project.labels = new LabelsImpl();
+        else if (l == null && merge != null)
+        	project.labels = merge.getLabels();
+        else {
+        	project.labels = new LabelsImpl();
+    	    for (String key : l.getKeys())
+    	    	((LabelsImpl)project.labels).put(key, l.getString(key));
+        }
+		YMap propertiesE = map.getMap("properties");
+        loadProjectProperties(propertiesE, project);
+        
         ((ProjectsImpl)cur.getProjects()).put(project.getName(), project);
     }
 
@@ -181,7 +253,14 @@ public class ConfiguratorDefault extends MLog implements Configurator {
     }
 
     protected void loadPlugin(YMap map) {
-        Plugin plugin = new PluginImpl(map, map.getBoolean("_merge") ? cur.getPlugins().getOrNull(map.getString("target")) : null );
+    	
+    	PluginImpl plugin = new PluginImpl();
+    	Plugin merge = map.getBoolean("_merge") ? cur.getPlugins().getOrNull(map.getString("target")) : null;
+    	
+    	plugin.target = map.getString("target");
+    	plugin.url = map.getString("url", merge == null ? null : merge.getUrl());
+    	plugin.mojo = map.getString("mojo", merge == null ? null : merge.getMojo());
+
         ((PluginsImpl)cur.getPlugins()).put(plugin.getTarget(), plugin);
     }
 

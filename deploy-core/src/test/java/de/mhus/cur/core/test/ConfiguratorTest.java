@@ -38,15 +38,15 @@ public class ConfiguratorTest {
         config.getValidators().add(new ProjectsValidator());
         
         
-        URI uri = URI.create("file:deploy.yml");
+        URI uri = URI.create("file:conductor.yml");
         config.configure(uri, cur);
         
         // test parameters
-        assertEquals("4", cur.getParameters().getString("overwriteMe"));
-        assertEquals("1", cur.getParameters().getString("rootWasThere"));
-        assertEquals("1", cur.getParameters().getString("parentWasThere"));
-        assertEquals("1", cur.getParameters().getString("defaultLifecycleWasThere"));
-        assertEquals("1", cur.getParameters().getString("deployWasThere"));
+        assertEquals("4", cur.getProperties().getString("overwriteMe"));
+        assertEquals("1", cur.getProperties().getString("rootWasThere"));
+        assertEquals("1", cur.getProperties().getString("parentWasThere"));
+        assertEquals("1", cur.getProperties().getString("defaultLifecycleWasThere"));
+        assertEquals("1", cur.getProperties().getString("deployWasThere"));
         
         // test projects
         assertEquals(4, cur.getProjects().size());

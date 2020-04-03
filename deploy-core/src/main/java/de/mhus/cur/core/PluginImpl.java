@@ -2,17 +2,10 @@ package de.mhus.cur.core;
 
 public class PluginImpl implements Plugin {
 
-    private String target;
-    private String url;
-    private String mojo;
-    @SuppressWarnings("unused")
-    private Conductor cur;
-
-    public PluginImpl(YMap map, Plugin merge) {
-        target = map.getString("target");
-        url = map.getString("url", merge == null ? null : merge.getUrl());
-        mojo = map.getString("mojo", merge == null ? null : merge.getMojo());
-    }
+	protected String target;
+	protected String url;
+	protected String mojo;
+    protected Conductor cur;
 
     @Override
     public String getTarget() {

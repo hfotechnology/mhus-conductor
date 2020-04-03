@@ -1,5 +1,5 @@
 
-parameters:
+properties:
   defaultLifecycleWasThere: 1
   overwriteMe: 3
 

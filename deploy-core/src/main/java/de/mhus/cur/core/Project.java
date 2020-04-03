@@ -2,6 +2,8 @@ package de.mhus.cur.core;
 
 import java.io.File;
 
+import de.mhus.lib.core.IReadProperties;
+
 public interface Project {
 
 	Labels getLabels();
@@ -12,4 +14,6 @@ public interface Project {
 
     File getRootDir();
 	
+    IReadProperties getProperties();
+    
 }

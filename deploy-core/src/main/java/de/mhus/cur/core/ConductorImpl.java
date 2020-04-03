@@ -34,7 +34,7 @@ public class ConductorImpl implements Conductor {
     }
 
     @Override
-    public IReadProperties getParameters() {
+    public IReadProperties getProperties() {
         return parameters;
     }
 

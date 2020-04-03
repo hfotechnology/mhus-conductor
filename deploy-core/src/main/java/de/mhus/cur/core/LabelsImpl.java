@@ -2,14 +2,6 @@ package de.mhus.cur.core;
 
 public class LabelsImpl extends XCollection<String> implements Labels {
 
-    public LabelsImpl() {
-        
-    }
-	public LabelsImpl(YMap map) {
-	    for (String key : map.getKeys())
-	        put(key, map.getString(key));
-    }
-
     @Override
 	public boolean matches(Labels selector) {
 		for (String sKey : selector.keys()) {

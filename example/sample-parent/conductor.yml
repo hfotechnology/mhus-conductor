@@ -4,7 +4,7 @@ import:
 - file:parent.yml
 - file:default_lifecycle.yml
 
-parameters:
+properties:
   newVersion.version: 1.0.0
   deployWasThere: 1
   overwriteMe: 4
@@ -15,6 +15,9 @@ projects:
     labels:
       group: parent
       sort: 0
+    properties:
+      version: 1.2.3
+      a: b
   - name: core
     path: ../sample-core
     labels:

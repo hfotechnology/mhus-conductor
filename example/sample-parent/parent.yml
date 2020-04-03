@@ -2,7 +2,7 @@
 import:
 - file:root.yml
 
-parameters:
+properties:
   parentWasThere: 1
   overwriteMe: 2
 

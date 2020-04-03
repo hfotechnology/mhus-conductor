@@ -12,7 +12,7 @@ public interface Conductor {
 
     Projects getProjects();
 
-    IReadProperties getParameters();
+    IReadProperties getProperties();
 
     File getRoot();
 	

@@ -12,11 +12,11 @@ public class ContextImpl implements Context {
     private MProperties parameters;
 
     public ContextImpl(Conductor cur) {
-        parameters = new MProperties(cur.getParameters());
+        parameters = new MProperties(cur.getProperties());
     }
 
     public ContextImpl(Conductor cur, IReadProperties additional) {
-        parameters = new MProperties(cur.getParameters());
+        parameters = new MProperties(cur.getProperties());
         parameters.putReadProperties(additional);
     }
     

@@ -2,26 +2,17 @@ package de.mhus.cur.core;
 
 import java.io.File;
 
+import de.mhus.lib.core.IProperties;
+import de.mhus.lib.core.MProperties;
+
 public class ProjectImpl implements Project {
 
-    private String name;
-    private String path;
-    private Labels labels;
-    @SuppressWarnings("unused")
-    private Conductor cur;
-    private File rootDir;
-
-    public ProjectImpl(YMap map, Project merge) {
-        name = map.getString("name");
-        path = map.getString("path", merge == null ? null : merge.getPath());
-        YMap l = map.getMap("labels");
-        if (l == null && merge == null)
-            labels = new LabelsImpl();
-        else if (l == null && merge != null)
-            labels = merge.getLabels();
-        else
-            labels = new LabelsImpl(l);
-    }
+    protected String name;
+    protected String path;
+    protected Labels labels;
+    protected Conductor cur;
+    protected File rootDir;
+    protected MProperties properties = new MProperties();
 
     @Override
     public Labels getLabels() {
@@ -55,5 +46,10 @@ public class ProjectImpl implements Project {
     public String toString() {
         return name;
     }
+
+	@Override
+	public IProperties getProperties() {
+		return properties;
+	}
     
 }
