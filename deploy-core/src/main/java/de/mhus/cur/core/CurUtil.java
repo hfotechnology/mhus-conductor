@@ -21,7 +21,7 @@ public class CurUtil {
         
     }
 
-	public static String[] execute(File rootDir, String cmd) throws IOException {
+	public static String[] execute(String name, File rootDir, String cmd) throws IOException {
 		
 		log.d("execute",cmd);
 
@@ -44,8 +44,10 @@ public class CurUtil {
             
             String line;
             while ((line = outReader.readLine()) != null) {
-                System.out.println("[OUT] " + line);
-                stdOutBuilder.append(line).append("\n");
+                System.out.println("["+name+"]" + line);
+                if (stdOutBuilder.length() > 0) 
+                	stdOutBuilder.append("\n");
+                stdOutBuilder.append(line);
             }
 
             BufferedReader errReader =
@@ -53,14 +55,17 @@ public class CurUtil {
 
             StringBuilder stdErrBuilder = new StringBuilder();
             while ((line = errReader.readLine()) != null) {
-                System.out.println("[ERR] " + line);
-                stdErrBuilder.append(line).append("\n");
+                System.err.println("["+name+"]" + line);
+                if (stdErrBuilder.length() > 0) 
+                	stdErrBuilder.append("\n");
+                stdErrBuilder.append(line);
             }
 
             int exitCode = process.waitFor();
-    		String stderr = stdOutBuilder.toString();
-    		String stdout = stdErrBuilder.toString();
-    		log.d("result",stdout,stderr,exitCode);
+    		String stderr = stdErrBuilder.toString();
+    		String stdout = stdOutBuilder.toString();
+    		log.d("exitCode",exitCode);
+    		log.t("result",stdout,stderr,exitCode);
     		return new String[] {stdout, stderr, String.valueOf(exitCode)};
             
 

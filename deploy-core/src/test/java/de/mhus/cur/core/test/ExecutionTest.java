@@ -1,7 +1,9 @@
 package de.mhus.cur.core.test;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,6 +24,7 @@ import de.mhus.cur.core.SchemesImpl;
 import de.mhus.cur.core.YmlConfigType;
 import de.mhus.lib.core.MApi;
 import de.mhus.lib.core.MProperties;
+import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.base.SingleBaseStrategy;
 import de.mhus.lib.core.logging.Log;
 import de.mhus.lib.errors.MException;
@@ -63,13 +66,52 @@ public class ExecutionTest {
         }
     }
     
-    @Test
+    // @Test
     public void testCmdExecute() throws IOException {
     	String mvnPath = TestUtil.mvnLocation();
     	if (new File(mvnPath).exists()) {
-    		CurUtil.execute(new File("../deploy-api"), mvnPath + " install &");
+    		CurUtil.execute("TEST", new File("../deploy-api"), mvnPath + " install");
     	} else {
         	System.err.println("Maven not found, skip test: " + mvnPath);
         }
     }
+    
+	//@Test
+	public void testCurPing() throws IOException {
+		CurUtil.execute("TEST",new File("."), "ping -c 3 -i 2 google.com");
+	}
+	
+	//@Test
+	public void testDirectPing() {
+		ProcessBuilder processBuilder = new ProcessBuilder();
+		if (MSystem.isWindows())
+			// Windows
+			processBuilder.command("cmd.exe", "/c", "ping -n 3 google.com");
+		else
+			// Unix
+			processBuilder.command("/bin/bash", "-c", "ping -c 3 google.com");
+			
+        try {
+
+            Process process = processBuilder.start();
+
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            int exitCode = process.waitFor();
+            System.out.println("\nExited with error code : " + exitCode);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+		
+	}
+	
 }

@@ -23,7 +23,7 @@ public class MavenScheme extends MLog implements Scheme {
         MApi.get().getLogFactory().setDefaultLevel(Log.LEVEL.DEBUG);
         MApi.get().getBaseControl().setFindStrategy(new SingleBaseStrategy());
 		
-		File location = getArtifactLocation(cur, uri);
+		File location = getArtifactLocation("MVN",cur, uri);
 		
 		if (location.exists())
 			return location;
@@ -33,7 +33,7 @@ public class MavenScheme extends MLog implements Scheme {
 		
 		// mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get -Dartifact=com.google.guava:guava:15.0 -DrepoUrl=
 		String mvnPath = cur.getProperties().getString(CurUtil.PROPERTY_MVN_PATH, "mvn");
-		CurUtil.execute(cur.getRoot(), mvnPath + " org.apache.maven.plugins:maven-dependency-plugin:2.1:get -Dartifact="
+		CurUtil.execute(uri.getPath(),cur.getRoot(), mvnPath + " org.apache.maven.plugins:maven-dependency-plugin:2.1:get -Dartifact="
 			+mvnUrl
 			+" -DrepoUrl=");
 		
@@ -44,14 +44,14 @@ public class MavenScheme extends MLog implements Scheme {
 		throw new NotFoundException("maven artifact not found",uri,location);
 	}
 	
-	public File getArtifactLocation(Conductor cur, MUri uri) throws IOException {
+	public File getArtifactLocation(String name, Conductor cur, MUri uri) throws IOException {
 		if (repositoryLocation == null) {
 			// mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout
 //			MavenCli cli = new MavenCli();
 //			cli.doMain(new String[]{"clean", "install"}, "project_dir", System.out, System.out);
 			
 			String mvnPath = cur.getProperties().getString(CurUtil.PROPERTY_MVN_PATH, "mvn");
-			repositoryLocation = CurUtil.execute(cur.getRoot(), mvnPath + " help:evaluate -Dexpression=settings.localRepository -q -DforceStdout")[0];
+			repositoryLocation = CurUtil.execute(name,cur.getRoot(), mvnPath + " help:evaluate -Dexpression=settings.localRepository -q -DforceStdout")[0];
 		}
 		
 		File dir = new File(repositoryLocation);

@@ -45,7 +45,7 @@ public class SchemeTest {
 	        
 			MUri uri = MUri.toUri("mvn:com.google.guava/guava/15.0");
 			
-			File loc = scheme.getArtifactLocation(cur, uri);
+			File loc = scheme.getArtifactLocation("TEST",cur, uri);
 			System.out.println(loc);
 			
 			if (loc.exists())
