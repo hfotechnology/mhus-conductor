@@ -1,4 +1,4 @@
-package de.mhus.deploy.api;
+package de.mhus.cur.core;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target( ElementType.TYPE )
-public @interface Mojo {
-	String name();
+public @interface MainOption {
+	String[] alias();
 }

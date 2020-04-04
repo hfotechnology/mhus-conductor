@@ -3,8 +3,8 @@ package de.mhus.cur.core;
 import java.io.File;
 import java.util.Map.Entry;
 
-import de.mhus.deploy.api.Labels;
-import de.mhus.deploy.api.Project;
+import de.mhus.cur.api.Labels;
+import de.mhus.cur.api.Project;
 import de.mhus.lib.core.IReadProperties;
 import de.mhus.lib.core.MProperties;
 
@@ -62,6 +62,11 @@ public class ContextProject implements Project {
 			}
 		}
 		return properties;
+	}
+
+    @Override
+	public String toString() {
+		return inst.toString();
 	}
 
 }

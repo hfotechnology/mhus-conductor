@@ -13,20 +13,20 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.ConductorPlugin;
-import de.mhus.deploy.api.ErrorInfo;
-import de.mhus.deploy.api.ExecutePlugin;
-import de.mhus.deploy.api.Executor;
-import de.mhus.deploy.api.Labels;
-import de.mhus.deploy.api.Lifecycle;
-import de.mhus.deploy.api.Mojo;
-import de.mhus.deploy.api.Plugin;
-import de.mhus.deploy.api.Plugin.SCOPE;
-import de.mhus.deploy.api.Project;
-import de.mhus.deploy.api.Scheme;
-import de.mhus.deploy.api.Step;
-import de.mhus.deploy.api.Steps;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.ConductorPlugin;
+import de.mhus.cur.api.ErrorInfo;
+import de.mhus.cur.api.ExecutePlugin;
+import de.mhus.cur.api.Executor;
+import de.mhus.cur.api.Labels;
+import de.mhus.cur.api.Lifecycle;
+import de.mhus.cur.api.Mojo;
+import de.mhus.cur.api.Plugin;
+import de.mhus.cur.api.Project;
+import de.mhus.cur.api.Scheme;
+import de.mhus.cur.api.Step;
+import de.mhus.cur.api.Steps;
+import de.mhus.cur.api.Plugin.SCOPE;
 import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MString;
@@ -45,12 +45,15 @@ public class ExecutorDefault extends MLog implements Executor {
     @Override
     public void execute(Conductor cur, String lifecycle) {
         this.cur = cur;
-        
         Lifecycle lf = cur.getLifecycles().get(lifecycle);
-
-        Steps steps = lf.getSteps();
-        execute(steps);
-        
+        try {
+        	log().d("executeLifecycle",lf);
+	        Steps steps = lf.getSteps();
+	        execute(steps);
+        } catch (Throwable t) {
+        	log().d(lf,t);
+        	throw new MRuntimeException(lf,t);
+        }
     }
 
     protected void execute(Steps steps) {
@@ -60,64 +63,74 @@ public class ExecutorDefault extends MLog implements Executor {
 
     protected void execute(Step step) {
         
-        // load plugin
-        String target = step.getTarget();
-        Plugin plugin = cur.getPlugins().get(target);
-
-    	// check for scope
-    	
-        if (plugin.getScope() == SCOPE.STEP) {
-        	// scope: step
-        	execute(step, (Project)null, plugin);
-        	return;
-        }
-    	
-        // scope: project
-    	
-        // select projects
-        Labels selector = step.getSelector();
-        LinkedList<Project> projects = null;
-        if (selector != null) {
-            projects = new LinkedList<>(cur.getProjects().select(selector));
-        } else {
-            projects = new LinkedList<>(cur.getProjects().getAll());
-        }
-        
-        // order
-        String order = step.getOrder();
-        if (MString.isSet(order)) {
-            CurUtil.orderProjects(projects, order, step.isOrderAsc());
-        }
-
-        execute(step, projects, plugin);
-        
+    	log().d("executeStep",step);
+    	try {
+	        // load plugin
+	        String target = step.getTarget();
+	        Plugin plugin = cur.getPlugins().get(target);
+	
+	    	// check for scope
+	    	
+	        if (plugin.getScope() == SCOPE.STEP) {
+	        	// scope: step
+	        	execute(step, (Project)null, plugin);
+	        	return;
+	        }
+	    	
+	        // scope: project
+	    	
+	        // select projects
+	        Labels selector = step.getSelector();
+	        LinkedList<Project> projects = null;
+	        if (selector != null) {
+	            projects = new LinkedList<>(cur.getProjects().select(selector));
+	        } else {
+	            projects = new LinkedList<>(cur.getProjects().getAll());
+	        }
+	        
+	        // order
+	        String order = step.getOrder();
+	        if (MString.isSet(order)) {
+	            CurUtil.orderProjects(projects, order, step.isOrderAsc());
+	        }
+	
+	        execute(step, projects, plugin);
+    	} catch (Throwable t) {
+    		throw new MRuntimeException(step,t);
+    	}
     }
 
     protected void execute(Step step, LinkedList<Project> projects, Plugin plugin) {
+    	if (projects == null || projects.size() == 0)
+    		log().w("no projects selected",step);
         for (Project project : projects)
             execute(step, project, plugin);
     }
 
     protected void execute(Step step, Project project, Plugin plugin) {
-        
-        ContextImpl context = new ContextImpl(cur, project == null ? null : project.getProperties() );
-                
-        context.init(project, plugin, step);
-        
-        if (!step.matchCondition(context)) {
-        	log().d("condition not successful",step);
-        	return;
-        }
-        
-        ConductorPlugin impl = loadMojo(context);
+    	log().d("executeProject",step,project,plugin);
         try {
-        	((ExecutePlugin)impl).execute(context);
+	        ContextImpl context = new ContextImpl(cur, project == null ? null : project.getProperties() );
+	                
+	        context.init(project, plugin, step);
+	        
+	        if (!step.matchCondition(context)) {
+	        	log().d("condition not successful",step);
+	        	return;
+	        }
+	        
+	        ConductorPlugin impl = loadMojo(context);
+	        try {
+	        	((ExecutePlugin)impl).execute(context);
+	        } catch (Throwable t) {
+	        	errors.add(new ErrorsInfoImpl(context, t));
+	        	if (cur.getProperties().getBoolean(CurUtil.PROPERTY_FAE, false)) {
+	        		log().e(context,t);
+	        	} else
+	        		throw t;
+	        }
         } catch (Throwable t) {
-        	errors.add(new ErrorsInfoImpl(context, t));
-        	if (cur.getProperties().getBoolean(CurUtil.PROPERTY_FAE, false)) {
-        		CurUtil.log.e(context,t);
-        	} else
-        		throw new MRuntimeException(t);
+        	throw new MRuntimeException(project,t);
         }
     }
 
@@ -127,15 +140,14 @@ public class ExecutorDefault extends MLog implements Executor {
         try {
         	impl = createMojo(cur, context.getPlugin());
         } catch (Throwable t) {
-        	throw new MRuntimeException(t);
+        	throw new MRuntimeException(context.getPlugin(),t);
         }
         mojos.put(context.getPlugin().getTarget(), impl);
         return impl;
 	}
 
 	public ConductorPlugin createMojo(Conductor cur, Plugin plugin) throws IOException, NotFoundException {
-
-		
+		log().d("createMojo",plugin.getUri(),plugin.getMojo());
 		String mojoName = plugin.getMojo();
 		
 		Object[] entry = pluginClassLoaders.get(plugin.getUri());
@@ -149,7 +161,7 @@ public class ExecutorDefault extends MLog implements Executor {
 			ArrayList<String> classes=new ArrayList<>();
 			LinkedList<URL> urls = new LinkedList<>();
 			urls.add(pFile.toURI().toURL());
-
+			log().d("Add main JAR",pFile);
 			try (JarFile jar = new JarFile(pFile)) {
 		        jar.stream().forEach(jarEntry -> {
 		            if(jarEntry.getName().endsWith(".class"))
@@ -174,6 +186,7 @@ public class ExecutorDefault extends MLog implements Executor {
 		        			Scheme schemeDep = cur.getSchemes().get(uriDep);
 		        			File depFile = schemeDep.load(cur, uriDep);
 		        			urls.add(depFile.toURI().toURL());
+		        			log().d("Add dependency JAR",depFile);
 		        		}
 		        	}
 		        }
@@ -201,7 +214,7 @@ public class ExecutorDefault extends MLog implements Executor {
 				}
 			} catch (ClassNotFoundException cnfe) {
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ie) {
-				CurUtil.log.w(className, ie);
+				log().w(className, ie);
 			}
 		}
 		

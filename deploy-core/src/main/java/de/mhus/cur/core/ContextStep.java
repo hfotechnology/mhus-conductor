@@ -2,9 +2,9 @@ package de.mhus.cur.core;
 
 import java.util.LinkedList;
 
-import de.mhus.deploy.api.Context;
-import de.mhus.deploy.api.Labels;
-import de.mhus.deploy.api.Step;
+import de.mhus.cur.api.Context;
+import de.mhus.cur.api.Labels;
+import de.mhus.cur.api.Step;
 
 public class ContextStep implements Step {
 
@@ -57,6 +57,11 @@ public class ContextStep implements Step {
 	@Override
 	public boolean matchCondition(Context context) {
 		return inst.matchCondition(context);
+	}
+
+    @Override
+	public String toString() {
+		return inst.toString();
 	}
 
 }

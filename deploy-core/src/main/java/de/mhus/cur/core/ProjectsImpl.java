@@ -3,10 +3,10 @@ package de.mhus.cur.core;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.Labels;
-import de.mhus.deploy.api.Project;
-import de.mhus.deploy.api.Projects;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.Labels;
+import de.mhus.cur.api.Project;
+import de.mhus.cur.api.Projects;
 
 public class ProjectsImpl extends XCollection<Project> implements Projects {
 
@@ -14,10 +14,10 @@ public class ProjectsImpl extends XCollection<Project> implements Projects {
     private Conductor cur;
 
     @Override
-	public List<Project> select(Labels labels) {
+	public List<Project> select(Labels selector) {
 		LinkedList<Project> ret = new LinkedList<>();
 		collection.forEach((k,v) -> {
-			if (v.getLabels().matches(labels))
+			if (v.getLabels().matches(selector))
 				ret.add(v);
 		});
 		return ret;

@@ -1,6 +1,6 @@
 package de.mhus.cur.core;
 
-import de.mhus.deploy.api.Labels;
+import de.mhus.cur.api.Labels;
 
 public class LabelsImpl extends XCollection<String> implements Labels {
 

@@ -12,7 +12,7 @@ lifecycles:
       - target: git
         parameters:
           reset --HARD
-      - plugin: git
+      - target: git
         parameters: 
         - pull
       # update and compile parent
@@ -30,6 +30,7 @@ lifecycles:
           group: parent
       # update and compile projects
       - target: newParent
+        condition: skip
         selector:
           group: bundles
         order: sort
@@ -75,7 +76,6 @@ lifecycles:
         parameters: push
       # next snapshot
       - target: incraseToSnapshots
-      - target: newParent
       - target: newVersion
       - target: maven
         parameters: 

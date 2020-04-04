@@ -3,8 +3,8 @@ package de.mhus.cur.core.test;
 import java.io.File;
 import java.io.IOException;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.Scheme;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.Scheme;
 import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.util.MUri;
 

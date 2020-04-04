@@ -3,16 +3,17 @@ package de.mhus.cur.core;
 import java.io.File;
 import java.io.IOException;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.Scheme;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.Scheme;
 import de.mhus.lib.core.MApi;
+import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.base.SingleBaseStrategy;
 import de.mhus.lib.core.logging.Log;
 import de.mhus.lib.core.util.MUri;
 import de.mhus.lib.errors.MRuntimeException;
 import de.mhus.lib.errors.NotFoundException;
 
-public class MavenScheme implements Scheme {
+public class MavenScheme extends MLog implements Scheme {
 
 	private String repositoryLocation;
 
@@ -28,7 +29,7 @@ public class MavenScheme implements Scheme {
 			return location;
 		
 		String mvnUrl = uri.getPath().replace('/', ':');
-		CurUtil.log.i("Load Maven Resource",location,mvnUrl);
+		log().i("Load Maven Resource",location,mvnUrl);
 		
 		// mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get -Dartifact=com.google.guava:guava:15.0 -DrepoUrl=
 		String mvnPath = cur.getProperties().getString(CurUtil.PROPERTY_MVN_PATH, "mvn");
@@ -50,7 +51,7 @@ public class MavenScheme implements Scheme {
 //			cli.doMain(new String[]{"clean", "install"}, "project_dir", System.out, System.out);
 			
 			String mvnPath = cur.getProperties().getString(CurUtil.PROPERTY_MVN_PATH, "mvn");
-			repositoryLocation = CurUtil.execute(cur.getRoot(), mvnPath + " help:evaluate -Dexpression=settings.localRepository -q -DforceStdout");
+			repositoryLocation = CurUtil.execute(cur.getRoot(), mvnPath + " help:evaluate -Dexpression=settings.localRepository -q -DforceStdout")[0];
 		}
 		
 		File dir = new File(repositoryLocation);

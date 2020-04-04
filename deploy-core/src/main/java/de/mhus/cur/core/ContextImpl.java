@@ -2,13 +2,14 @@ package de.mhus.cur.core;
 
 import java.util.Map;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.Context;
-import de.mhus.deploy.api.Plugin;
-import de.mhus.deploy.api.Project;
-import de.mhus.deploy.api.Step;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.Context;
+import de.mhus.cur.api.Plugin;
+import de.mhus.cur.api.Project;
+import de.mhus.cur.api.Step;
 import de.mhus.lib.core.IReadProperties;
 import de.mhus.lib.core.MProperties;
+import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.parser.StringCompiler;
 import de.mhus.lib.errors.MException;
 import de.mhus.lib.errors.MRuntimeException;
@@ -58,18 +59,17 @@ public class ContextImpl implements Context {
 		return cur;
 	}
 
-	public MProperties getParameters() {
-		return properties;
-	}
-
+	@Override
 	public Plugin getPlugin() {
 		return plugin;
 	}
 
+	@Override
 	public Project getProject() {
 		return project;
 	}
 
+	@Override
 	public Step getStep() {
 		return step;
 	}
@@ -77,6 +77,11 @@ public class ContextImpl implements Context {
 	@Override
 	public IReadProperties getProperties() {
 		return properties;
+	}
+
+    @Override
+	public String toString() {
+		return MSystem.toString(this, plugin, step, project);
 	}
 
 }

@@ -1,7 +1,7 @@
 package de.mhus.cur.core;
 
-import de.mhus.deploy.api.ConfigType;
-import de.mhus.deploy.api.ConfigTypes;
+import de.mhus.cur.api.ConfigType;
+import de.mhus.cur.api.ConfigTypes;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.util.MUri;
 

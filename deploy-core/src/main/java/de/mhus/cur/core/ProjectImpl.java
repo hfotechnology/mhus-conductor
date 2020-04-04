@@ -2,11 +2,12 @@ package de.mhus.cur.core;
 
 import java.io.File;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.Labels;
-import de.mhus.deploy.api.Project;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.Labels;
+import de.mhus.cur.api.Project;
 import de.mhus.lib.core.IProperties;
 import de.mhus.lib.core.MProperties;
+import de.mhus.lib.core.MSystem;
 
 public class ProjectImpl implements Project {
 
@@ -45,14 +46,15 @@ public class ProjectImpl implements Project {
         return rootDir;
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
 
 	@Override
 	public IProperties getProperties() {
 		return properties;
+	}
+    
+    @Override
+	public String toString() {
+		return MSystem.toString(this, name);
 	}
     
 }

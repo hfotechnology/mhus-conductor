@@ -1,15 +1,15 @@
 package de.mhus.deploy.plugin;
 
-import de.mhus.deploy.api.Context;
-import de.mhus.deploy.api.ExecutePlugin;
-import de.mhus.deploy.api.Mojo;
+import de.mhus.cur.api.Context;
+import de.mhus.cur.api.ExecutePlugin;
+import de.mhus.cur.api.Mojo;
 
 @Mojo(name="test")
 public class TestMojo implements ExecutePlugin {
 
 	@Override
 	public void execute(Context context) {
-		System.out.println("HEHEHE !!!");
+		System.err.println("TestPlugin for: " + context);
 	}
 
 }

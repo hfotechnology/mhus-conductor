@@ -1,8 +1,9 @@
 package de.mhus.cur.core;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.Lifecycle;
-import de.mhus.deploy.api.Steps;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.Lifecycle;
+import de.mhus.cur.api.Steps;
+import de.mhus.lib.core.MSystem;
 
 public class LifecycleImpl implements Lifecycle {
 
@@ -32,7 +33,7 @@ public class LifecycleImpl implements Lifecycle {
 
     @Override
     public String toString() {
-        return name;
+        return MSystem.toString(this, name);
     }
 
 }

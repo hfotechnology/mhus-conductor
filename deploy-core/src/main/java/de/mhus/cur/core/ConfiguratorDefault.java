@@ -8,20 +8,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.ConfigType;
-import de.mhus.deploy.api.ConfigTypes;
-import de.mhus.deploy.api.Configurator;
-import de.mhus.deploy.api.Lifecycle;
-import de.mhus.deploy.api.Plugin;
-import de.mhus.deploy.api.Plugin.SCOPE;
-import de.mhus.deploy.api.Project;
-import de.mhus.deploy.api.Scheme;
-import de.mhus.deploy.api.Schemes;
-import de.mhus.deploy.api.Step;
-import de.mhus.deploy.api.Validator;
-import de.mhus.deploy.api.YList;
-import de.mhus.deploy.api.YMap;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.ConfigType;
+import de.mhus.cur.api.ConfigTypes;
+import de.mhus.cur.api.Configurator;
+import de.mhus.cur.api.Lifecycle;
+import de.mhus.cur.api.Plugin;
+import de.mhus.cur.api.Project;
+import de.mhus.cur.api.Scheme;
+import de.mhus.cur.api.Schemes;
+import de.mhus.cur.api.Step;
+import de.mhus.cur.api.Validator;
+import de.mhus.cur.api.YList;
+import de.mhus.cur.api.YMap;
+import de.mhus.cur.api.Plugin.SCOPE;
+import de.mhus.lib.core.IProperties;
 import de.mhus.lib.core.MCast;
 import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MLog;
@@ -41,12 +42,14 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 	protected List<Validator> validators = new LinkedList<>();
 	
 	@Override
-	public void configure(URI uri, Conductor cur) throws MException {
+	public void configure(URI uri, Conductor cur, IProperties properties) throws MException {
 		this.cur = cur;
 		overwrite(MUri.toUri(uri.toString()));
 		initEntries();
-		validate();
 		((ConductorImpl)cur).schemes = schemes;
+		if (properties != null)
+			((ConductorImpl)cur).properties.putReadProperties(properties);
+		validate();
 	}
 
 	protected void initEntries() {
@@ -62,8 +65,11 @@ public class ConfiguratorDefault extends MLog implements Configurator {
         
         for (Lifecycle lifecycle : cur.getLifecycles()) {
             ((LifecycleImpl)lifecycle).init(cur);
-            for (Step entry : lifecycle.getSteps())
-                ((StepImpl)entry).init(cur);
+            int cnt = 0;
+            for (Step entry : lifecycle.getSteps()) {
+                ((StepImpl)entry).init(cur, lifecycle.getName() + ":" + cnt + ":" + entry.getTarget());
+                cnt++;
+            }
         }
             
     }
@@ -207,8 +213,8 @@ public class ConfiguratorDefault extends MLog implements Configurator {
             YMap selectorE = map.getMap("selector");
             step.selector = new LabelsImpl();
             if (selectorE != null) {
-        	    for (String key : map.getKeys())
-        	    	step.selector.put(key, map.getString(key));
+        	    for (String key : selectorE.getKeys())
+        	    	step.selector.put(key, selectorE.getString(key));
             }
             
             // order:

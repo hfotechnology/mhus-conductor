@@ -1,4 +1,4 @@
-package de.mhus.deploy.api;
+package de.mhus.cur.api;
 
 import java.io.File;
 import java.io.IOException;

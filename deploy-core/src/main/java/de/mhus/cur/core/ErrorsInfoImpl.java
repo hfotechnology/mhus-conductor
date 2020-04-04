@@ -1,6 +1,6 @@
 package de.mhus.cur.core;
 
-import de.mhus.deploy.api.ErrorInfo;
+import de.mhus.cur.api.ErrorInfo;
 
 public class ErrorsInfoImpl implements ErrorInfo {
 

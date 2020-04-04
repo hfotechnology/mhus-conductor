@@ -8,6 +8,9 @@ import java.net.URI;
 
 import org.junit.jupiter.api.Test;
 
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.Context;
+import de.mhus.cur.api.Lifecycle;
 import de.mhus.cur.core.ConductorImpl;
 import de.mhus.cur.core.ConfigTypesImpl;
 import de.mhus.cur.core.ConfiguratorDefault;
@@ -17,9 +20,6 @@ import de.mhus.cur.core.LabelsImpl;
 import de.mhus.cur.core.ProjectsValidator;
 import de.mhus.cur.core.SchemesImpl;
 import de.mhus.cur.core.YmlConfigType;
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.Context;
-import de.mhus.deploy.api.Lifecycle;
 import de.mhus.lib.errors.MException;
 
 public class ConfiguratorTest {
@@ -39,7 +39,7 @@ public class ConfiguratorTest {
         
         
         URI uri = URI.create("file:conductor.yml");
-        config.configure(uri, cur);
+        config.configure(uri, cur, null);
         
         // test parameters
         assertEquals("4", cur.getProperties().getString("overwriteMe"));
@@ -67,14 +67,14 @@ public class ConfiguratorTest {
         Context context = new ContextImpl(cur);
         
         // test plugins
-        assertEquals(4, cur.getPlugins().size());
+        assertEquals(8, cur.getPlugins().size());
         assertEquals("2.0.0", TestUtil.getPluginVersion( context.make(cur.getPlugins().get("newParent").getUri()) ) );
 
         // test lifecycle
         assertEquals(1, cur.getLifecycles().size());
         Lifecycle lc = cur.getLifecycles().get("default");
         assertNotNull(lc);
-        assertEquals(23, lc.getSteps().size());
+        assertEquals(22, lc.getSteps().size());
         
         
     }

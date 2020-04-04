@@ -3,11 +3,12 @@ package de.mhus.cur.core;
 import java.util.LinkedList;
 import java.util.Map;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.Context;
-import de.mhus.deploy.api.Labels;
-import de.mhus.deploy.api.Step;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.Context;
+import de.mhus.cur.api.Labels;
+import de.mhus.cur.api.Step;
 import de.mhus.lib.core.MString;
+import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.matcher.Condition;
 import de.mhus.lib.errors.MException;
 import de.mhus.lib.errors.MRuntimeException;
@@ -21,6 +22,7 @@ public class StepImpl implements Step {
 	protected String target;
     protected Conductor cur;
     protected String condition;
+    protected String ident;
 
     @Override
     public LinkedList<String> getParameters() {
@@ -47,14 +49,15 @@ public class StepImpl implements Step {
         return target;
     }
 
-    public void init(Conductor cur) {
+    public void init(Conductor cur, String ident) {
         this.cur = cur;
+        this.ident = ident;
     }
 
     @Override
-    public String toString() {
-        return target;
-    }
+	public String toString() {
+		return MSystem.toString(this, ident);
+	}
 
 	@Override
 	public String getCondition() {
@@ -66,6 +69,7 @@ public class StepImpl implements Step {
 	public boolean matchCondition(Context context) {
 		String condStr = getCondition();
 		if (MString.isEmptyTrim(condStr)) return true;
+		if (condStr.equals("skip")) return false;
 		
 		try {
 			Condition filter = new Condition(condStr);

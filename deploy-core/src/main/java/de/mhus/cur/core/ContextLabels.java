@@ -2,7 +2,7 @@ package de.mhus.cur.core;
 
 import java.util.Iterator;
 
-import de.mhus.deploy.api.Labels;
+import de.mhus.cur.api.Labels;
 
 public class ContextLabels implements Labels {
 
@@ -48,6 +48,11 @@ public class ContextLabels implements Labels {
 			if (!lValue.matches(sValue)) return false;
 		}
 		return true;
+	}
+
+    @Override
+	public String toString() {
+		return inst.toString();
 	}
 
 }

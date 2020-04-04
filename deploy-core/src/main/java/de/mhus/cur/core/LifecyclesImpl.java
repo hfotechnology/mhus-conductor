@@ -1,8 +1,8 @@
 package de.mhus.cur.core;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.Lifecycle;
-import de.mhus.deploy.api.Lifecycles;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.Lifecycle;
+import de.mhus.cur.api.Lifecycles;
 
 public class LifecyclesImpl extends XCollection<Lifecycle> implements Lifecycles {
 

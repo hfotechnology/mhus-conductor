@@ -1,7 +1,8 @@
 package de.mhus.cur.core;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.Plugin;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.Plugin;
+import de.mhus.lib.core.MSystem;
 
 public class PluginImpl implements Plugin {
 
@@ -30,14 +31,14 @@ public class PluginImpl implements Plugin {
         this.cur = cur;
     }
 
-    @Override
-    public String toString() {
-        return target;
-    }
-
 	@Override
 	public SCOPE getScope() {
 		return scope;
+	}
+
+    @Override
+	public String toString() {
+		return MSystem.toString(this, target);
 	}
 
 }

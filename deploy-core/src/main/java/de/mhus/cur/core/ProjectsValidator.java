@@ -2,9 +2,9 @@ package de.mhus.cur.core;
 
 import java.io.File;
 
-import de.mhus.deploy.api.Conductor;
-import de.mhus.deploy.api.Project;
-import de.mhus.deploy.api.Validator;
+import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.Project;
+import de.mhus.cur.api.Validator;
 import de.mhus.lib.errors.MException;
 
 public class ProjectsValidator implements Validator {
@@ -17,9 +17,9 @@ public class ProjectsValidator implements Validator {
             if (!rootDir.exists() || !rootDir.isDirectory())
                 throw new MException("project root dir not exists",p,rootDir);
             // check for pom
-            File f = new File(rootDir,"pom.xml");
-            if (!f.exists() || !f.isFile())
-                throw new MException("project pom file not exists",p,f);
+//            File f = new File(rootDir,"pom.xml");
+//            if (!f.exists() || !f.isFile())
+//                throw new MException("project pom file not exists",p,f);
 
         }
     }

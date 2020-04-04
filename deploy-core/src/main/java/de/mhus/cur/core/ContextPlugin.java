@@ -1,6 +1,6 @@
 package de.mhus.cur.core;
 
-import de.mhus.deploy.api.Plugin;
+import de.mhus.cur.api.Plugin;
 
 public class ContextPlugin implements Plugin {
 
@@ -30,6 +30,11 @@ public class ContextPlugin implements Plugin {
 	@Override
 	public SCOPE getScope() {
 		return inst.getScope();
+	}
+
+    @Override
+	public String toString() {
+		return inst.toString();
 	}
 
 }
