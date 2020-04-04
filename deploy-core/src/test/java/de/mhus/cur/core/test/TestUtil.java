@@ -25,10 +25,4 @@ public class TestUtil {
 		return version;
 	}
 
-	public static String mvnLocation() {
-		// TODO Auto-generated method stub
-		return "/usr/local/bin/mvn";
-		//return "mvn";
-	}
-
 }

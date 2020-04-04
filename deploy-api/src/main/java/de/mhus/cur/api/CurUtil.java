@@ -1,4 +1,4 @@
-package de.mhus.cur.core;
+package de.mhus.cur.api;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 
-import de.mhus.cur.api.Conductor;
-import de.mhus.cur.api.Project;
 import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.logging.Log;
 
@@ -74,6 +72,12 @@ public class CurUtil {
         }
 		
 		
+	}
+
+	public static String cmdLocation(String cmd) {
+		// TODO Auto-generated method stub
+		return "/usr/local/bin/" + cmd;
+		//return "mvn";
 	}
 
 }

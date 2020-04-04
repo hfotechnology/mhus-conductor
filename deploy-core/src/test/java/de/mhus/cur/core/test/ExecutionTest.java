@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.CurUtil;
 import de.mhus.cur.core.ConductorImpl;
 import de.mhus.cur.core.ConfigTypesImpl;
 import de.mhus.cur.core.ConfiguratorDefault;
-import de.mhus.cur.core.CurUtil;
 import de.mhus.cur.core.ExecutorDefault;
 import de.mhus.cur.core.FileScheme;
 import de.mhus.cur.core.MavenScheme;
@@ -52,7 +52,7 @@ public class ExecutionTest {
         URI uri = URI.create("file:conductor.yml");
         config.configure(uri, cur, null);
 
-        String mvnPath = TestUtil.mvnLocation();
+        String mvnPath = CurUtil.cmdLocation("mvn");
         if (new File(mvnPath).exists()) {
 	        ((MProperties)cur.getProperties()).put(CurUtil.PROPERTY_MVN_PATH, mvnPath);
 	        ((MProperties)cur.getProperties()).put("deploy.version", TestUtil.currentVersion());
@@ -68,7 +68,7 @@ public class ExecutionTest {
     
     // @Test
     public void testCmdExecute() throws IOException {
-    	String mvnPath = TestUtil.mvnLocation();
+    	String mvnPath = CurUtil.cmdLocation("mvn");
     	if (new File(mvnPath).exists()) {
     		CurUtil.execute("TEST", new File("../deploy-api"), mvnPath + " install");
     	} else {

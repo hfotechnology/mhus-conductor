@@ -195,6 +195,8 @@ public class ConfiguratorDefault extends MLog implements Configurator {
         
         // target:
         step.target = map.getString("target");
+        // title
+        step.title = map.getString("title", step.target);
         
         try {
             // parameters:

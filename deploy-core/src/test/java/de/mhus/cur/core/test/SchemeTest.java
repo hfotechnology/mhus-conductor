@@ -7,20 +7,17 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
 
 import de.mhus.cur.api.Conductor;
 import de.mhus.cur.api.ConductorPlugin;
+import de.mhus.cur.api.CurUtil;
 import de.mhus.cur.api.ExecutePlugin;
 import de.mhus.cur.api.Plugin;
 import de.mhus.cur.core.ConductorImpl;
 import de.mhus.cur.core.ConfigTypesImpl;
 import de.mhus.cur.core.ConfiguratorDefault;
 import de.mhus.cur.core.ContextImpl;
-import de.mhus.cur.core.CurUtil;
 import de.mhus.cur.core.ExecutorDefault;
 import de.mhus.cur.core.FileScheme;
 import de.mhus.cur.core.MavenScheme;
@@ -29,7 +26,6 @@ import de.mhus.cur.core.YmlConfigType;
 import de.mhus.lib.core.MApi;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.util.MUri;
-import de.mhus.lib.errors.MException;
 import de.mhus.lib.errors.NotFoundException;
 
 public class SchemeTest {
@@ -39,7 +35,7 @@ public class SchemeTest {
 		MavenScheme scheme = new MavenScheme();
         Conductor cur = new ConductorImpl(new File("../example/sample-parent"));
         
-        String mvnPath = TestUtil.mvnLocation();
+        String mvnPath = CurUtil.cmdLocation("mvn");
         if (new File(mvnPath).exists()) {
 	        ((MProperties)cur.getProperties()).put(CurUtil.PROPERTY_MVN_PATH, mvnPath);
 	        
@@ -60,11 +56,11 @@ public class SchemeTest {
 	}
 	
 	@Test
-	public void loadPlugin() throws IOException, MException, ParserConfigurationException, SAXException {
+	public void loadPlugin() throws Exception {
 		MApi.setDirtyTrace(false);
         ConductorImpl cur = new ConductorImpl(new File("../example/sample-parent"));
 
-        String mvnPath = TestUtil.mvnLocation();
+        String mvnPath = CurUtil.cmdLocation("mvn");
         if (new File(mvnPath).exists()) {
 
 	        ConfiguratorDefault config = new ConfiguratorDefault();

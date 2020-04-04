@@ -15,6 +15,7 @@ import java.util.jar.JarFile;
 
 import de.mhus.cur.api.Conductor;
 import de.mhus.cur.api.ConductorPlugin;
+import de.mhus.cur.api.CurUtil;
 import de.mhus.cur.api.ErrorInfo;
 import de.mhus.cur.api.ExecutePlugin;
 import de.mhus.cur.api.Executor;

@@ -17,5 +17,7 @@ public interface Step {
     String getCondition();
 
 	boolean matchCondition(Context context);
+
+	String getTitle();
     
 }

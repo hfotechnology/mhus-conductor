@@ -23,6 +23,7 @@ public class StepImpl implements Step {
     protected Conductor cur;
     protected String condition;
     protected String ident;
+    protected String title;
 
     @Override
     public LinkedList<String> getParameters() {
@@ -56,7 +57,7 @@ public class StepImpl implements Step {
 
     @Override
 	public String toString() {
-		return MSystem.toString(this, ident);
+		return MSystem.toString(this, title, ident);
 	}
 
 	@Override
@@ -78,5 +79,10 @@ public class StepImpl implements Step {
 			throw new MRuntimeException(this,condStr,e);
 		}
 	}
-	
+
+	@Override
+	public String getTitle() {
+		return title;
+	}
+
 }

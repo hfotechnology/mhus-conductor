@@ -64,4 +64,9 @@ public class ContextStep implements Step {
 		return inst.toString();
 	}
 
+	@Override
+	public String getTitle() {
+		return context.make(inst.getTitle());
+	}
+
 }
