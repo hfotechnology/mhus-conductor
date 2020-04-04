@@ -1,5 +1,6 @@
 package de.mhus.cur.core;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
@@ -18,9 +19,9 @@ public class CurUtil {
         
     }
 
-	public static String execute(Conductor cur, String cmd) throws IOException {
+	public static String execute(File rootDir, String cmd) throws IOException {
 		log.d("execute",cmd);
-		Process p = Runtime.getRuntime().exec(cmd,null,cur.getRoot());
+		Process p = Runtime.getRuntime().exec(cmd,null,rootDir);
 		try {
 			p.waitFor();
 		} catch (InterruptedException e) {

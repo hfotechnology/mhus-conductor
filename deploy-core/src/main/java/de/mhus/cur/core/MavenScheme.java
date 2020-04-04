@@ -32,7 +32,7 @@ public class MavenScheme implements Scheme {
 		
 		// mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get -Dartifact=com.google.guava:guava:15.0 -DrepoUrl=
 		String mvnPath = cur.getProperties().getString(CurUtil.PROPERTY_MVN_PATH, "mvn");
-		CurUtil.execute(cur, mvnPath + " org.apache.maven.plugins:maven-dependency-plugin:2.1:get -Dartifact="
+		CurUtil.execute(cur.getRoot(), mvnPath + " org.apache.maven.plugins:maven-dependency-plugin:2.1:get -Dartifact="
 			+mvnUrl
 			+" -DrepoUrl=");
 		
@@ -50,7 +50,7 @@ public class MavenScheme implements Scheme {
 //			cli.doMain(new String[]{"clean", "install"}, "project_dir", System.out, System.out);
 			
 			String mvnPath = cur.getProperties().getString(CurUtil.PROPERTY_MVN_PATH, "mvn");
-			repositoryLocation = CurUtil.execute(cur, mvnPath + " help:evaluate -Dexpression=settings.localRepository -q -DforceStdout");
+			repositoryLocation = CurUtil.execute(cur.getRoot(), mvnPath + " help:evaluate -Dexpression=settings.localRepository -q -DforceStdout");
 		}
 		
 		File dir = new File(repositoryLocation);
