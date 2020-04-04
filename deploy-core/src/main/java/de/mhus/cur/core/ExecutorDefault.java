@@ -16,24 +16,26 @@ import java.util.jar.JarFile;
 import de.mhus.deploy.api.Conductor;
 import de.mhus.deploy.api.ConductorPlugin;
 import de.mhus.deploy.api.ErrorInfo;
+import de.mhus.deploy.api.ExecutePlugin;
 import de.mhus.deploy.api.Executor;
 import de.mhus.deploy.api.Labels;
 import de.mhus.deploy.api.Lifecycle;
 import de.mhus.deploy.api.Mojo;
 import de.mhus.deploy.api.Plugin;
+import de.mhus.deploy.api.Plugin.SCOPE;
 import de.mhus.deploy.api.Project;
 import de.mhus.deploy.api.Scheme;
 import de.mhus.deploy.api.Step;
 import de.mhus.deploy.api.Steps;
-import de.mhus.lib.core.IReadProperties;
 import de.mhus.lib.core.MFile;
+import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.lang.Value;
 import de.mhus.lib.core.util.MUri;
 import de.mhus.lib.errors.MRuntimeException;
 import de.mhus.lib.errors.NotFoundException;
 
-public class ExecutorDefault implements Executor {
+public class ExecutorDefault extends MLog implements Executor {
 
     private Conductor cur;
     private LinkedList<ErrorInfo> errors = new LinkedList<>();
@@ -58,6 +60,20 @@ public class ExecutorDefault implements Executor {
 
     protected void execute(Step step) {
         
+        // load plugin
+        String target = step.getTarget();
+        Plugin plugin = cur.getPlugins().get(target);
+
+    	// check for scope
+    	
+        if (plugin.getScope() == SCOPE.STEP) {
+        	// scope: step
+        	execute(step, (Project)null, plugin);
+        	return;
+        }
+    	
+        // scope: project
+    	
         // select projects
         Labels selector = step.getSelector();
         LinkedList<Project> projects = null;
@@ -73,29 +89,29 @@ public class ExecutorDefault implements Executor {
             CurUtil.orderProjects(projects, order, step.isOrderAsc());
         }
 
-        execute(step, projects);
+        execute(step, projects, plugin);
         
     }
 
-    protected void execute(Step step, LinkedList<Project> projects) {
+    protected void execute(Step step, LinkedList<Project> projects, Plugin plugin) {
         for (Project project : projects)
-            execute(step, project);
+            execute(step, project, plugin);
     }
 
-    protected void execute(Step step, Project project) {
+    protected void execute(Step step, Project project, Plugin plugin) {
         
-        IReadProperties additional = project.getProperties();
-        ContextImpl context = new ContextImpl(cur, additional);
-        
-        // load plugin
-        String target = step.getTarget();
-        Plugin plugin = cur.getPlugins().get(target);
-        
+        ContextImpl context = new ContextImpl(cur, project == null ? null : project.getProperties() );
+                
         context.init(project, plugin, step);
+        
+        if (!step.matchCondition(context)) {
+        	log().d("condition not successful",step);
+        	return;
+        }
         
         ConductorPlugin impl = loadMojo(context);
         try {
-        	impl.execute(context);
+        	((ExecutePlugin)impl).execute(context);
         } catch (Throwable t) {
         	errors.add(new ErrorsInfoImpl(context, t));
         	if (cur.getProperties().getBoolean(CurUtil.PROPERTY_FAE, false)) {

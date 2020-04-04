@@ -2,6 +2,7 @@ package de.mhus.cur.core;
 
 import java.util.LinkedList;
 
+import de.mhus.deploy.api.Context;
 import de.mhus.deploy.api.Labels;
 import de.mhus.deploy.api.Step;
 
@@ -46,6 +47,16 @@ public class ContextStep implements Step {
 	@Override
 	public String getTarget() {
 		return inst.getTarget();
+	}
+
+	@Override
+	public String getCondition() {
+		return inst.getCondition();
+	}
+
+	@Override
+	public boolean matchCondition(Context context) {
+		return inst.matchCondition(context);
 	}
 
 }

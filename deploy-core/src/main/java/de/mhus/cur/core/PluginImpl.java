@@ -9,6 +9,7 @@ public class PluginImpl implements Plugin {
 	protected String uri;
 	protected String mojo;
     protected Conductor cur;
+    protected SCOPE scope = SCOPE.PROJECT;
 
     @Override
     public String getTarget() {
@@ -33,5 +34,10 @@ public class PluginImpl implements Plugin {
     public String toString() {
         return target;
     }
+
+	@Override
+	public SCOPE getScope() {
+		return scope;
+	}
 
 }

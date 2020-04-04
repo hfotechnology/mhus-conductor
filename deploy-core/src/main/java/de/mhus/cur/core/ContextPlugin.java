@@ -27,4 +27,9 @@ public class ContextPlugin implements Plugin {
 		return context.make(inst.getMojo());
 	}
 
+	@Override
+	public SCOPE getScope() {
+		return inst.getScope();
+	}
+
 }

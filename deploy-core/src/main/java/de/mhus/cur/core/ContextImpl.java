@@ -1,5 +1,7 @@
 package de.mhus.cur.core;
 
+import java.util.Map;
+
 import de.mhus.deploy.api.Conductor;
 import de.mhus.deploy.api.Context;
 import de.mhus.deploy.api.Plugin;
@@ -13,27 +15,34 @@ import de.mhus.lib.errors.MRuntimeException;
 
 public class ContextImpl implements Context {
 
-    private MProperties parameters;
+    private MProperties properties;
 	private Plugin plugin;
 	private Project project;
 	private Conductor cur;
 	private Step step;
 
     public ContextImpl(Conductor cur) {
-        parameters = new MProperties(cur.getProperties());
+        properties = new MProperties(cur.getProperties());
     }
 
-    public ContextImpl(Conductor cur, IReadProperties additional) {
+    public ContextImpl(Conductor cur, IReadProperties projectProp) {
     	this.cur = cur;
-        parameters = new MProperties(cur.getProperties());
-        parameters.putReadProperties(additional);
+        properties = new MProperties(cur.getProperties());
+        putReadProperties("project.", projectProp);
     }
+    
+	public void putReadProperties(String prefix, IReadProperties m) {
+		if (m == null) return;
+		for (Map.Entry<? extends String, ? extends Object> e : m.entrySet())
+			properties.put(prefix + e.getKey(),e.getValue());
+	}
+
     
     @Override
     public String make(String in) {
     	if (in == null) return null;
     	try {
-	        return StringCompiler.compile(in).execute(parameters);
+	        return StringCompiler.compile(in).execute(properties);
 		} catch (MException e) {
 			throw new MRuntimeException(in, e);
 		}
@@ -50,7 +59,7 @@ public class ContextImpl implements Context {
 	}
 
 	public MProperties getParameters() {
-		return parameters;
+		return properties;
 	}
 
 	public Plugin getPlugin() {
@@ -63,6 +72,11 @@ public class ContextImpl implements Context {
 
 	public Step getStep() {
 		return step;
+	}
+
+	@Override
+	public IReadProperties getProperties() {
+		return properties;
 	}
 
 }

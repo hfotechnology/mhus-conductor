@@ -24,6 +24,7 @@ import de.mhus.cur.core.SchemesImpl;
 import de.mhus.cur.core.YmlConfigType;
 import de.mhus.deploy.api.Conductor;
 import de.mhus.deploy.api.ConductorPlugin;
+import de.mhus.deploy.api.ExecutePlugin;
 import de.mhus.deploy.api.Plugin;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.util.MUri;
@@ -87,7 +88,7 @@ public class SchemeTest {
 	        ConductorPlugin mojo = exec.createMojo(cur, plugin);
 	        
 	        assertNotNull(mojo);
-	        mojo.execute(context);
+	        ((ExecutePlugin)mojo).execute(context);
 	        
         } else {
         	System.err.println("Maven not found, skip test: " + mvnPath);

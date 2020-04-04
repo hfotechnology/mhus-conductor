@@ -14,6 +14,7 @@ import de.mhus.deploy.api.ConfigTypes;
 import de.mhus.deploy.api.Configurator;
 import de.mhus.deploy.api.Lifecycle;
 import de.mhus.deploy.api.Plugin;
+import de.mhus.deploy.api.Plugin.SCOPE;
 import de.mhus.deploy.api.Project;
 import de.mhus.deploy.api.Scheme;
 import de.mhus.deploy.api.Schemes;
@@ -222,6 +223,9 @@ public class ConfiguratorDefault extends MLog implements Configurator {
                 	step.orderAsc = false;
                 }
             }
+            
+            step.condition = map.getString("condition");
+            
         } catch (Throwable t) {
             throw new MRuntimeException("step",step.target,t);
         }
@@ -273,7 +277,11 @@ public class ConfiguratorDefault extends MLog implements Configurator {
     	plugin.target = map.getString("target");
     	plugin.uri = map.getString("uri", merge == null ? null : merge.getUri());
     	plugin.mojo = map.getString("mojo", merge == null ? null : merge.getMojo());
-
+    	
+    	String scope = map.getString("scope");
+    	if (scope != null)
+    		plugin.scope = SCOPE.valueOf(scope.toUpperCase().trim());
+    	
         ((PluginsImpl)cur.getPlugins()).put(plugin.getTarget(), plugin);
     }
 

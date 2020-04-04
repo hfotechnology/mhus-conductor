@@ -1,10 +1,16 @@
 package de.mhus.cur.core;
 
 import java.util.LinkedList;
+import java.util.Map;
 
 import de.mhus.deploy.api.Conductor;
+import de.mhus.deploy.api.Context;
 import de.mhus.deploy.api.Labels;
 import de.mhus.deploy.api.Step;
+import de.mhus.lib.core.MString;
+import de.mhus.lib.core.matcher.Condition;
+import de.mhus.lib.errors.MException;
+import de.mhus.lib.errors.MRuntimeException;
 
 public class StepImpl implements Step {
 
@@ -14,6 +20,7 @@ public class StepImpl implements Step {
 	protected boolean orderAsc = true;
 	protected String target;
     protected Conductor cur;
+    protected String condition;
 
     @Override
     public LinkedList<String> getParameters() {
@@ -49,4 +56,23 @@ public class StepImpl implements Step {
         return target;
     }
 
+	@Override
+	public String getCondition() {
+		return condition;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean matchCondition(Context context) {
+		String condStr = getCondition();
+		if (MString.isEmptyTrim(condStr)) return true;
+		
+		try {
+			Condition filter = new Condition(condStr);
+			return filter.matches((Map<String, ?>) context.getProperties());
+		} catch (MException e) {
+			throw new MRuntimeException(this,condStr,e);
+		}
+	}
+	
 }

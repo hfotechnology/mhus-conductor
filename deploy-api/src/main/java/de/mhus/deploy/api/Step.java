@@ -14,4 +14,8 @@ public interface Step {
 
     String getTarget();
 
+    String getCondition();
+
+	boolean matchCondition(Context context);
+    
 }
