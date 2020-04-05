@@ -63,7 +63,7 @@ done
 
 saveddir=`pwd`
 
-CUR_HOME=`dirname "$PRG"`/..
+CUR_HOME=`dirname "$PRG"`
 
 # make it fully qualified
 CUR_HOME=`cd "$CUR_HOME" && pwd`
