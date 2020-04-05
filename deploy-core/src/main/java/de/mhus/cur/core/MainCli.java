@@ -12,14 +12,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import de.mhus.cur.api.Cli;
 import de.mhus.cur.api.Conductor;
+import de.mhus.cur.api.MainOption;
+import de.mhus.cur.api.MainOptionHandler;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.errors.MException;
 import de.mhus.lib.errors.NotFoundException;
 
-public class MainCli extends MLog {
+public class MainCli extends MLog implements Cli {
 
 	protected Map<String, MainOptionHandler> optionHandlers = new HashMap<>();
 	protected File rootDir = new File(".");
@@ -161,6 +164,11 @@ public class MainCli extends MLog {
         
         executor.execute(cur, execLifecycle);
 
+	}
+
+	@Override
+	public Map<String, MainOptionHandler> getOptions() {
+		return optionHandlers;
 	}
 
 }

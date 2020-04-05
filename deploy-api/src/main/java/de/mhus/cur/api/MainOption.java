@@ -1,4 +1,4 @@
-package de.mhus.cur.core;
+package de.mhus.cur.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
