@@ -58,4 +58,9 @@ public class ConductorImpl implements Conductor {
 		return getClass().getClassLoader();
 	}
 
+	@Override
+	public void close() {
+		
+	}
+
 }

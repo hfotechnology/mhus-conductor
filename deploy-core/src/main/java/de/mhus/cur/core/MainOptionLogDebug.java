@@ -24,4 +24,9 @@ public class MainOptionLogDebug implements MainOptionHandler {
 		return "Enable Log DEBUG/TRACE level.";
 	}
 
+	@Override
+	public String getUsage(String cmd) {
+		return null;
+	}
+
 }

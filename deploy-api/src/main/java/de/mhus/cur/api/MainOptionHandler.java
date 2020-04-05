@@ -6,6 +6,8 @@ public interface MainOptionHandler {
 
 	void execute(Cli cli, String cmd, LinkedList<String> queue);
 	
+	String getUsage(String cmd);
+	
 	String getDescription(String cmd);
 
 }

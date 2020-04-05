@@ -1,10 +1,11 @@
 package de.mhus.cur.api;
 
+import java.io.Closeable;
 import java.io.File;
 
 import de.mhus.lib.core.IReadProperties;
 
-public interface Conductor {
+public interface Conductor extends Closeable {
 
     Plugins getPlugins();
 

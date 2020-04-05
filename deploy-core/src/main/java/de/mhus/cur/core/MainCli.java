@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 import de.mhus.cur.api.Cli;
-import de.mhus.cur.api.Conductor;
 import de.mhus.cur.api.MainOption;
 import de.mhus.cur.api.MainOptionHandler;
+import de.mhus.deploy.api.meta.Version;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MString;
@@ -26,6 +26,8 @@ public class MainCli extends MLog implements Cli {
 
 	protected Map<String, MainOptionHandler> optionHandlers = new HashMap<>();
 	protected File rootDir = new File(".");
+	protected ConductorImpl cur;
+	protected String configFile;
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -104,6 +106,7 @@ public class MainCli extends MLog implements Cli {
 	     }
 	     return classes;
 	 }
+	 
 	protected void execute(LinkedList<String> queue) throws MException {
 		
 		MProperties execProperties = null;
@@ -135,6 +138,8 @@ public class MainCli extends MLog implements Cli {
 			execProperties = null;
 		}
 		
+		resetCur();
+		
 	}
 
 	private void executeOption(String next, LinkedList<String> queue) throws NotFoundException {
@@ -147,6 +152,19 @@ public class MainCli extends MLog implements Cli {
 	}
 
 	private void executeLifecycle(String execLifecycle, MProperties execProperties) throws MException {
+		
+		createConductor();
+
+		((MProperties)cur.getProperties()).putReadProperties(execProperties);
+        ExecutorDefault executor = new ExecutorDefault();
+        
+        executor.execute(cur, execLifecycle);
+
+	}
+
+	private void createConductor() throws MException {
+		if (cur != null) return;
+		log().d("Create conductor object");
 		ConfiguratorDefault config = new ConfiguratorDefault();
 		
         ((SchemesImpl)config.getSchemes()).put("file", new FileScheme() );
@@ -155,20 +173,30 @@ public class MainCli extends MLog implements Cli {
         ((ConfigTypesImpl)config.getTypes()).put("yaml", new YmlConfigType());
         config.getValidators().add(new ProjectsValidator());
 
-        URI uri = URI.create("file:conductor.yml");
+        if (configFile == null) {
+        	// set default
+        	File file = new File(rootDir, "conductor.yml");
+        	if (file.exists() && file.isFile())
+        		configFile = "file:conductor.yml";
+        	else
+        		configFile = "mvn:de.mhus.deploy/deploy-plugin/"+Version.VERSION+"/yml/configuration-default";
+        }
+        URI uri = URI.create(configFile);
         
-        Conductor cur = new ConductorImpl(rootDir);
-        config.configure(uri, cur, execProperties);
-
-        ExecutorDefault executor = new ExecutorDefault();
-        
-        executor.execute(cur, execLifecycle);
-
+        cur = new ConductorImpl(rootDir);
+        config.configure(uri, cur, null);
+		
 	}
 
 	@Override
 	public Map<String, MainOptionHandler> getOptions() {
 		return optionHandlers;
+	}
+
+	public void resetCur() {
+		if (cur == null) return;
+		cur.close();
+		cur = null;
 	}
 
 }
