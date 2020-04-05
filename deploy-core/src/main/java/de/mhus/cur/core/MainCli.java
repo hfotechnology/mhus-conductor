@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarFile;
 
 import de.mhus.cur.api.Cli;
 import de.mhus.cur.api.MainOption;
@@ -31,18 +32,26 @@ public class MainCli extends MLog implements Cli {
 	
 	public static void main(String[] args) throws Exception {
 		
+		if (args == null || args.length == 0) {
+			System.out.println("Try --help");
+			return;
+		}
+		
 		LinkedList<String> queue = new LinkedList<>();
-		if (args != null)
-			for (String arg : args)
-				queue.add(arg);
+		for (String arg : args)
+			queue.add(arg);
 		
 		new MainCli().execute(queue);
 		
 	}
 	
 	public MainCli() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		for (Class<?> clazz : getClasses( MString.beforeLastIndex(getClass().getPackageName(), '.') ) ) {
+		String pack = MString.beforeLastIndex(getClass().getPackageName(), '.');
+		System.out.println("Package: " + pack);
+		for (Class<?> clazz : getClasses( pack ) ) {
+			System.out.println("--- " + clazz.getCanonicalName());
 			MainOption optionDef = clazz.getAnnotation(MainOption.class);
+			System.out.println("    " + optionDef);
 			if (optionDef != null) {
 				Object inst = clazz.getConstructor().newInstance();
 				for (String alias : optionDef.alias()) {
@@ -52,6 +61,7 @@ public class MainCli extends MLog implements Cli {
 				}
 			}
 		}
+		System.out.println(optionHandlers);
 	}
 
 	/**
@@ -76,8 +86,11 @@ public class MainCli extends MLog implements Cli {
 	    }
 	    ArrayList<Class> classes = new ArrayList<Class>();
 	    for (File directory : dirs) {
+	 	   System.out.println("A*** " + directory);
 	        classes.addAll(findClasses(directory, packageName));
 	    }
+	    if (dirs.isEmpty())
+	    	System.out.println("*** Empty");
 	    return classes.toArray(new Class[classes.size()]);
 	}
 	
@@ -88,12 +101,35 @@ public class MainCli extends MLog implements Cli {
 	  * @param packageName The package name for classes found inside the base directory
 	  * @return The classes
 	  * @throws ClassNotFoundException
+	 * @throws IOException 
 	  */
 	 @SuppressWarnings("rawtypes")
-	private static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException {
-	     List<Class> classes = new ArrayList<Class>();
-	     if (!directory.exists()) {
-	         return classes;
+	private static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException, IOException {
+	     final List<Class> classes = new ArrayList<Class>();
+//	     if (!directory.exists()) {
+//	         return classes;
+//	     }
+	   System.out.println("B*** " + directory);
+	   if (directory.toString().contains("!")) {
+		   directory = new File(MString.beforeIndex(directory.toString(), '!'));
+		   System.out.println("Now " + directory + " " + directory.getName());
+	   }
+	     if (directory.getName().endsWith(".jar")) {
+	    	 System.out.println("Is a JAR");
+	    	 	String path = packageName.replace('.', '/');
+				try (JarFile jar = new JarFile(directory)) {
+			        jar.stream().forEach(jarEntry -> {
+			        	System.out.println("JAR " + jarEntry.getName());
+			            if(jarEntry.getName().startsWith(path) && jarEntry.getName().endsWith(".class"))
+			            {
+			                try {
+								classes.add(Class.forName(jarEntry.getName().replaceAll("/",".").replace(".class","")));
+							} catch (ClassNotFoundException e) {
+								e.printStackTrace();
+							}
+			            }
+			        });
+				}
 	     }
 	     File[] files = directory.listFiles();
 	     for (File file : files) {
@@ -146,7 +182,7 @@ public class MainCli extends MLog implements Cli {
 		if (next.equals("-")) return;
 		// -P path/
 		// --path path/
-		MainOptionHandler handler = optionHandlers.get(next.substring(1));
+		MainOptionHandler handler = optionHandlers.get(next);
 		if (handler == null) throw new NotFoundException("option",next);
 		handler.execute(this,next, queue);
 	}

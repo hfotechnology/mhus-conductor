@@ -75,6 +75,13 @@
     <version>1.26</version>
 </dependency>
 
+<!-- https://github.com/ronmamo/reflections -->
+<dependency>
+    <groupId>org.reflections</groupId>
+    <artifactId>reflections</artifactId>
+    <version>0.9.12</version>
+</dependency>
+
 <!-- Needed by junit -->
 <dependency>
     <groupId>org.hamcrest</groupId>
