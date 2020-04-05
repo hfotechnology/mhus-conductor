@@ -3,6 +3,7 @@ package de.mhus.cur.core;
 import java.io.File;
 import java.io.IOException;
 
+import de.mhus.cur.api.AScheme;
 import de.mhus.cur.api.Conductor;
 import de.mhus.cur.api.CurUtil;
 import de.mhus.cur.api.Scheme;
@@ -10,6 +11,7 @@ import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.util.MUri;
 import de.mhus.lib.errors.NotFoundException;
 
+@AScheme(name="mvn")
 public class MavenScheme extends MLog implements Scheme {
 
 	private static String repositoryLocation;

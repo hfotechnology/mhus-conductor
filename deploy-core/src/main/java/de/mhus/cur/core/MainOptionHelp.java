@@ -5,10 +5,10 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import de.mhus.cur.api.Cli;
-import de.mhus.cur.api.MainOption;
+import de.mhus.cur.api.AOption;
 import de.mhus.cur.api.MainOptionHandler;
 
-@MainOption(alias="--help")
+@AOption(alias="--help")
 public class MainOptionHelp implements MainOptionHandler {
 
 	@Override

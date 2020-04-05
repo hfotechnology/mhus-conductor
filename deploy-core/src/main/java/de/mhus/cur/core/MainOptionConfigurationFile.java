@@ -3,10 +3,10 @@ package de.mhus.cur.core;
 import java.util.LinkedList;
 
 import de.mhus.cur.api.Cli;
-import de.mhus.cur.api.MainOption;
+import de.mhus.cur.api.AOption;
 import de.mhus.cur.api.MainOptionHandler;
 
-@MainOption(alias="-c")
+@AOption(alias="-c")
 public class MainOptionConfigurationFile implements MainOptionHandler {
 
 	@Override

@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target( ElementType.TYPE )
-public @interface MainOption {
-	String[] alias();
+public @interface AScheme {
+	String[] name();
 }

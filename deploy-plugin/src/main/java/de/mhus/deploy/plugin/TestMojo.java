@@ -2,9 +2,9 @@ package de.mhus.deploy.plugin;
 
 import de.mhus.cur.api.Context;
 import de.mhus.cur.api.ExecutePlugin;
-import de.mhus.cur.api.Mojo;
+import de.mhus.cur.api.AMojo;
 
-@Mojo(name="test")
+@AMojo(name="test")
 public class TestMojo implements ExecutePlugin {
 
 	@Override

@@ -7,13 +7,19 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.reflections.Reflections;
 
+import de.mhus.cur.api.AConfigType;
+import de.mhus.cur.api.AOption;
+import de.mhus.cur.api.AScheme;
+import de.mhus.cur.api.AValidator;
 import de.mhus.cur.api.Cli;
-import de.mhus.cur.api.MainOption;
+import de.mhus.cur.api.ConfigType;
 import de.mhus.cur.api.MainOptionHandler;
+import de.mhus.cur.api.Scheme;
+import de.mhus.cur.api.Validator;
 import de.mhus.deploy.api.meta.Version;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MProperties;
@@ -24,6 +30,9 @@ import de.mhus.lib.errors.NotFoundException;
 public class MainCli extends MLog implements Cli {
 
 	protected Map<String, MainOptionHandler> optionHandlers = new HashMap<>();
+	protected Map<String, Scheme> schemes = new HashMap<>();
+	protected Map<String, ConfigType> configTypes = new HashMap<>();
+	protected Map<String, Validator> validators = new HashMap<>();
 	protected File rootDir = new File(".");
 	protected ConductorImpl cur;
 	protected String configFile;
@@ -46,25 +55,75 @@ public class MainCli extends MLog implements Cli {
 	public MainCli() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		String pack = MString.beforeLastIndex(getClass().getPackageName(), '.');
 		log().t("Scan Package", pack);
-		for (Class<?> clazz : getClasses( pack ) ) {
-			MainOption optionDef = clazz.getAnnotation(MainOption.class);
-			log().t("Option",clazz,optionDef);
-			if (optionDef != null) {
+		
+		Reflections reflections = new Reflections(pack);
+				
+		for (Class<?> clazz : reflections.getTypesAnnotatedWith(AOption.class) ) {
+			AOption def = clazz.getAnnotation(AOption.class);
+			log().t("AOption",clazz,def);
+			if (def != null) {
 				Object inst = clazz.getConstructor().newInstance();
-				for (String alias : optionDef.alias()) {
+				for (String alias : def.alias()) {
 					MainOptionHandler old = optionHandlers.put(alias, (MainOptionHandler) inst);
 					if (old != null)
-						log().w("Overwrite main option",alias);
+						log().w("Overwrite",alias);
 				}
 			}
 		}
-		log().t("optionHandlers",optionHandlers);
-	}
+		
+		for (Class<?> clazz : reflections.getTypesAnnotatedWith(AScheme.class) ) {
+			AScheme def = clazz.getAnnotation(AScheme.class);
+			log().t("AScheme",clazz,def);
+			if (def != null) {
+				Object inst = clazz.getConstructor().newInstance();
+				for (String alias : def.name()) {
+					Scheme old = schemes.put(alias, (Scheme) inst);
+					if (old != null)
+						log().w("Overwrite",alias);
+				}
+			}
+		}
 
-	private static Class<?>[] getClasses(String packageName) {
-		Reflections reflections = new Reflections(packageName);
-		Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(MainOption.class);
-		return annotated.toArray(new Class<?>[0]);
+		for (Class<?> clazz : reflections.getTypesAnnotatedWith(AConfigType.class) ) {
+			AConfigType def = clazz.getAnnotation(AConfigType.class);
+			log().t("AConfigType",clazz,def);
+			if (def != null) {
+				Object inst = clazz.getConstructor().newInstance();
+				for (String alias : def.name()) {
+					ConfigType old = configTypes.put(alias, (ConfigType) inst);
+					if (old != null)
+						log().w("Overwrite",alias);
+				}
+			}
+		}
+		
+		for (Class<?> clazz : reflections.getTypesAnnotatedWith(AConfigType.class) ) {
+			AConfigType def = clazz.getAnnotation(AConfigType.class);
+			log().t("AConfigType",clazz,def);
+			if (def != null) {
+				Object inst = clazz.getConstructor().newInstance();
+				for (String alias : def.name()) {
+					ConfigType old = configTypes.put(alias, (ConfigType) inst);
+					if (old != null)
+						log().w("Overwrite",alias);
+				}
+			}
+		}
+		
+		for (Class<?> clazz : reflections.getTypesAnnotatedWith(AValidator.class) ) {
+			AValidator def = clazz.getAnnotation(AValidator.class);
+			log().t("AValidator",clazz,def);
+			if (def != null) {
+				Object inst = clazz.getConstructor().newInstance();
+				for (String alias : def.name()) {
+					Validator old = validators.put(alias, (Validator) inst);
+					if (old != null)
+						log().w("Overwrite",alias);
+				}
+			}
+		}
+		
+		log().t("optionHandlers",optionHandlers);
 	}
 	
 	protected void execute(LinkedList<String> queue) throws MException {
@@ -127,11 +186,12 @@ public class MainCli extends MLog implements Cli {
 		log().d("Create conductor object");
 		ConfiguratorDefault config = new ConfiguratorDefault();
 		
-        ((SchemesImpl)config.getSchemes()).put("file", new FileScheme() );
-        ((SchemesImpl)config.getSchemes()).put("mvn", new MavenScheme() );
-        ((ConfigTypesImpl)config.getTypes()).put("yml", new YmlConfigType());
-        ((ConfigTypesImpl)config.getTypes()).put("yaml", new YmlConfigType());
-        config.getValidators().add(new ProjectsValidator());
+		for (Entry<String, Scheme> entry : schemes.entrySet())
+			((SchemesImpl)config.getSchemes()).put(entry.getKey(), entry.getValue() );
+		for (Entry<String, ConfigType> entry : configTypes.entrySet())
+			((ConfigTypesImpl)config.getTypes()).put(entry.getKey(), entry.getValue());
+		for (Entry<String, Validator> entry :validators.entrySet())
+			config.getValidators().add(entry.getValue());
 
         if (configFile == null) {
         	// set default

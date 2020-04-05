@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target( ElementType.TYPE )
-public @interface Mojo {
-	String name();
+public @interface AOption {
+	String[] alias();
 }

@@ -3,11 +3,11 @@ package de.mhus.cur.core;
 import java.util.LinkedList;
 
 import de.mhus.cur.api.Cli;
-import de.mhus.cur.api.MainOption;
+import de.mhus.cur.api.AOption;
 import de.mhus.cur.api.MainOptionHandler;
 import de.mhus.deploy.api.meta.Version;
 
-@MainOption(alias="--version")
+@AOption(alias="--version")
 public class MainOptionVersion implements MainOptionHandler {
 
 	@Override

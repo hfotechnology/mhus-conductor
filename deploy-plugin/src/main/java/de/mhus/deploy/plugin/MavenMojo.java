@@ -3,10 +3,10 @@ package de.mhus.deploy.plugin;
 import de.mhus.cur.api.Context;
 import de.mhus.cur.api.CurUtil;
 import de.mhus.cur.api.ExecutePlugin;
-import de.mhus.cur.api.Mojo;
+import de.mhus.cur.api.AMojo;
 import de.mhus.lib.core.MString;
 
-@Mojo(name="test")
+@AMojo(name="test")
 public class MavenMojo implements ExecutePlugin {
 
 	@Override

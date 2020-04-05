@@ -3,13 +3,13 @@ package de.mhus.cur.core;
 import java.util.LinkedList;
 
 import de.mhus.cur.api.Cli;
-import de.mhus.cur.api.MainOption;
+import de.mhus.cur.api.AOption;
 import de.mhus.cur.api.MainOptionHandler;
 import de.mhus.lib.core.MApi;
 import de.mhus.lib.core.base.SingleBaseStrategy;
 import de.mhus.lib.core.logging.Log;
 
-@MainOption(alias= {"-v","-vv","-vvv"})
+@AOption(alias= {"-v","-vv","-vvv"})
 public class MainOptionLogDebug implements MainOptionHandler {
 
 	@Override

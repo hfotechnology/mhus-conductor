@@ -2,11 +2,13 @@ package de.mhus.cur.core;
 
 import java.io.File;
 
+import de.mhus.cur.api.AValidator;
 import de.mhus.cur.api.Conductor;
 import de.mhus.cur.api.Project;
 import de.mhus.cur.api.Validator;
 import de.mhus.lib.errors.MException;
 
+@AValidator(name="project")
 public class ProjectsValidator implements Validator {
 
     @Override

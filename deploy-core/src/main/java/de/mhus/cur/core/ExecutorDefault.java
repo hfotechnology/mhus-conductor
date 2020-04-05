@@ -21,7 +21,7 @@ import de.mhus.cur.api.ExecutePlugin;
 import de.mhus.cur.api.Executor;
 import de.mhus.cur.api.Labels;
 import de.mhus.cur.api.Lifecycle;
-import de.mhus.cur.api.Mojo;
+import de.mhus.cur.api.AMojo;
 import de.mhus.cur.api.Plugin;
 import de.mhus.cur.api.Project;
 import de.mhus.cur.api.Scheme;
@@ -206,7 +206,7 @@ public class ExecutorDefault extends MLog implements Executor {
 		for (String className : classes) {
 			try {
 				Class<?> clazz = cl.loadClass(className);
-				Mojo mojoDef = clazz.getAnnotation(Mojo.class);
+				AMojo mojoDef = clazz.getAnnotation(AMojo.class);
 				if (mojoDef != null) {
 					if (mojoDef.name().equals(mojoName)) {
 						ConductorPlugin inst = (ConductorPlugin)clazz.getConstructor().newInstance();
