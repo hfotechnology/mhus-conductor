@@ -13,7 +13,7 @@ public class MainOptionVersion implements MainOptionHandler {
 	@Override
 	public void execute(Cli cli, String cmd, LinkedList<String> queue) {
 
-		System.out.println("Condctor Version: " + Version.VERSION);
+		System.out.println("Conductor Version: " + Version.VERSION);
 	}
 
 	@Override

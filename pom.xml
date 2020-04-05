@@ -58,6 +58,7 @@
 		<module>deploy-api</module>
 		<module>deploy-plugin</module>
 		<module>deploy-core</module>
+		<module>deploy-launcher</module>
 		<module>versioning-maven-plugin</module>
 	</modules>
 </project>
