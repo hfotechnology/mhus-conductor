@@ -4,14 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.jar.JarFile;
+import java.util.Set;
+
+import org.reflections.Reflections;
 
 import de.mhus.cur.api.Cli;
 import de.mhus.cur.api.MainOption;
@@ -47,11 +45,10 @@ public class MainCli extends MLog implements Cli {
 	
 	public MainCli() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		String pack = MString.beforeLastIndex(getClass().getPackageName(), '.');
-		System.out.println("Package: " + pack);
+		log().t("Scan Package", pack);
 		for (Class<?> clazz : getClasses( pack ) ) {
-			System.out.println("--- " + clazz.getCanonicalName());
 			MainOption optionDef = clazz.getAnnotation(MainOption.class);
-			System.out.println("    " + optionDef);
+			log().t("Option",clazz,optionDef);
 			if (optionDef != null) {
 				Object inst = clazz.getConstructor().newInstance();
 				for (String alias : optionDef.alias()) {
@@ -61,88 +58,15 @@ public class MainCli extends MLog implements Cli {
 				}
 			}
 		}
-		System.out.println(optionHandlers);
+		log().t("optionHandlers",optionHandlers);
 	}
 
-	/**
-	 * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
-	 *
-	 * @param packageName The base package
-	 * @return The classes
-	 * @throws ClassNotFoundException
-	 * @throws IOException
-	 */	
-	@SuppressWarnings({ "rawtypes" })
-	private static Class<?>[] getClasses(String packageName)
-	        throws ClassNotFoundException, IOException {
-	    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-	    assert classLoader != null;
-	    String path = packageName.replace('.', '/');
-	    Enumeration<URL> resources = classLoader.getResources(path);
-	    List<File> dirs = new ArrayList<File>();
-	    while (resources.hasMoreElements()) {
-	        URL resource = resources.nextElement();
-	        dirs.add(new File(resource.getFile()));
-	    }
-	    ArrayList<Class> classes = new ArrayList<Class>();
-	    for (File directory : dirs) {
-	 	   System.out.println("A*** " + directory);
-	        classes.addAll(findClasses(directory, packageName));
-	    }
-	    if (dirs.isEmpty())
-	    	System.out.println("*** Empty");
-	    return classes.toArray(new Class[classes.size()]);
+	private static Class<?>[] getClasses(String packageName) {
+		Reflections reflections = new Reflections(packageName);
+		Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(MainOption.class);
+		return annotated.toArray(new Class<?>[0]);
 	}
 	
-	 /**
-	  * Recursive method used to find all classes in a given directory and subdirs.
-	  *
-	  * @param directory   The base directory
-	  * @param packageName The package name for classes found inside the base directory
-	  * @return The classes
-	  * @throws ClassNotFoundException
-	 * @throws IOException 
-	  */
-	 @SuppressWarnings("rawtypes")
-	private static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException, IOException {
-	     final List<Class> classes = new ArrayList<Class>();
-//	     if (!directory.exists()) {
-//	         return classes;
-//	     }
-	   System.out.println("B*** " + directory);
-	   if (directory.toString().contains("!")) {
-		   directory = new File(MString.beforeIndex(directory.toString(), '!'));
-		   System.out.println("Now " + directory + " " + directory.getName());
-	   }
-	     if (directory.getName().endsWith(".jar")) {
-	    	 System.out.println("Is a JAR");
-	    	 	String path = packageName.replace('.', '/');
-				try (JarFile jar = new JarFile(directory)) {
-			        jar.stream().forEach(jarEntry -> {
-			        	System.out.println("JAR " + jarEntry.getName());
-			            if(jarEntry.getName().startsWith(path) && jarEntry.getName().endsWith(".class"))
-			            {
-			                try {
-								classes.add(Class.forName(jarEntry.getName().replaceAll("/",".").replace(".class","")));
-							} catch (ClassNotFoundException e) {
-								e.printStackTrace();
-							}
-			            }
-			        });
-				}
-	     }
-	     File[] files = directory.listFiles();
-	     for (File file : files) {
-	         if (file.isDirectory()) {
-	             assert !file.getName().contains(".");
-	             classes.addAll(findClasses(file, packageName + "." + file.getName()));
-	         } else if (file.getName().endsWith(".class")) {
-	             classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
-	         }
-	     }
-	     return classes;
-	 }
-	 
 	protected void execute(LinkedList<String> queue) throws MException {
 		
 		MProperties execProperties = null;
