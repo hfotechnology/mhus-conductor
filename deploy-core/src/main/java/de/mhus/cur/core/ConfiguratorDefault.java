@@ -156,8 +156,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
     protected void loadLifecycle(YMap map) {
         String name = map.getString("name");
         boolean merge = map.getBoolean("_merge");
-        YMap executeE = map.getMap("execute");
-        YList stepsE = executeE.getList("steps");
+        YList stepsE = map.getList("steps");
         
         StepsImpl steps = new StepsImpl();
         if (merge) {
@@ -200,14 +199,14 @@ public class ConfiguratorDefault extends MLog implements Configurator {
         
         try {
             // parameters:
-        	step.parameters = new LinkedList<>();
-            if (map.isString("parameters")) {
-            	step.parameters.add(map.getString("parameters"));
+        	step.arguments = new LinkedList<>();
+            if (map.isString("arguments")) {
+            	step.arguments.add(map.getString("arguments"));
             } else
-            if (map.isList("parameters")) {
-                YList parametersE = map.getList("parameters");
+            if (map.isList("arguments")) {
+                YList parametersE = map.getList("arguments");
                 if (parametersE != null) {
-                    parametersE.toStringList().forEach(v -> step.parameters.add(v));
+                    parametersE.toStringList().forEach(v -> step.arguments.add(v));
                 }
             }
             
@@ -232,13 +231,31 @@ public class ConfiguratorDefault extends MLog implements Configurator {
                 }
             }
             
+            // condition
             step.condition = map.getString("condition");
+            
+            // properties
+            YMap propertiesE = map.getMap("properties");
+            loadStepProperties(propertiesE, step);
             
         } catch (Throwable t) {
             throw new MRuntimeException("step",step.target,t);
         }
         
         return step;
+    }
+
+    private void loadStepProperties(YMap propertiesE, StepImpl step) {
+        if (propertiesE == null) return;
+        
+        if (propertiesE.getBoolean("_clear"))
+            ((MProperties)step.getProperties()).clear();
+        
+        for (String key : propertiesE.getKeys()) {
+            if (key.equals("_clear")) continue;
+            ((MProperties)step.getProperties()).put(key, propertiesE.getString(key));
+        }
+        
     }
 
     protected void loadProjects(YList projectsE) {

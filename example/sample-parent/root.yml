@@ -5,26 +5,26 @@ properties:
   newVersion.version: 1.0.0
 
 plugins:
-  - target: newVersion
-    uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
-    mojo: test
-  - target: newParent
-    uri: mvn:de.mhus.deploy/deploy-plugins/1.0.0
-    mojo: newParent
-  - target: test
-    uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
-    mojo: test
-    scope: step
-  - target: git
-    uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
-    mojo: test
-  - target: maven
-    uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
-    mojo: test
-  - target: validateSnapshots
-    uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
-    mojo: test
-  - target: incraseToSnapshots
-    uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
-    mojo: test
+- target: newVersion
+  uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
+  mojo: test
+- target: newParent
+  uri: mvn:de.mhus.deploy/deploy-plugins/1.0.0
+  mojo: newParent
+- target: test
+  uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
+  mojo: test
+  scope: step
+- target: git
+  uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
+  mojo: test
+- target: maven
+  uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
+  mojo: test
+- target: validateSnapshots
+  uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
+  mojo: test
+- target: incraseToSnapshots
+  uri: mvn:de.mhus.deploy/deploy-plugin/${deploy.version}
+  mojo: test
    

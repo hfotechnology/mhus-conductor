@@ -7,6 +7,8 @@ import de.mhus.cur.api.Conductor;
 import de.mhus.cur.api.Context;
 import de.mhus.cur.api.Labels;
 import de.mhus.cur.api.Step;
+import de.mhus.lib.core.IProperties;
+import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.matcher.Condition;
@@ -15,7 +17,7 @@ import de.mhus.lib.errors.MRuntimeException;
 
 public class StepImpl implements Step {
 
-	protected LinkedList<String> parameters;
+	protected LinkedList<String> arguments;
 	protected LabelsImpl selector;
 	protected String order;
 	protected boolean orderAsc = true;
@@ -24,10 +26,11 @@ public class StepImpl implements Step {
     protected String condition;
     protected String ident;
     protected String title;
+    protected MProperties properties = new MProperties();
 
     @Override
-    public LinkedList<String> getParameters() {
-        return parameters;
+    public LinkedList<String> getArguments() {
+        return arguments;
     }
 
     @Override
@@ -83,6 +86,11 @@ public class StepImpl implements Step {
 	@Override
 	public String getTitle() {
 		return title;
+	}
+
+	@Override
+	public IProperties getProperties() {
+		return properties;
 	}
 
 }

@@ -2,9 +2,11 @@ package de.mhus.cur.api;
 
 import java.util.LinkedList;
 
+import de.mhus.lib.core.IProperties;
+
 public interface Step {
 
-    LinkedList<String> getParameters();
+    LinkedList<String> getArguments();
 
     Labels getSelector();
 
@@ -19,5 +21,7 @@ public interface Step {
 	boolean matchCondition(Context context);
 
 	String getTitle();
+
+	IProperties getProperties();
     
 }

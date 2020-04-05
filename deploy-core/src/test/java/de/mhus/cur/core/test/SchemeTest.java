@@ -7,7 +7,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 import de.mhus.cur.api.Conductor;
 import de.mhus.cur.api.ConductorPlugin;
@@ -23,21 +26,34 @@ import de.mhus.cur.core.FileScheme;
 import de.mhus.cur.core.MavenScheme;
 import de.mhus.cur.core.SchemesImpl;
 import de.mhus.cur.core.YmlConfigType;
-import de.mhus.lib.core.MApi;
+import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MProperties;
+import de.mhus.lib.core.MString;
 import de.mhus.lib.core.util.MUri;
 import de.mhus.lib.errors.NotFoundException;
 
 public class SchemeTest {
 
 	@Test
+	public void testClassifier() throws IOException, NotFoundException, ParserConfigurationException, SAXException {
+		MavenScheme scheme = new MavenScheme();
+        Conductor cur = new ConductorImpl(new File("../example/sample-parent"));
+        
+        String version = TestUtil.currentVersion();
+        MUri uri = MUri.toUri("mvn:de.mhus.deploy/deploy-plugin/"+version+"/yml/configuration-default");
+		File file = scheme.load(cur, uri);
+        assertNotNull(file);
+        String content = MFile.readFile(file);
+        assertTrue(MString.isSetTrim(content));
+	}
+	
+	@Test
 	public void testMavenScheme() throws IOException, NotFoundException {
 		MavenScheme scheme = new MavenScheme();
         Conductor cur = new ConductorImpl(new File("../example/sample-parent"));
         
-        String mvnPath = CurUtil.cmdLocation("mvn");
-        if (new File(mvnPath).exists()) {
-	        ((MProperties)cur.getProperties()).put(CurUtil.PROPERTY_MVN_PATH, mvnPath);
+        String mvnPath = CurUtil.cmdLocationOrNull(cur, "mvn");
+        if (mvnPath != null) {
 	        
 			MUri uri = MUri.toUri("mvn:com.google.guava/guava/15.0");
 			
@@ -57,11 +73,11 @@ public class SchemeTest {
 	
 	@Test
 	public void loadPlugin() throws Exception {
-		MApi.setDirtyTrace(false);
+		TestUtil.enableDebug();
         ConductorImpl cur = new ConductorImpl(new File("../example/sample-parent"));
 
-        String mvnPath = CurUtil.cmdLocation("mvn");
-        if (new File(mvnPath).exists()) {
+        String mvnPath = CurUtil.cmdLocationOrNull(cur, "mvn");
+        if (mvnPath != null) {
 
 	        ConfiguratorDefault config = new ConfiguratorDefault();
 	        ((SchemesImpl)config.getSchemes()).put("file", new FileScheme() );
@@ -72,7 +88,6 @@ public class SchemeTest {
 	        URI uri = URI.create("file:conductor.yml");
 	        config.configure(uri, cur, null);
 
-	        ((MProperties)cur.getProperties()).put(CurUtil.PROPERTY_MVN_PATH, mvnPath);
 	        ((MProperties)cur.getProperties()).put("deploy.version", TestUtil.currentVersion());
 	        ((SchemesImpl)cur.getSchemes()).put("mvn", new MavenScheme());
 

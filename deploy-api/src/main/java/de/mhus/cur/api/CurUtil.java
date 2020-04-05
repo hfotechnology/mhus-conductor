@@ -8,12 +8,16 @@ import java.util.LinkedList;
 
 import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.logging.Log;
+import de.mhus.lib.errors.NotFoundException;
 
 public class CurUtil {
 
 	private static final Log log = Log.getLog(Conductor.class);
 	public static final String PROPERTY_FAE = "_conductor.fae";
-	public static final String PROPERTY_MVN_PATH = "_conductor.schema.mvn.path";
+	public static final String PROPERTY_CMD_PATH = "_conductor.cmd.";
+	public static final String PROPERTY_PATH = "_conductor.path";
+	public static final String DEFAULT_PATHES_UNIX = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+	public static final String DEFAULT_PATHES_WINDOWS = "C:\\Program Files;C:\\Winnt;C:\\Winnt\\System32";
 	
     public static void orderProjects(LinkedList<Project> projects, String order, boolean orderAsc) {
         
@@ -74,10 +78,33 @@ public class CurUtil {
 		
 	}
 
-	public static String cmdLocation(String cmd) {
-		// TODO Auto-generated method stub
-		return "/usr/local/bin/" + cmd;
-		//return "mvn";
+	public static String cmdLocationOrNull(Conductor cur, String cmd) {
+		try {
+			return cmdLocation(cur, cmd);
+		} catch (NotFoundException e) {
+			return null;
+		}
+	}
+	
+	//TODO cache findings
+	public static String cmdLocation(Conductor cur, String cmd) throws NotFoundException {
+		if (cur != null) {
+			// check direct configuration
+			String path = cur.getProperties().getString(CurUtil.PROPERTY_CMD_PATH + cmd.toUpperCase(), null);
+			if (path != null) return path;
+		}
+		String[] pathes = null;
+		if (MSystem.isWindows())
+			pathes = cur.getProperties().getString(CurUtil.PROPERTY_PATH, DEFAULT_PATHES_WINDOWS).split(";");
+		else
+			pathes = cur.getProperties().getString(CurUtil.PROPERTY_PATH, DEFAULT_PATHES_UNIX).split(":");
+		
+		for (String path : pathes) {
+			File file = new File(path + File.separator + cmd);
+			if (file.exists() && file.isFile() && file.canExecute() && file.canRead())
+				return file.getAbsolutePath();
+		}
+		throw new NotFoundException("Command not found",cmd);
 	}
 
 }

@@ -1,10 +1,13 @@
 package de.mhus.cur.core;
 
 import java.util.LinkedList;
+import java.util.Map.Entry;
 
 import de.mhus.cur.api.Context;
 import de.mhus.cur.api.Labels;
 import de.mhus.cur.api.Step;
+import de.mhus.lib.core.IProperties;
+import de.mhus.lib.core.MProperties;
 
 public class ContextStep implements Step {
 
@@ -12,6 +15,7 @@ public class ContextStep implements Step {
 	private Step inst;
 	private ContextLabels selector;
 	LinkedList<String> parameters;
+	private MProperties properties;
 	
 	public ContextStep(ContextImpl context, Step inst) {
 		this.context = context;
@@ -19,10 +23,10 @@ public class ContextStep implements Step {
 	}
 
 	@Override
-	public LinkedList<String> getParameters() {
+	public LinkedList<String> getArguments() {
 		if (parameters == null) {
 			parameters = new LinkedList<>();
-			inst.getParameters().forEach(v -> parameters.add( context.make(v) ));
+			inst.getArguments().forEach(v -> parameters.add( context.make(v) ));
 		}
 		return parameters;
 	}
@@ -67,6 +71,20 @@ public class ContextStep implements Step {
 	@Override
 	public String getTitle() {
 		return context.make(inst.getTitle());
+	}
+
+	@Override
+	public IProperties getProperties() {
+		if (properties == null) {
+			properties = new MProperties();
+			for (Entry<String, Object> entry : inst.getProperties().entrySet()) {
+				Object v = entry.getValue();
+				if (v instanceof String)
+					v = context.make((String)v);
+				properties.put(entry.getKey(), v);
+			}
+		}
+		return properties;
 	}
 
 }

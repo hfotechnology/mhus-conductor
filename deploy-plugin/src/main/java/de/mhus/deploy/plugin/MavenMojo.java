@@ -11,8 +11,8 @@ public class MavenMojo implements ExecutePlugin {
 
 	@Override
 	public void execute(Context context) throws Exception {
-		String mvn = CurUtil.cmdLocation("mvn");
-		String cmd = mvn + " " + MString.join(context.getStep().getParameters(), " "); //TODO add quotes and or escapes
+        String mvnPath = CurUtil.cmdLocation(context.getConductor(), "mvn");
+		String cmd = mvnPath + " " + MString.join(context.getStep().getArguments(), " "); //TODO add quotes and or escapes
 		CurUtil.execute(context.getStep().getTitle(), context.getProject().getRootDir(), cmd);
 	}
 

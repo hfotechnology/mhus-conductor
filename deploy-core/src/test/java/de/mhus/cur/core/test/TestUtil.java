@@ -8,11 +8,20 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import de.mhus.lib.core.MApi;
 import de.mhus.lib.core.MXml;
+import de.mhus.lib.core.base.SingleBaseStrategy;
+import de.mhus.lib.core.logging.Log;
 import de.mhus.lib.core.util.MUri;
 
 public class TestUtil {
 
+	public static void enableDebug() {
+        MApi.setDirtyTrace(false);
+        MApi.get().getLogFactory().setDefaultLevel(Log.LEVEL.DEBUG);
+        MApi.get().getBaseControl().setFindStrategy(new SingleBaseStrategy());
+	}
+	
     public static String getPluginVersion(String uriStr) {
         MUri uri = MUri.toUri(uriStr);
         String[] parts = uri.getPath().split("/");

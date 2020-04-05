@@ -14,5 +14,7 @@ public interface Context {
 	Project getProject();
 
 	Step getStep();
+	
+	Conductor getConductor();
     
 }

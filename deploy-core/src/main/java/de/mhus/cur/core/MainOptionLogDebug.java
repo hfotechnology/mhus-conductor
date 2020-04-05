@@ -11,7 +11,7 @@ public class MainOptionLogDebug implements MainOptionHandler {
 
 	@Override
 	public void execute(MainCli cli, String cmd, LinkedList<String> queue) {
-        MApi.setDirtyTrace(true);
+        MApi.setDirtyTrace(false);
         MApi.get().getLogFactory().setDefaultLevel(Log.LEVEL.DEBUG);
         MApi.get().getBaseControl().setFindStrategy(new SingleBaseStrategy());
 	}
