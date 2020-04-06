@@ -8,5 +8,5 @@ properties:
 
 plugins:
   - target: newParent
-    uri: mvn:de.mhus.deploy/deploy-plugins/2.0.0
+    uri: mvn:de.mhus.conductor/conductor-plugins/2.0.0
     mojo: newParent

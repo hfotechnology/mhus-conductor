@@ -1,5 +1,5 @@
 #!/bin/bash
 mvn clean install || exit 1
-cd deploy-launcher
+cd conductor-launcher
 ./src/main/launch/install.sh 
 

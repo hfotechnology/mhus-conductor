@@ -8,7 +8,7 @@ mvn de.mhus.mvn.plugin:versioning-maven-plugin:1.0.0-SNAPSHOT:modify-versions
 
 # Modify Versions Mojo
 
-Execute the mojo before you change all the versions in the version defining project (e.g. parent project). It Takes the current versions and the version.xml file to generate a new set of dependency versions and properties values.
+Execute the mojo before you change all the versions in the version defining project (e.g. parent project). It Takes the conrent versions and the version.xml file to generate a new set of dependency versions and properties values.
 
 ## Versions File Format
 
@@ -26,7 +26,7 @@ Options:
 * + 0.0.1 - Next Hotfix
 * 1.0.0 - Explicit version
 
-Format currently only: Major.Minor.Hotfix-SNAPSHOT
+Format conrently only: Major.Minor.Hotfix-SNAPSHOT
 
 
 ```

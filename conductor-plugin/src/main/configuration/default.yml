@@ -1,0 +1,28 @@
+
+properties:
+
+lifecycles:
+- name: rebuild
+  steps:
+  - title: Rebuild
+    target: maven
+    arguments:
+    - clean
+    - install
+    properties:
+    - touch: true
+
+plugins:
+- target: newVersion
+  uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
+  mojo: newVersion
+- target: newParent
+  uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
+  mojo: newParent
+- target: git
+  uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
+  mojo: git
+- target: maven
+  uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
+  mojo: maven
+   

@@ -5,7 +5,7 @@ properties:
 
 lifecycles:
 - name: default
-  control: deploy
+  control: conductor
   steps:
   # reset and pull all projects
   - target: git
@@ -53,15 +53,15 @@ lifecycles:
     arguments: test
     selector:
       group: itests
-  # deploy packages
+  # conductor packages
   - target: maven
-    arguments: deploy
+    arguments: conductor
     selector:
       group: bundles
     order: sort
-  # deploy parent
+  # conductor parent
   - target: maven
-    arguments: deploy
+    arguments: conductor
     selector:
       group: parent
   # prepare git
@@ -88,6 +88,6 @@ lifecycles:
     arguments: push
 
 plugins:
-- target: deploy
-  url: mvn:de.mhus.deploy/deploy-plugins/${newVersion.version}
-  mojo: deploy
+- target: conductor
+  url: mvn:de.mhus.conductor/conductor-plugins/${newVersion.version}
+  mojo: conductor

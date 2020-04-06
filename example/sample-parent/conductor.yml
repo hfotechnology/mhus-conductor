@@ -1,12 +1,12 @@
 
 import:
-- mvn:de.mhus.deploy/deploy-configuration/1.0.0/root.yml
+- mvn:de.mhus.conductor/conductor-configuration/1.0.0/root.yml
 - file:parent.yml
 - file:default_lifecycle.yml
 
 properties:
   newVersion.version: 1.0.0
-  deployWasThere: 1
+  conductorWasThere: 1
   overwriteMe: 4
 
 projects:

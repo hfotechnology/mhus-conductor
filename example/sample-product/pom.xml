@@ -23,8 +23,8 @@
 	<artifactId>sample-product</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>MHUS Deploy Tools Sample</name>
-	<description>Tools to deploy mhus projects</description>
+	<name>MHUS conductor Tools Sample</name>
+	<description>Tools to conductor mhus projects</description>
 	<url>http://www.mhus.de</url>
 	<properties>
 	   <mhus-osgi-cache.version>${project.version}</mhus-osgi-cache.version>
@@ -38,7 +38,7 @@
 	</licenses>
 	<scm>
 		<url>https://github.com/mhus/mhus-osgi-tools</url>
-		<connection>scm:git:https://github.com/mhus/mhus-deploy/</connection>
+		<connection>scm:git:https://github.com/mhus/mhus-conductor/</connection>
 	</scm>
 	<developers>
 		<developer>
