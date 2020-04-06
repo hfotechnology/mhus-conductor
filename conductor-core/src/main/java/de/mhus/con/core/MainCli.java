@@ -16,6 +16,7 @@ import de.mhus.con.api.AOption;
 import de.mhus.con.api.AScheme;
 import de.mhus.con.api.AValidator;
 import de.mhus.con.api.Cli;
+import de.mhus.con.api.Conductor;
 import de.mhus.con.api.ConfigType;
 import de.mhus.con.api.MainOptionHandler;
 import de.mhus.con.api.Scheme;
@@ -162,9 +163,6 @@ public class MainCli extends MLog implements Cli {
 	}
 
 	private void executeOption(String next, LinkedList<String> queue) throws NotFoundException {
-		if (next.equals("-")) return;
-		// -P path/
-		// --path path/
 		MainOptionHandler handler = optionHandlers.get(next);
 		if (handler == null) throw new NotFoundException("option",next);
 		handler.execute(this,next, queue);
@@ -218,5 +216,30 @@ public class MainCli extends MLog implements Cli {
 		con.close();
 		con = null;
 	}
+
+    @Override
+    public Map<String, Scheme> getSchemes() {
+        return schemes;
+    }
+
+    @Override
+    public Map<String, ConfigType> getConfigTypes() {
+        return configTypes;
+    }
+
+    @Override
+    public Map<String, Validator> getValidators() {
+        return validators;
+    }
+
+    @Override
+    public Conductor getConductor() {
+        try {
+            createConductor();
+        } catch (MException e) {
+            log().w(e);
+        }
+        return con;
+    }
 
 }

@@ -12,9 +12,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
+import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
 import de.mhus.con.api.ConductorPlugin;
-import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.ExecutePlugin;
 import de.mhus.con.api.Plugin;
 import de.mhus.con.core.ConductorImpl;
@@ -39,8 +39,7 @@ public class SchemeTest {
 		MavenScheme scheme = new MavenScheme();
         Conductor con = new ConductorImpl(new File("../example/sample-parent"));
         
-        String version = TestUtil.conrentVersion();
-        MUri uri = MUri.toUri("mvn:de.mhus.conductor/conductor-plugin/"+version+"/yml/configuration-default");
+        MUri uri = ConUtil.getDefaultConfiguration();
 		File file = scheme.load(con, uri);
         assertNotNull(file);
         String content = MFile.readFile(file);
@@ -55,7 +54,7 @@ public class SchemeTest {
         String mvnPath = ConUtil.cmdLocationOrNull(con, "mvn");
         if (mvnPath != null) {
 	        
-			MUri uri = MUri.toUri("mvn:com.google.guava/guava/15.0");
+			MUri uri = MUri.toUri("mvn:com.hpe.adm.octane.ciplugins/integrations-sdk/2.6.3.4");
 			
 			File loc = scheme.getArtifactLocation("TEST",con, uri);
 			System.out.println(loc);
@@ -71,6 +70,30 @@ public class SchemeTest {
         }
 	}
 	
+    @Test
+    public void testMavenSchemeClassifier() throws IOException, NotFoundException {
+        MavenScheme scheme = new MavenScheme();
+        Conductor con = new ConductorImpl(new File("../example/sample-parent"));
+        
+        String mvnPath = ConUtil.cmdLocationOrNull(con, "mvn");
+        if (mvnPath != null) {
+            
+            MUri uri = MUri.toUri("mvn:org.apache.karaf.features/standard/4.2.6/xml/features");
+            
+            File loc = scheme.getArtifactLocation("TEST",con, uri);
+            System.out.println(loc);
+            
+            if (loc.exists())
+                loc.delete();
+            
+            scheme.load(con, uri);
+            
+            assertTrue(loc.exists());
+        } else {
+            System.err.println("Maven not found, skip test: " + mvnPath);
+        }
+    }
+    
 	@Test
 	public void loadPlugin() throws Exception {
 		TestUtil.enableDebug();

@@ -11,6 +11,7 @@ lifecycles:
     - install
     properties:
     - touch: true
+    order: order
 
 plugins:
 - target: newVersion

@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 
+import de.mhus.conductor.api.meta.Version;
 import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.logging.Log;
+import de.mhus.lib.core.util.MUri;
 import de.mhus.lib.errors.NotFoundException;
 
 public class ConUtil {
@@ -25,7 +27,7 @@ public class ConUtil {
 
 	public static String[] execute(String name, File rootDir, String cmd) throws IOException {
 		
-		log.d("execute",cmd);
+		log.i(name,"execute",cmd);
 
 		ProcessBuilder processBuilder = new ProcessBuilder();
 		if (MSystem.isWindows())
@@ -57,7 +59,7 @@ public class ConUtil {
 
             StringBuilder stdErrBuilder = new StringBuilder();
             while ((line = errReader.readLine()) != null) {
-                System.err.println("["+name+"]" + line);
+                System.err.println("["+name+"] " + line);
                 if (stdErrBuilder.length() > 0) 
                 	stdErrBuilder.append("\n");
                 stdErrBuilder.append(line);
@@ -66,7 +68,7 @@ public class ConUtil {
             int exitCode = process.waitFor();
     		String stderr = stdErrBuilder.toString();
     		String stdout = stdOutBuilder.toString();
-    		log.d("exitCode",exitCode);
+    		log.i(name,"exitCode",exitCode);
     		log.t("result",stdout,stderr,exitCode);
     		return new String[] {stdout, stderr, String.valueOf(exitCode)};
             
@@ -106,5 +108,10 @@ public class ConUtil {
 		}
 		throw new NotFoundException("Command not found",cmd);
 	}
+
+    public static MUri getDefaultConfiguration() {
+        MUri uri = MUri.toUri("mvn:de.mhus.conductor/conductor-plugin/"+Version.VERSION+"/yml/configuration-default");
+        return uri;
+    }
 
 }
