@@ -47,6 +47,13 @@ public class MavenScheme extends MLog implements Scheme {
 		String ext      = parts.length > 3 ? parts[3] : null;
 		String classifier = parts.length > 4 ? parts[4] : null;
 
+		assert group != null;
+		assert artifact != null;
+		assert version !=null;
+		
+		if (!con.getProperties().getBoolean(ConUtil.PROPERTY_DOWNLOAD_SNAPSHOTS, false) && version.endsWith("-SNAPSHOT"))
+		    throw new NotFoundException("maven SNAPSHOT artifact not found",uri,location);
+
 		log().i("Load Maven Resource",location,group,artifact,version,ext,classifier);
 		
 		// mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get -Dartifact=com.google.guava:guava:15.0 -DrepoUrl=

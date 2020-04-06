@@ -3,6 +3,7 @@ package de.mhus.con.core;
 import java.io.File;
 import java.util.Map.Entry;
 
+import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Labels;
 import de.mhus.con.api.Project;
 import de.mhus.lib.core.IReadProperties;
@@ -42,11 +43,8 @@ public class ContextProject implements Project {
 	@Override
 	public File getRootDir() {
 		
-		if (rootDir == null) {
-	        rootDir = new File(getPath());
-	        if (!rootDir.isAbsolute())
-	            rootDir = new File(context.getConductor().getRoot(),getPath());
-		}
+		if (rootDir == null)
+	        rootDir = ConUtil.getFile(context.getConductor().getRoot(), getPath());
 		return rootDir;
 	}
 
@@ -68,5 +66,10 @@ public class ContextProject implements Project {
 	public String toString() {
 		return inst.toString();
 	}
+
+    @Override
+    public STATUS getStatus() {
+        return inst.getStatus();
+    }
 
 }

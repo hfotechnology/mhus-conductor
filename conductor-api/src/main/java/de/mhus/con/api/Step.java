@@ -10,7 +10,7 @@ public interface Step {
 
     Labels getSelector();
 
-    String getOrder();
+    String getSortBy();
 
     boolean isOrderAsc();
 

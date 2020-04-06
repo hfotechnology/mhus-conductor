@@ -60,6 +60,11 @@
         <version>${project.version}</version>
     </dependency>
     <dependency>
+        <groupId>de.mhus.conductor</groupId>
+        <artifactId>conductor-core</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
         <groupId>de.mhus.lib</groupId>
         <artifactId>mhu-lib-annotations</artifactId>
     </dependency>

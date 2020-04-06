@@ -19,7 +19,7 @@ public class StepImpl implements Step {
 
 	protected LinkedList<String> arguments;
 	protected LabelsImpl selector;
-	protected String order;
+	protected String sort;
 	protected boolean orderAsc = true;
 	protected String target;
     protected Conductor con;
@@ -39,8 +39,8 @@ public class StepImpl implements Step {
     }
 
     @Override
-    public String getOrder() {
-        return order;
+    public String getSortBy() {
+        return sort;
     }
 
     @Override

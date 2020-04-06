@@ -8,13 +8,14 @@ import de.mhus.con.api.Plugin;
 import de.mhus.con.api.Project;
 import de.mhus.con.api.Step;
 import de.mhus.lib.core.IReadProperties;
+import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.parser.StringCompiler;
 import de.mhus.lib.errors.MException;
 import de.mhus.lib.errors.MRuntimeException;
 
-public class ContextImpl implements Context {
+public class ContextImpl extends MLog implements Context {
 
     private MProperties properties;
 	private Plugin plugin;
@@ -26,10 +27,13 @@ public class ContextImpl implements Context {
         properties = new MProperties(con.getProperties());
     }
 
-    public ContextImpl(Conductor con, IReadProperties projectProp) {
+    public ContextImpl(Conductor con, IReadProperties projectProp, IReadProperties stepProp) {
     	this.con = con;
-        properties = new MProperties(con.getProperties());
+        properties = new MProperties();
+        putReadProperties("", con.getProperties());
         putReadProperties("project.", projectProp);
+        putReadProperties("step.", stepProp);
+        log().t("context properties",properties);
     }
     
 	public void putReadProperties(String prefix, IReadProperties m) {
@@ -43,13 +47,17 @@ public class ContextImpl implements Context {
     public String make(String in) {
     	if (in == null) return null;
     	try {
-	        return StringCompiler.compile(in).execute(properties);
+	        String ret = StringCompiler.compile(in).execute(properties);
+	        log().t("make", in, ret);
+	        return ret;
 		} catch (MException e) {
+		    log().t(in,e);
 			throw new MRuntimeException(in, e);
 		}
 	}
 
 	public void init(Project project, Plugin plugin, Step step) {
+	    log().t("init", project, plugin, step);
 		this.project = new ContextProject(this, project);
 		this.plugin = new ContextPlugin(this, plugin);
 		this.step = new ContextStep(this, step);

@@ -202,6 +202,7 @@ public class MainCli extends MLog implements Cli {
         URI uri = URI.create(configFile);
         
         con = new ConductorImpl(rootDir);
+        
         config.configure(uri, con, null);
 		
 	}

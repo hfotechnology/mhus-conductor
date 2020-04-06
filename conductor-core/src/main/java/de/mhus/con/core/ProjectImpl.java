@@ -2,6 +2,7 @@ package de.mhus.con.core;
 
 import java.io.File;
 
+import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
 import de.mhus.con.api.Labels;
 import de.mhus.con.api.Project;
@@ -17,6 +18,7 @@ public class ProjectImpl implements Project {
     protected Conductor con;
     protected File rootDir;
     protected MProperties properties = new MProperties();
+    private STATUS status;
 
     @Override
     public Labels getLabels() {
@@ -35,10 +37,7 @@ public class ProjectImpl implements Project {
 
     public void init(Conductor con) {
         this.con = con;
-        
-        rootDir = new File(getPath());
-        if (!rootDir.isAbsolute())
-            rootDir = new File(con.getRoot(),getPath());
+        rootDir = ConUtil.getFile(con.getRoot(), getPath());
     }
 
     @Override
@@ -56,5 +55,14 @@ public class ProjectImpl implements Project {
 	public String toString() {
 		return MSystem.toString(this, name);
 	}
+
+    public void setStatus(STATUS status) {
+        this.status = status;
+    }
+    
+    @Override
+    public STATUS getStatus() {
+        return status;
+    }
     
 }

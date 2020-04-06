@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
 import de.mhus.con.api.ConfigType;
 import de.mhus.con.api.ConfigTypes;
@@ -21,6 +22,7 @@ import de.mhus.con.api.Step;
 import de.mhus.con.api.Validator;
 import de.mhus.con.api.YList;
 import de.mhus.con.api.YMap;
+import de.mhus.conductor.api.meta.Version;
 import de.mhus.con.api.Plugin.SCOPE;
 import de.mhus.lib.core.IProperties;
 import de.mhus.lib.core.MCast;
@@ -44,11 +46,14 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 	@Override
 	public void configure(URI uri, Conductor con, IProperties properties) throws MException {
 		this.con = con;
+		((ConductorImpl)con).schemes = schemes;
+		
 		overwrite(MUri.toUri(uri.toString()));
 		initEntries();
-		((ConductorImpl)con).schemes = schemes;
 		if (properties != null)
 			((ConductorImpl)con).properties.putReadProperties(properties);
+		((ConductorImpl)con).properties.put(ConUtil.PROPERTY_VERSION, Version.VERSION);
+		
 		validate();
 	}
 
@@ -219,14 +224,14 @@ public class ConfiguratorDefault extends MLog implements Configurator {
             }
             
             // order:
-            step.order = map.getString("order");
-            if (step.order != null) {
-            	step.order = step.order.trim();
-                if (step.order.toLowerCase().endsWith(" asc")) {
-                	step.order = step.order.substring(0, step.order.length()-4);
+            step.sort = map.getString("sort");
+            if (step.sort != null) {
+            	step.sort = step.sort.trim();
+                if (step.sort.toLowerCase().endsWith(" asc")) {
+                	step.sort = step.sort.substring(0, step.sort.length()-4);
                 	step.orderAsc  = true;
-                } else if (step.order.toLowerCase().endsWith(" desc")) {
-                	step.order = step.order.substring(0, step.order.length()-5);
+                } else if (step.sort.toLowerCase().endsWith(" desc")) {
+                	step.sort = step.sort.substring(0, step.sort.length()-5);
                 	step.orderAsc = false;
                 }
             }
@@ -239,7 +244,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
             loadStepProperties(propertiesE, step);
             
         } catch (Throwable t) {
-            throw new MRuntimeException("step",step.target,t);
+            throw new MRuntimeException("step",step,t);
         }
         
         return step;

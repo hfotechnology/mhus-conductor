@@ -10,7 +10,7 @@ public abstract class AbstractExecute extends MLog implements ExecutePlugin {
 
     @Override
     public final void execute(Context context) throws Exception {
-        execute(context);
+        execute2(context);
         if (context.getProject() != null && context.getProperties().getBoolean("touch", false)) {
             File root = context.getProject().getRootDir();
             long time = System.currentTimeMillis();

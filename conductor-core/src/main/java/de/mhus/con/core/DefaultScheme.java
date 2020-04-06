@@ -15,8 +15,10 @@ public class DefaultScheme implements Scheme {
 
     @Override
     public File load(Conductor con, MUri uri) throws IOException, NotFoundException {
+        String path = uri.getPath();
+
         Scheme mvnScheme = con.getSchemes().get("mvn");
-        MUri defUri = ConUtil.getDefaultConfiguration();
+        MUri defUri = ConUtil.getDefaultConfiguration(path);
         return mvnScheme.load(con, defUri);
     }
 

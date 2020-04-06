@@ -39,7 +39,7 @@ public class SchemeTest {
 		MavenScheme scheme = new MavenScheme();
         Conductor con = new ConductorImpl(new File("../example/sample-parent"));
         
-        MUri uri = ConUtil.getDefaultConfiguration();
+        MUri uri = ConUtil.getDefaultConfiguration("configuration-default.yml");
 		File file = scheme.load(con, uri);
         assertNotNull(file);
         String content = MFile.readFile(file);

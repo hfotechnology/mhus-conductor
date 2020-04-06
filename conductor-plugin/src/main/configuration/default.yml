@@ -10,8 +10,16 @@ lifecycles:
     - clean
     - install
     properties:
-    - touch: true
-    order: order
+      touch: true
+    sort: order
+- name: clean
+  steps:
+  - title: Clean
+    target: maven
+    arguments:
+    - clean
+    sort: order
+
 
 plugins:
 - target: newVersion

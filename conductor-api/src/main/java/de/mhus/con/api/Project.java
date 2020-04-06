@@ -6,7 +6,9 @@ import de.mhus.lib.core.IReadProperties;
 
 public interface Project {
 
-	Labels getLabels();
+    enum STATUS {NONE,SKIPPED,FAILURE,SUCCESS}
+	
+    Labels getLabels();
 
     String getName();
 
@@ -15,5 +17,7 @@ public interface Project {
     File getRootDir();
 	
     IReadProperties getProperties();
+    
+    STATUS getStatus();
     
 }

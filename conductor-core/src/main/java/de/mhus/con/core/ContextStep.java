@@ -39,8 +39,8 @@ public class ContextStep implements Step {
 	}
 
 	@Override
-	public String getOrder() {
-		return context.make(inst.getOrder());
+	public String getSortBy() {
+		return context.make(inst.getSortBy());
 	}
 
 	@Override

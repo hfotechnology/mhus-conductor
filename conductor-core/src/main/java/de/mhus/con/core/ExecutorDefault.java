@@ -14,20 +14,21 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import de.mhus.con.api.AMojo;
+import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
 import de.mhus.con.api.ConductorPlugin;
-import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.ErrorInfo;
 import de.mhus.con.api.ExecutePlugin;
+import de.mhus.con.api.ExecutionInterceptorPlugin;
 import de.mhus.con.api.Executor;
 import de.mhus.con.api.Labels;
 import de.mhus.con.api.Lifecycle;
 import de.mhus.con.api.Plugin;
+import de.mhus.con.api.Plugin.SCOPE;
 import de.mhus.con.api.Project;
 import de.mhus.con.api.Scheme;
 import de.mhus.con.api.Step;
 import de.mhus.con.api.Steps;
-import de.mhus.con.api.Plugin.SCOPE;
 import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MString;
@@ -42,29 +43,44 @@ public class ExecutorDefault extends MLog implements Executor {
     private LinkedList<ErrorInfo> errors = new LinkedList<>();
     private Map<String,ConductorPlugin> mojos = new HashMap<>();
     private Map<String, Object[]> pluginClassLoaders = new HashMap<>();
+    private LinkedList<ExecutionInterceptorPlugin> interceptors = new LinkedList<>();
+    
+    public ExecutorDefault() {
+        interceptors.add(new ExecutionInterceptorDefault()); // TODO dynamic
+    }
     
     @Override
     public void execute(Conductor con, String lifecycle) {
         this.con = con;
+        ((ConductorImpl)con).properties.put(ConUtil.PROPERTY_LIFECYCLE, lifecycle);
+        
         Lifecycle lf = con.getLifecycles().get(lifecycle);
         try {
         	log().d("executeLifecycle",lf);
 	        Steps steps = lf.getSteps();
-	        execute(steps);
+	        execute(lifecycle, steps);
         } catch (Throwable t) {
         	log().d(lf,t);
         	throw new MRuntimeException(lf,t);
         }
     }
 
-    protected void execute(Steps steps) {
-        for (Step step : steps)
-            execute(step);
+    protected void execute(String lifecycle, Steps steps) {
+        interceptors.forEach(i -> i.executeBegin(con, lifecycle, steps));
+        try {
+            for (Step step : steps)
+                execute(step);
+        } finally {
+            interceptors.forEach(i -> i.executeEnd(con, lifecycle, steps, errors));
+        }
     }
 
     protected void execute(Step step) {
         
     	log().d("executeStep",step);
+    	// reset all projects
+    	con.getProjects().forEach(p -> ((ProjectImpl)p).setStatus(Project.STATUS.NONE) );
+    	
     	try {
 	        // load plugin
 	        String target = step.getTarget();
@@ -88,9 +104,10 @@ public class ExecutorDefault extends MLog implements Executor {
 	        } else {
 	            projects = new LinkedList<>(con.getProjects().getAll());
 	        }
+	        projects.forEach(p -> ((ProjectImpl)p).setStatus(Project.STATUS.SKIPPED) );
 	        
 	        // order
-	        String order = step.getOrder();
+	        String order = step.getSortBy();
 	        if (MString.isSet(order)) {
 	            ConUtil.orderProjects(projects, order, step.isOrderAsc());
 	        }
@@ -111,7 +128,7 @@ public class ExecutorDefault extends MLog implements Executor {
     protected void execute(Step step, Project project, Plugin plugin) {
     	log().d("executeProject",step,project,plugin);
         try {
-	        ContextImpl context = new ContextImpl(con, project == null ? null : project.getProperties() );
+	        ContextImpl context = new ContextImpl(con, project == null ? null : project.getProperties(), step.getProperties() );
 	                
 	        context.init(project, plugin, step);
 	        
@@ -119,17 +136,22 @@ public class ExecutorDefault extends MLog implements Executor {
 	        	log().d("condition not successful",step);
 	        	return;
 	        }
+	        interceptors.forEach(i -> i.executeBegin(context));
 	        
 	        ConductorPlugin impl = loadMojo(context);
 	        try {
 	        	((ExecutePlugin)impl).execute(context);
 	        } catch (Throwable t) {
+	            if (project != null) ((ProjectImpl)project).setStatus(Project.STATUS.FAILURE);
+	            interceptors.forEach(i -> i.executeError(context, t));
 	        	errors.add(new ErrorsInfoImpl(context, t));
 	        	if (con.getProperties().getBoolean(ConUtil.PROPERTY_FAE, false)) {
 	        		log().e(context,t);
 	        	} else
 	        		throw t;
 	        }
+	        if (project != null) ((ProjectImpl)project).setStatus(Project.STATUS.SUCCESS);
+            interceptors.forEach(i -> i.executeEnd(context));
         } catch (Throwable t) {
         	throw new MRuntimeException(project,t);
         }
@@ -207,6 +229,7 @@ public class ExecutorDefault extends MLog implements Executor {
 			try {
 				Class<?> clazz = cl.loadClass(className);
 				AMojo mojoDef = clazz.getAnnotation(AMojo.class);
+				log().t("class",clazz,mojoDef);
 				if (mojoDef != null) {
 					if (mojoDef.name().equals(mojoName)) {
 						ConductorPlugin inst = (ConductorPlugin)clazz.getConstructor().newInstance();
@@ -214,12 +237,13 @@ public class ExecutorDefault extends MLog implements Executor {
 					}
 				}
 			} catch (ClassNotFoundException cnfe) {
+			    log().t(cnfe);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ie) {
 				log().w(className, ie);
 			}
 		}
 		
-		throw new NotFoundException("Plugin not found",plugin);
+		throw new NotFoundException("Plugin not found",plugin, plugin.getUri(), mojoName );
 	}
 
 }
