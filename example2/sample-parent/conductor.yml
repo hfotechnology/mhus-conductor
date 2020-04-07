@@ -14,18 +14,23 @@ projects:
       property.core: sample-core.version
       property.product: sample-product.version
       property.itest: sample-itest.version
+  - name: api
+    path: ../sample-api
+    labels:
+      group: bundles
+      sort: 1
   - name: core
     path: ../sample-core
     labels:
       group: bundles
-      sort: 1
+      sort: 2
   - name: api
     path: ../sample-product
     labels:
       group: bundles
-      sort: 2
+      sort: 3
   - name: itest
     path: ../sample-test
     labels:
       group: itests
-      sort: 3
+      sort: 4

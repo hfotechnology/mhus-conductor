@@ -22,12 +22,16 @@ public class YMap {
 	}
 	public YMap getMap(String key) {
 	    if (map == null) return null;
-		return new YMap(map.get(key));
+	    Object ret = map.get(key);
+	    if (ret == null) return null;
+		return new YMap(ret);
 	}
 	
 	public YList getList(String key) {
         if (map == null) return null;
-		return new YList(map.get(key));
+        Object ret = map.get(key);
+        if (ret == null) return null;
+		return new YList(ret);
 	}
 	
     public String getString(String key) {
