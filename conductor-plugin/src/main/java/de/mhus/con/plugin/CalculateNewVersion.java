@@ -17,7 +17,11 @@ public class CalculateNewVersion extends MLog implements ExecutePlugin {
     @Override
     public void execute(Context context) throws Exception {
         String versionsFilePath = context.getStep().getProperties().getString("versionsFile", "versions.properties");
-        File versionsFile = ConUtil.getFile(context.getConductor().getRoot(), versionsFilePath);
+        File versionsFile = ConUtil.getFile(
+                context
+                .getConductor()
+                .getRoot()
+                , versionsFilePath);
         if (versionsFile.exists() && versionsFile.isFile()) {
             MProperties versions = MProperties.load(versionsFile);
             

@@ -24,7 +24,9 @@ public class ContextImpl extends MLog implements Context {
 	private Step step;
 
     public ContextImpl(Conductor con) {
-        properties = new MProperties(con.getProperties());
+        this.con = con;
+        properties = new MProperties();
+        putReadProperties("", con.getProperties());
     }
 
     public ContextImpl(Conductor con, IReadProperties additional) {
@@ -55,7 +57,7 @@ public class ContextImpl extends MLog implements Context {
 	}
 
 	public void init(Project project, Plugin plugin, Step step) {
-		this.project = new ContextProject(this, project);
+		this.project = project == null ? null : new ContextProject(this, project);
 		this.plugin = new ContextPlugin(this, plugin);
 		this.step = new ContextStep(this, step);
 

@@ -64,6 +64,7 @@ public class ContextProject implements Project {
 
     @Override
 	public String toString() {
+        if (inst == null) return "?";
 		return inst.toString();
 	}
 

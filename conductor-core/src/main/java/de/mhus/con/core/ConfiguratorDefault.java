@@ -93,15 +93,16 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 		// 1 load resource
 		Scheme scheme = schemes.get(uri);
 		String content = null;
+		File cf = null;
 		try {
-		    File cf = scheme.load(con, uri);
+		    cf = scheme.load(con, uri);
 		    if (cf != null)
 		        content = MFile.readFile(cf);
 		} catch (IOException e) {
 		    throw new MException(e);
 		}
 		if (content == null) throw new NotFoundException("configuration not found", uri);
-		ConfigType type = types.get(uri);
+		ConfigType type = types.get(cf);
 		YMap docE = type.create(con, content);
 		if (docE.isEmpty()) {
 		    log().w("Content is empty",uri);

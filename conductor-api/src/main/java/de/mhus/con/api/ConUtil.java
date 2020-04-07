@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.UUID;
 
 import de.mhus.conductor.api.meta.Version;
 import de.mhus.lib.core.MString;
@@ -205,6 +206,18 @@ public class ConUtil {
         if (MString.isEmpty(home))
             return new File(MSystem.getUserHome(), ENV_HOME_DEFAULT).getAbsoluteFile();
         return new File(home);
+    }
+
+    public static File createTempFile(Conductor con, Class<?> owner, String suffix) throws IOException {
+        File tmp = new File(getHome(), "tmp");
+        if (tmp.exists() && tmp.isDirectory()) {
+            File file = new File(tmp, owner.getSimpleName() + "-" + UUID.randomUUID() + "." + suffix);
+            file.deleteOnExit();
+            return file;
+        }
+        File file = File.createTempFile(owner.getSimpleName(), suffix);
+        file.deleteOnExit();
+        return file;
     }
 
 }
