@@ -46,7 +46,7 @@ public class CalculateNewVersion extends MLog implements ExecutePlugin {
                     log().i("Changed project",name,version);
                 }
                 ((MProperties)project.getProperties()).setString("version", version);
-                ((LabelsImpl)project.getLabels()).put("changed", String.valueOf(changed));
+                ((LabelsImpl)project.getLabels()).put("version.changed", String.valueOf(changed));
                 
             }
             

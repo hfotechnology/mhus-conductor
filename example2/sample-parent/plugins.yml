@@ -1,0 +1,28 @@
+plugins:
+  - target: con.calculateNewVersion
+    uri: mvn:de.mhus.conductor/conductor-plugins/${conductor.version}
+    mojo: calculateNewVersion
+    scope: step
+  - target: con.cmd
+    uri: mvn:de.mhus.conductor/conductor-plugins/${conductor.version}
+    mojo: cmd
+  - target: con.git
+    uri: mvn:de.mhus.conductor/conductor-plugins/${conductor.version}
+    mojo: git
+  - target: con.maven
+    uri: mvn:de.mhus.conductor/conductor-plugins/${conductor.version}
+    mojo: maven
+  - target: con.persistNewVersions
+    uri: mvn:de.mhus.conductor/conductor-plugins/${conductor.version}
+    mojo: persistNewVersions
+    scope: step
+  - target: con.test
+    uri: mvn:de.mhus.conductor/conductor-plugins/${conductor.version}
+    mojo: test
+  - target: con.updatePomProperties
+    uri: mvn:de.mhus.conductor/conductor-plugins/${conductor.version}
+    mojo: updatePomProperties
+  - target: con.updatePomProperties
+    uri: mvn:de.mhus.conductor/conductor-plugins/${conductor.version}
+    mojo: updatePomProperties
+    

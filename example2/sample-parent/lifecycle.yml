@@ -1,0 +1,22 @@
+
+properties:
+  defaultLifecycleWasThere: 1
+  overwriteMe: 3
+
+lifecycles:
+- name: newVersion
+  title: Configure new versions
+  steps:
+  - title: Calculate new versions
+    target: con.calculateNewVersion
+  - title: Set new version properties
+    target: con.updatePomProperties
+    selector:
+      group: parent
+  - title: Set new parent version
+    target: con.maven
+    arguments:
+      - versions:set
+      - -DnewVersion=${project.version}
+    selector:
+      version.changed: true
