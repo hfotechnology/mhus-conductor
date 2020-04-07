@@ -53,6 +53,8 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 		if (properties != null)
 			((ConductorImpl)con).properties.putReadProperties(properties);
 		((ConductorImpl)con).properties.put(ConUtil.PROPERTY_VERSION, Version.VERSION);
+        ((ConductorImpl)con).properties.put(ConUtil.PROPERTY_ROOT, con.getRoot().getAbsolutePath());
+        ((ConductorImpl)con).properties.put(ConUtil.PROPERTY_HOME, ConUtil.getHome().getAbsolutePath());
 		
 		validate();
 	}

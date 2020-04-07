@@ -27,13 +27,11 @@ public class ContextImpl extends MLog implements Context {
         properties = new MProperties(con.getProperties());
     }
 
-    public ContextImpl(Conductor con, IReadProperties projectProp, IReadProperties stepProp) {
+    public ContextImpl(Conductor con, IReadProperties additional) {
     	this.con = con;
         properties = new MProperties();
         putReadProperties("", con.getProperties());
-        putReadProperties("project.", projectProp);
-        putReadProperties("step.", stepProp);
-        log().t("context properties",properties);
+        putReadProperties("", additional);
     }
     
 	public void putReadProperties(String prefix, IReadProperties m) {
@@ -57,10 +55,19 @@ public class ContextImpl extends MLog implements Context {
 	}
 
 	public void init(Project project, Plugin plugin, Step step) {
-	    log().t("init", project, plugin, step);
 		this.project = new ContextProject(this, project);
 		this.plugin = new ContextPlugin(this, plugin);
 		this.step = new ContextStep(this, step);
+
+		if (step != null)
+		    putReadProperties("step.", step.getProperties());
+		if (project != null)
+		    putReadProperties("project.", project.getProperties());
+		if (con != null && con.getProjects() != null)
+    		for (Project p : con.getProjects())
+                putReadProperties("projects." + p.getName() + ".", p.getProperties());
+		
+		log().t("init", project, plugin, step,properties);
 	}
 
 	@Override

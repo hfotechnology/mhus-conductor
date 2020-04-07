@@ -11,7 +11,6 @@ import de.mhus.conductor.api.meta.Version;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.console.Console;
-import de.mhus.lib.core.console.XTermConsole;
 import de.mhus.lib.core.console.Console.COLOR;
 import de.mhus.lib.core.logging.Log;
 import de.mhus.lib.core.util.MUri;
@@ -28,7 +27,11 @@ public class ConUtil {
     public static final String PROPERTY_VERSION = "conductor.version";
     public static final String PROPERTY_LIFECYCLE = "conductor.lifecycle";
     public static final String PROPERTY_DOWNLOAD_SNAPSHOTS = "conductor.downloadSnapshots";
-    private static Console console;
+    public static final String ENV_HOME = "CONDUCTOR_HOME";
+    public static final String ENV_HOME_DEFAULT = ".conductor";
+    public static final String PROPERTY_ROOT = "conductor.root";
+    public static final String PROPERTY_HOME = "conductor.home";
+    // private static Console console;
 	
     public static void orderProjects(LinkedList<Project> projects, String order, boolean orderAsc) {
         projects.sort(new Comparator<Project>() {
@@ -123,29 +126,32 @@ public class ConUtil {
 	}
 
 	public static Console getConsole() {
-	    if (console == null) {
-	        String term = System.getenv("TERM");
-            if (term != null) {
-                term = term.toLowerCase();
-                if (term.indexOf("xterm") >= 0) {
-                    try {
-                        console = new XTermConsole() {
-                            @Override
-                            public boolean isSupportColor() {
-                                return true;
-                            }
-        
-                        };
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }
-            if (console == null) console = Console.get();
-            Console.set(console);
-	    }
-        return console;
+	    Console ret = Console.get();
+	    System.out.println("Console: " + ret.getClass());
+	    return ret;
+//	    if (console == null) {
+//	        String term = System.getenv("TERM");
+//            if (term != null) {
+//                term = term.toLowerCase();
+//                if (term.indexOf("xterm") >= 0) {
+//                    try {
+//                        console = new XTermConsole() {
+//                            @Override
+//                            public boolean isSupportColor() {
+//                                return true;
+//                            }
+//        
+//                        };
+//                    } catch (IOException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//            if (console == null) console = Console.get();
+//            Console.set(console);
+//	    }
+//        return console;
     }
 
     public static String cmdLocationOrNull(Conductor con, String cmd) {
@@ -164,10 +170,13 @@ public class ConUtil {
 			if (path != null) return path;
 		}
 		String[] pathes = null;
+		String systemPath = System.getenv("PATH");
 		if (MSystem.isWindows())
-			pathes = con.getProperties().getString(ConUtil.PROPERTY_PATH, DEFAULT_PATHES_WINDOWS).split(";");
+			pathes = con.getProperties().getString(ConUtil.PROPERTY_PATH, DEFAULT_PATHES_WINDOWS 
+			        + (systemPath == null ? "" : ";" + systemPath) ).split(";");
 		else
-			pathes = con.getProperties().getString(ConUtil.PROPERTY_PATH, DEFAULT_PATHES_UNIX).split(":");
+			pathes = con.getProperties().getString(ConUtil.PROPERTY_PATH, DEFAULT_PATHES_UNIX 
+			        + (systemPath == null ? "" : ":" + systemPath) ).split(":");
 		
 		for (String path : pathes) {
 			File file = new File(path + File.separator + cmd);
@@ -189,6 +198,13 @@ public class ConUtil {
         if (!f.isAbsolute())
             f = new File(root, path);
         return f;
+    }
+
+    public static File getHome() {
+        String home = System.getenv(ENV_HOME);
+        if (MString.isEmpty(home))
+            return new File(MSystem.getUserHome(), ENV_HOME_DEFAULT).getAbsoluteFile();
+        return new File(home);
     }
 
 }

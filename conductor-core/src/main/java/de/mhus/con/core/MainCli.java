@@ -16,12 +16,14 @@ import de.mhus.con.api.AOption;
 import de.mhus.con.api.AScheme;
 import de.mhus.con.api.AValidator;
 import de.mhus.con.api.Cli;
+import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
 import de.mhus.con.api.ConfigType;
 import de.mhus.con.api.MainOptionHandler;
 import de.mhus.con.api.Scheme;
 import de.mhus.con.api.Validator;
 import de.mhus.conductor.api.meta.Version;
+import de.mhus.lib.core.MApi;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MString;
@@ -40,6 +42,8 @@ public class MainCli extends MLog implements Cli {
 	
 	public static void main(String[] args) throws Exception {
 		
+	    ConUtil.getConsole();
+	    
 		if (args == null || args.length == 0) {
 			System.out.println("Try --help");
 			return;

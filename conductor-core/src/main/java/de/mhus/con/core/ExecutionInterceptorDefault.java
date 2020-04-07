@@ -36,11 +36,13 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
         Console console = ConUtil.getConsole();
         console.setBold(true);
         console.println("------------------------------------------------------------------------");
+        console.print("  ");
         console.println(lifecycle);
-        console.println("");
+        console.println();
         console.setBold(false);
         for (Project p : con.getProjects()) {
             String name = p.getName() + " ";
+            console.print("  ");
             console.print(name);
             console.print(MString.rep('.', 60 - name.length()));
             console.print(" ");
@@ -64,6 +66,7 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
             console.println(p.getStatus());
             console.cleanup();
         }
+        console.println();
         console.setBold(true);
         console.println("------------------------------------------------------------------------");
         console.setBold(false);
@@ -84,10 +87,10 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
         } else {
             if (isError) {
                 console.setColor(COLOR.RED, null);
-                console.println("BUILD FAILED");
+                console.println("  BUILD FAILED");
             } else {
                 console.setColor(COLOR.GREEN, null);
-                console.println("BUILD SUCCESS");
+                console.println("  BUILD SUCCESS");
             }
         }
         console.cleanup();

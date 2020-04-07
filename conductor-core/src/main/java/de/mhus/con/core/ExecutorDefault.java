@@ -54,6 +54,7 @@ public class ExecutorDefault extends MLog implements Executor {
         this.con = con;
         ((ConductorImpl)con).properties.put(ConUtil.PROPERTY_LIFECYCLE, lifecycle);
         
+        
         Lifecycle lf = con.getLifecycles().get(lifecycle);
         try {
         	log().d("executeLifecycle",lf);
@@ -128,7 +129,7 @@ public class ExecutorDefault extends MLog implements Executor {
     protected void execute(Step step, Project project, Plugin plugin) {
     	log().d("executeProject",step,project,plugin);
         try {
-	        ContextImpl context = new ContextImpl(con, project == null ? null : project.getProperties(), step.getProperties() );
+	        ContextImpl context = new ContextImpl(con);
 	                
 	        context.init(project, plugin, step);
 	        
