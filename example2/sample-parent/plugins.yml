@@ -1,28 +1,28 @@
 plugins:
   - target: con.calculateNewVersion
-    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: calculateNewVersion
     scope: step
   - target: con.cmd
-    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: cmd
   - target: con.git
-    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: git
   - target: con.maven
-    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: maven
   - target: con.persistNewVersions
-    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: persistNewVersions
     scope: step
   - target: con.test
-    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: test
   - target: con.updatePomProperties
-    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: updatePomProperties
   - target: con.updatePomParentVersion
-    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: updatePomParentVersion
     

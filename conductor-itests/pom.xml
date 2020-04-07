@@ -39,24 +39,29 @@
         <groupId>de.mhus.conductor</groupId>
         <artifactId>conductor-api</artifactId>
         <version>${project.version}</version>
+        <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>de.mhus.conductor</groupId>
         <artifactId>conductor-core</artifactId>
         <version>${project.version}</version>
+        <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>de.mhus.conductor</groupId>
         <artifactId>conductor-plugin</artifactId>
         <version>${project.version}</version>
+        <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>de.mhus.lib</groupId>
         <artifactId>lib-annotations</artifactId>
+        <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>de.mhus.lib</groupId>
         <artifactId>lib-core</artifactId>
+        <scope>test</scope>
     </dependency>
 	<!-- 
 	<dependency>
