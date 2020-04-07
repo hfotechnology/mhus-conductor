@@ -127,7 +127,7 @@ public class ExecutorDefault extends MLog implements Executor {
     }
 
     protected void execute(Step step, Project project, Plugin plugin) {
-    	log().d("executeProject",step,project,plugin);
+    	log().i("execute",step,project,plugin);
         try {
 	        ContextImpl context = new ContextImpl(con);
 	                

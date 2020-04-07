@@ -22,12 +22,14 @@ public class CalculateNewVersion extends MLog implements ExecutePlugin {
                 .getConductor()
                 .getRoot()
                 , versionsFilePath);
+        log().t("versions file",versionsFile);
         if (versionsFile.exists() && versionsFile.isFile()) {
             MProperties versions = MProperties.load(versionsFile);
             
             // load history
             String historyFilePath = context.getStep().getProperties().getString("historyFile", "history.properties");
             File historyFile = ConUtil.getFile(context.getConductor().getRoot(), historyFilePath);
+            log().t("histroy file",historyFile);
             MProperties history = new MProperties();
             if (historyFile.exists() && historyFile.isFile())
                 history = MProperties.load(historyFile);
@@ -42,16 +44,21 @@ public class CalculateNewVersion extends MLog implements ExecutePlugin {
                 if (version == null) {
                     version = history.getString(name, null);
                     changed = false;
+                    log().d("version from history",name,version);
                 } else
                 if (version.equals(history.getString(name, null))) {
                     changed = false;
+                    log().d("version not changed",name,version);
                 }
-                if (changed) {
-                    log().i("Changed project",name,version);
+                if (version == null) {
+                    log().w("project version not found",name);
+                } else {
+                    if (changed) {
+                        log().i("Changed project",name,version);
+                    }
+                    ((MProperties)project.getProperties()).setString("version", version);
+                    ((LabelsImpl)project.getLabels()).put("version.changed", String.valueOf(changed));
                 }
-                ((MProperties)project.getProperties()).setString("version", version);
-                ((LabelsImpl)project.getLabels()).put("version.changed", String.valueOf(changed));
-                
             }
             
         } else {
