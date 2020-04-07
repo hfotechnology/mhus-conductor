@@ -27,7 +27,10 @@
 	<description>Tools to conductor mhus projects</description>
 	<url>http://www.mhus.de</url>
 	<properties>
-	   <mhus-osgi-cache.version>${project.version}</mhus-osgi-cache.version>
+       <sample-api.version>1.0.0-SNAPSHOT</sample-api.version>
+	   <sample-core.version>1.0.0-SNAPSHOT</sample-core.version>
+	   <sample-product.version>1.0.0-SNAPSHOT</sample-product.version>
+       <sample-itest.version>1.0.0-SNAPSHOT</sample-itest.version>
 	</properties>
 	<licenses>
 		<license>

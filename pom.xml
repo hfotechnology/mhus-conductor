@@ -58,6 +58,7 @@
 		<module>conductor-api</module>
 		<module>conductor-plugin</module>
 		<module>conductor-core</module>
+        <module>conductor-itest</module>
 		<module>conductor-launcher</module>
 		<module>versioning-maven-plugin</module>
 	</modules>

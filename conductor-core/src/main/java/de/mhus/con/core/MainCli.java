@@ -58,7 +58,7 @@ public class MainCli extends MLog implements Cli {
 	}
 	
 	public MainCli() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		String pack = MString.beforeLastIndex(getClass().getPackageName(), '.');
+		String pack = ConUtil.getMainPackageName();
 		log().t("Scan Package", pack);
 		
 		Reflections reflections = new Reflections(pack);

@@ -14,6 +14,19 @@ lifecycles:
     selector:
       group: parent
   - title: Set new parent version
+    target: con.updatePomParentVersion
+    selector:
+      version.changed: true
+    property:
+      version: ${projects.parent.version}
+#  - title: Install parent pom
+#    target: con.maven
+#    arguments:
+#     - clean
+#     - install
+#    selector:
+#      group: parent
+  - title: Set new project version
     target: con.maven
     arguments:
       - versions:set

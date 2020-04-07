@@ -12,9 +12,11 @@ import de.mhus.con.api.AMojo;
 import de.mhus.con.api.Context;
 import de.mhus.con.api.ExecutePlugin;
 import de.mhus.lib.core.MLog;
+import de.mhus.lib.core.MString;
 import de.mhus.lib.core.MXml;
+import de.mhus.lib.errors.MException;
 
-@AMojo(name="updatePomProperties")
+@AMojo(name="updatePomParentVersion")
 public class UpdatePomParentVersion extends MLog implements ExecutePlugin {
 
     @Override
@@ -39,6 +41,10 @@ public class UpdatePomParentVersion extends MLog implements ExecutePlugin {
         }
 
         String version = context.getStep().getProperties().getString("version");
+        log().t("parent version",version);
+        if (MString.isEmptyTrim(version)) 
+            throw new MException("parent version is empty, skip. Tip: set step property 'version'");
+        
         if (MXml.getValue(versionE, false).equals(version)) {
             log().i("version not changed",version);
             return;

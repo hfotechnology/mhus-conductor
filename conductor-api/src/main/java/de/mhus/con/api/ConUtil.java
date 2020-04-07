@@ -128,7 +128,7 @@ public class ConUtil {
 
 	public static Console getConsole() {
 	    Console ret = Console.get();
-	    System.out.println("Console: " + ret.getClass());
+	    log.t("Console",ret.getClass());
 	    return ret;
 //	    if (console == null) {
 //	        String term = System.getenv("TERM");
@@ -218,6 +218,10 @@ public class ConUtil {
         File file = File.createTempFile(owner.getSimpleName(), suffix);
         file.deleteOnExit();
         return file;
+    }
+
+    public static String getMainPackageName() {
+        return "de.mhus.con";
     }
 
 }

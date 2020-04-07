@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.reflections.Reflections;
+
 import de.mhus.con.api.AMojo;
 import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
@@ -127,7 +129,8 @@ public class ExecutorDefault extends MLog implements Executor {
     }
 
     protected void execute(Step step, Project project, Plugin plugin) {
-    	log().i("execute",step,project,plugin);
+        log().i(">>>",step.getTitle(),project == null ? "-none-" : project.getName());
+    	log().d("execute",step,project,plugin);
         try {
 	        ContextImpl context = new ContextImpl(con);
 	                
@@ -173,6 +176,11 @@ public class ExecutorDefault extends MLog implements Executor {
 	public ConductorPlugin createMojo(Conductor con, Plugin plugin) throws IOException, NotFoundException {
 		log().d("createMojo",plugin.getUri(),plugin.getMojo());
 		String mojoName = plugin.getMojo();
+		
+		if (plugin.getUri().toString().startsWith("vm:")) {
+		    // load from local vm - special action needed
+		    return createVmMojo(mojoName);
+		}
 		
 		Object[] entry = pluginClassLoaders.get(plugin.getUri());
 		
@@ -246,5 +254,27 @@ public class ExecutorDefault extends MLog implements Executor {
 		
 		throw new NotFoundException("Plugin not found",plugin, plugin.getUri(), mojoName );
 	}
+
+    public ConductorPlugin createVmMojo(String mojoName) throws IOException, NotFoundException {
+        String pack = ConUtil.getMainPackageName();
+        log().t("Scan Package", pack);
+        
+        Reflections reflections = new Reflections(pack);
+
+        for (Class<?> clazz : reflections.getTypesAnnotatedWith(AMojo.class) ) {
+            AMojo def = clazz.getAnnotation(AMojo.class);
+            log().t("AMojo",clazz,def);
+            if (def != null && def.name().equals(mojoName)) {
+                try {
+                    Object inst = clazz.getConstructor().newInstance();
+                    return (ConductorPlugin) inst;
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                    throw new IOException(e);
+                }
+            }
+        }
+        throw new NotFoundException("Plugin not found", "vm", mojoName );
+    }
 
 }
