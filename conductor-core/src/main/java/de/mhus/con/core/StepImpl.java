@@ -27,6 +27,7 @@ public class StepImpl implements Step {
     protected String ident;
     protected String title;
     protected MProperties properties = new MProperties();
+    private int id;
 
     @Override
     public LinkedList<String> getArguments() {
@@ -53,9 +54,10 @@ public class StepImpl implements Step {
         return target;
     }
 
-    public void init(Conductor con, String ident) {
+    public void init(Conductor con, int id, String ident) {
         this.con = con;
         this.ident = ident;
+        this.id = id;
     }
 
     @Override
@@ -92,5 +94,10 @@ public class StepImpl implements Step {
 	public IProperties getProperties() {
 		return properties;
 	}
+
+    @Override
+    public int getId() {
+        return id;
+    }
 
 }

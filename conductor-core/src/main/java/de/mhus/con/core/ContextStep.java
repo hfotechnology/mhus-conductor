@@ -87,4 +87,9 @@ public class ContextStep implements Step {
 		return properties;
 	}
 
+    @Override
+    public int getId() {
+        return inst.getId();
+    }
+
 }

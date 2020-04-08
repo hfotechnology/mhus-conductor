@@ -23,5 +23,7 @@ public interface Step {
 	String getTitle();
 
 	IProperties getProperties();
+
+    int getId();
     
 }

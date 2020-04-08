@@ -20,7 +20,7 @@ import de.mhus.lib.core.console.Console.COLOR;
 
 public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
 
-    private LinkedList<Result> stepResults;
+    private LinkedList<Result> results;
     private MStopWatch watch;
 
     @Override
@@ -56,14 +56,12 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
 
     @Override
     public void executeError(Context context, Throwable t) {
-        if (context.getProject() != null)
-            stepResults.add(new Result(STATUS.FAILURE,context));
+        results.add(new Result(STATUS.FAILURE,context));
     }
 
     @Override
     public void executeEnd(Context context) {
-        if (context.getProject() != null)
-            stepResults.add(new Result(STATUS.SUCCESS,context));
+        results.add(new Result(STATUS.SUCCESS,context));
     }
 
     @Override
@@ -77,6 +75,63 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
         console.println(lifecycle);
         console.println();
         console.setBold(false);
+/* Per Step view */
+        for (Step step : steps) {
+            String name = step.getTitle() + " ";
+            console.print("  ");
+            console.print(name);
+            console.print(MString.rep('.', 60 - name.length()));
+            console.print(" ");
+            STATUS status = getStepStatus(step);
+            switch (status) {
+            case FAILURE:
+                console.setColor(COLOR.BRIGHT_RED, null);
+                isError = true;
+                break;
+            case SKIPPED:
+                console.setColor(COLOR.BRIGHT_YELLOW, null);
+                break;
+            case SUCCESS:
+                console.setColor(COLOR.BRIGHT_GREEN, null);
+                break;
+            default:
+                break;
+            }
+            console.println(status);
+            console.cleanup();
+            
+            for (Result result : results) {
+                if (result.step.getId() == step.getId() && result.project != null) {
+                    Project p = result.project;
+                    String pn = p.getName();
+                    console.setColor(COLOR.BRIGHT_BLACK, null);
+                    console.print("    ");
+                    console.print(pn);
+                    console.print(" ");
+                    console.print(MString.rep('.', 57 - pn.length()));
+                    console.print(" ");
+
+                    switch (p.getStatus()) {
+                    case FAILURE:
+                        console.setColor(COLOR.RED, null);
+                        break;
+                    case SKIPPED:
+                        console.setColor(COLOR.YELLOW, null);
+                        break;
+                    case SUCCESS:
+                        console.setColor(COLOR.GREEN, null);
+                        break;
+                    default:
+                        break;
+                    }
+                    console.println(p.getStatus());
+                    console.cleanup();
+                }
+            }
+
+        }
+        
+/* Per Project view        
         for (Project p : con.getProjects()) {
             String name = p.getName() + " ";
             console.print("  ");
@@ -99,8 +154,8 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
             }
             console.println(p.getStatus());
             console.cleanup();
-            for (Result result : stepResults) {
-                if (result.project.getName().equals(p.getName())) {
+            for (Result result : results) {
+                if (result.project != null && result.project.getName().equals(p.getName())) {
                     String stepTitle = result.step.getTitle();
                     console.print("    ");
                     console.setColor(COLOR.BRIGHT_BLACK, null);
@@ -124,6 +179,7 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
                 }
             }
         }
+*/        
         console.println();
         console.setBold(true);
         console.println("------------------------------------------------------------------------");
@@ -164,9 +220,20 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
         console.setBold(false);
     }
 
+    private STATUS getStepStatus(Step step) {
+        STATUS status = STATUS.SKIPPED;
+        for (Result result : results)
+            if (result.step.getId() == step.getId()) {
+                status = result.status;
+                if (status == STATUS.FAILURE);
+                return status;
+            }
+        return status;
+    }
+
     @Override
     public void executeBegin(Conductor con, String lifecycle, Steps steps) {
-        stepResults = new LinkedList<>();
+        results = new LinkedList<>();
         watch = new MStopWatch().start();
     }
 

@@ -74,7 +74,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
             ((LifecycleImpl)lifecycle).init(con);
             int cnt = 0;
             for (Step entry : lifecycle.getSteps()) {
-                ((StepImpl)entry).init(con, lifecycle.getName() + ":" + cnt + ":" + entry.getTarget());
+                ((StepImpl)entry).init(con, cnt, lifecycle.getName() + ":" + cnt + ":" + entry.getTarget());
                 cnt++;
             }
         }
