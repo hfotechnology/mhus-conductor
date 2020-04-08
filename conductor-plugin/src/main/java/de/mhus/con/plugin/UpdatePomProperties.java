@@ -63,7 +63,7 @@ public class UpdatePomProperties extends MLog implements ExecutePlugin {
         
         if (changed) {
             log().d("update pom",pomFile);
-            MXml.saveXml(pomE, pomFile);
+            MXml.saveXml(pomDoc, pomFile, false);
         }
         
     }

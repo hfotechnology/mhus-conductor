@@ -115,7 +115,7 @@ public class SchemeTest {
 	        ((SchemesImpl)con.getSchemes()).put("mvn", new MavenScheme());
 
 	        ContextImpl context = new ContextImpl(con);
-	        context.init(null, con.getPlugins().get("test"), null);
+	        context.init(null, null, con.getPlugins().get("test"), null);
 	        
 	        ExecutorDefault exec = new ExecutorDefault();
 	        

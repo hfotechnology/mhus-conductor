@@ -60,7 +60,7 @@ public class UpdatePomParentVersion extends MLog implements ExecutePlugin {
         versionE.appendChild(versionTE);
         
         log().d("update pom",pomFile);
-        MXml.saveXml(pomE, pomFile);
+        MXml.saveXml(pomDoc, pomFile, false);
         
     }
 

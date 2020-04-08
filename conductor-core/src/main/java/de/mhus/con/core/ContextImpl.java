@@ -4,6 +4,7 @@ import java.util.Map;
 
 import de.mhus.con.api.Conductor;
 import de.mhus.con.api.Context;
+import de.mhus.con.api.Executor;
 import de.mhus.con.api.Plugin;
 import de.mhus.con.api.Project;
 import de.mhus.con.api.Step;
@@ -22,6 +23,7 @@ public class ContextImpl extends MLog implements Context {
 	private Project project;
 	private Conductor con;
 	private Step step;
+	private Executor executor;
 
     public ContextImpl(Conductor con) {
         this.con = con;
@@ -56,10 +58,11 @@ public class ContextImpl extends MLog implements Context {
 		}
 	}
 
-	public void init(Project project, Plugin plugin, Step step) {
+	public void init(Executor executor, Project project, Plugin plugin, Step step) {
 		this.project = project == null ? null : new ContextProject(this, project);
 		this.plugin = new ContextPlugin(this, plugin);
 		this.step = new ContextStep(this, step);
+		this.executor = executor;
 
 		if (step != null)
 		    putReadProperties("step.", step.getProperties());
@@ -101,5 +104,10 @@ public class ContextImpl extends MLog implements Context {
 	public String toString() {
 		return MSystem.toString(this, plugin, step, project);
 	}
+
+    @Override
+    public Executor getExecutor() {
+        return executor;
+    }
 
 }

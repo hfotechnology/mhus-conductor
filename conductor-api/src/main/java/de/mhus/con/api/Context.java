@@ -16,5 +16,7 @@ public interface Context {
 	Step getStep();
 	
 	Conductor getConductor();
+
+    Executor getExecutor();
     
 }

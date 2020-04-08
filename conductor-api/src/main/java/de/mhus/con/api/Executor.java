@@ -4,4 +4,8 @@ public interface Executor {
 
     void execute(Conductor con, String lifecycle) throws Exception;
 
+    Lifecycle getLifecycle();
+    
+    int getCurrentStepCount();
+    
 }

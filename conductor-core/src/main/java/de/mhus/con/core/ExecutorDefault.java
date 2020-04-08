@@ -28,6 +28,7 @@ import de.mhus.con.api.Lifecycle;
 import de.mhus.con.api.Plugin;
 import de.mhus.con.api.Plugin.SCOPE;
 import de.mhus.con.api.Project;
+import de.mhus.con.api.Project.STATUS;
 import de.mhus.con.api.Scheme;
 import de.mhus.con.api.Step;
 import de.mhus.con.api.Steps;
@@ -46,6 +47,8 @@ public class ExecutorDefault extends MLog implements Executor {
     private Map<String,ConductorPlugin> mojos = new HashMap<>();
     private Map<String, Object[]> pluginClassLoaders = new HashMap<>();
     private LinkedList<ExecutionInterceptorPlugin> interceptors = new LinkedList<>();
+    private Lifecycle currentLifecycle;
+    private int currentStepCount;
     
     public ExecutorDefault() {
         interceptors.add(new ExecutionInterceptorDefault()); // TODO dynamic
@@ -57,20 +60,22 @@ public class ExecutorDefault extends MLog implements Executor {
         ((ConductorImpl)con).properties.put(ConUtil.PROPERTY_LIFECYCLE, lifecycle);
         
         
-        Lifecycle lf = con.getLifecycles().get(lifecycle);
+        currentLifecycle = con.getLifecycles().get(lifecycle);
         try {
-        	log().d("executeLifecycle",lf);
-	        Steps steps = lf.getSteps();
+        	log().d("executeLifecycle",currentLifecycle);
+	        Steps steps = currentLifecycle.getSteps();
 	        execute(lifecycle, steps);
         } catch (Throwable t) {
-        	log().d(lf,t);
-        	throw new MRuntimeException(lf,t);
+        	log().d(currentLifecycle,t);
+        	throw new MRuntimeException(currentLifecycle,t);
         }
     }
 
     protected void execute(String lifecycle, Steps steps) {
+        con.getProjects().forEach(p -> ((ProjectImpl)p).setStatus(Project.STATUS.SKIPPED) );
         interceptors.forEach(i -> i.executeBegin(con, lifecycle, steps));
         try {
+            currentStepCount = 0;
             for (Step step : steps)
                 execute(step);
         } finally {
@@ -79,10 +84,8 @@ public class ExecutorDefault extends MLog implements Executor {
     }
 
     protected void execute(Step step) {
-        
+        currentStepCount++;
     	log().d("executeStep",step);
-    	// reset all projects
-    	con.getProjects().forEach(p -> ((ProjectImpl)p).setStatus(Project.STATUS.NONE) );
     	
     	try {
 	        // load plugin
@@ -107,7 +110,6 @@ public class ExecutorDefault extends MLog implements Executor {
 	        } else {
 	            projects = new LinkedList<>(con.getProjects().getAll());
 	        }
-	        projects.forEach(p -> ((ProjectImpl)p).setStatus(Project.STATUS.SKIPPED) );
 	        
 	        // order
 	        String order = step.getSortBy();
@@ -129,12 +131,12 @@ public class ExecutorDefault extends MLog implements Executor {
     }
 
     protected void execute(Step step, Project project, Plugin plugin) {
-        log().i(">>>",step.getTitle(),project == null ? "-none-" : project.getName());
-    	log().d("execute",step,project,plugin);
+        log().d(">>>",step.getTitle(),project == null ? "-none-" : project.getName());
+    	log().t("execute",step,project,plugin);
         try {
 	        ContextImpl context = new ContextImpl(con);
 	                
-	        context.init(project, plugin, step);
+	        context.init(this, project, plugin, step);
 	        
 	        if (!step.matchCondition(context)) {
 	        	log().d("condition not successful",step);
@@ -154,7 +156,7 @@ public class ExecutorDefault extends MLog implements Executor {
 	        	} else
 	        		throw t;
 	        }
-	        if (project != null) ((ProjectImpl)project).setStatus(Project.STATUS.SUCCESS);
+	        if (project != null && project.getStatus() != STATUS.FAILURE) ((ProjectImpl)project).setStatus(Project.STATUS.SUCCESS);
             interceptors.forEach(i -> i.executeEnd(context));
         } catch (Throwable t) {
         	throw new MRuntimeException(project,t);
@@ -275,6 +277,16 @@ public class ExecutorDefault extends MLog implements Executor {
             }
         }
         throw new NotFoundException("Plugin not found", "vm", mojoName );
+    }
+
+    @Override
+    public Lifecycle getLifecycle() {
+        return currentLifecycle;
+    }
+
+    @Override
+    public int getCurrentStepCount() {
+        return currentStepCount;
     }
 
 }

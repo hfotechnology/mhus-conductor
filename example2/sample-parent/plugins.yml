@@ -1,3 +1,4 @@
+# do not use the scheme vm: - it's not working with JUnit tests
 plugins:
   - target: con.calculateNewVersion
     uri: mvn:de.mhus.conductor/conductor-plugin/${conductor.version}

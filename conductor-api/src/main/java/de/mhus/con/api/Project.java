@@ -6,7 +6,7 @@ import de.mhus.lib.core.IReadProperties;
 
 public interface Project {
 
-    enum STATUS {NONE,SKIPPED,FAILURE,SUCCESS}
+    enum STATUS {SKIPPED,FAILURE,SUCCESS}
 	
     Labels getLabels();
 
