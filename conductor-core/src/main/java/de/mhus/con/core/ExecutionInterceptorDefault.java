@@ -37,6 +37,22 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
         console.print("/");
         console.print(context.getExecutor().getLifecycle().getSteps().size());
         console.print("] ");
+        if (context.getProject() != null && context.getProjects() != null) {
+            console.print("[");
+            int pIndex = 0;
+            for (Project p : context.getProjects()) {
+                pIndex++;
+                if (p.getName().equals(context.getProject().getName()))
+                    break;
+            }
+            console.print(pIndex);
+            console.print("/");
+            console.print(context.getProjects().size());
+            console.print("] ");
+            
+        } else {
+            console.print(" --- ");
+        }
         console.setColor(COLOR.RED, null);
         console.print(step);
         if (context.getProject() != null) {

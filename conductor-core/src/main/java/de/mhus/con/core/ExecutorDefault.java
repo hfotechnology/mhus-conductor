@@ -96,7 +96,7 @@ public class ExecutorDefault extends MLog implements Executor {
 	    	
 	        if (plugin.getScope() == SCOPE.STEP) {
 	        	// scope: step
-	        	execute(step, (Project)null, plugin);
+	        	execute(step, (Project)null, plugin, null);
 	        	return;
 	        }
 	    	
@@ -127,16 +127,16 @@ public class ExecutorDefault extends MLog implements Executor {
     	if (projects == null || projects.size() == 0)
     		log().w("no projects selected",step);
         for (Project project : projects)
-            execute(step, project, plugin);
+            execute(step, project, plugin, projects);
     }
 
-    protected void execute(Step step, Project project, Plugin plugin) {
+    protected void execute(Step step, Project project, Plugin plugin, LinkedList<Project> projectList) {
         log().d(">>>",step.getTitle(),project == null ? "-none-" : project.getName());
     	log().t("execute",step,project,plugin);
         try {
 	        ContextImpl context = new ContextImpl(con);
 	                
-	        context.init(this, project, plugin, step);
+	        context.init(this, projectList, project, plugin, step);
 	        
 	        if (!step.matchCondition(context)) {
 	        	log().d("condition not successful",step);
