@@ -2,12 +2,11 @@ package de.mhus.con.core;
 
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import de.mhus.con.api.AOption;
 import de.mhus.con.api.Cli;
 import de.mhus.con.api.MainOptionHandler;
-
-import java.util.TreeMap;
 
 @AOption(alias="--help")
 public class MainOptionHelp implements MainOptionHandler {
