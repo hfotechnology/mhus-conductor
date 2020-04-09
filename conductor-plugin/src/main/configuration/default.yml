@@ -1,8 +1,28 @@
 
 properties:
 
+projects:
+  # default project is current
+  - name: current
+    path: .
+
 lifecycles:
 
+- name: con.test1
+  steps:
+  - title: Test Maven Sub-Modules
+    target: con.test
+    properties:
+      processSubModules: true
+
+- name: con.test2
+  steps:
+  - title: Test Modified Maven Sub-Modules
+    target: con.test
+    properties:
+      processSubModules: true
+      modifiedOnly: true
+      
 - name: rebuild
   steps:
   - title: Rebuild
@@ -11,7 +31,7 @@ lifecycles:
     - clean
     - install
     properties:
-      touch: true
+      touchDirectory: true
     sort: order
 
 - name: build
@@ -21,7 +41,7 @@ lifecycles:
     arguments:
     - install
     properties:
-      touch: true
+      touchDirectory: true
     sort: order
 
 - name: clean

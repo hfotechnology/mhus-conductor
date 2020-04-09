@@ -1,7 +1,5 @@
 package de.mhus.con.api;
 
-import java.io.File;
-
 import de.mhus.lib.core.MString;
 
 public interface ConfigTypes extends ICollection<ConfigType> {
@@ -12,9 +10,8 @@ public interface ConfigTypes extends ICollection<ConfigType> {
 //        return get(ext);
 //    }
 
-    default ConfigType get(File cf) {
-        String name = cf.getName();
-        String ext = MString.afterLastIndex(name, '.').toLowerCase();
+    default ConfigType getForPath(String path) {
+        String ext = MString.afterLastIndex(path, '.').toLowerCase();
         return get(ext);
     }
 

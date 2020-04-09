@@ -1,15 +1,16 @@
 package de.mhus.con.plugin;
 
+import java.io.File;
+
 import de.mhus.con.api.AMojo;
 import de.mhus.con.api.Context;
-import de.mhus.con.api.ExecutePlugin;
 
 @AMojo(name="test")
-public class TestMojo implements ExecutePlugin {
+public class TestMojo extends AbstractMavenExecute {
 
 	@Override
-	public void execute(Context context) {
-		System.err.println("TestPlugin for: " + context);
+	public void execute2(File dir, Context context) {
+		System.err.println("TestPlugin for: " + context + " - Dir: " + dir);
 	}
 
 }

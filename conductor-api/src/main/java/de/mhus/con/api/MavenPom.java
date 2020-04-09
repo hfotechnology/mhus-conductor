@@ -10,6 +10,7 @@ import de.mhus.lib.core.MXml;
 public class MavenPom {
 
 	private Document doc;
+	@SuppressWarnings("unused")
 	private Element root;
 
 	public MavenPom(File pomFile) throws Exception {

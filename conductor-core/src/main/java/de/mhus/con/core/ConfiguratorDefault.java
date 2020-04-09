@@ -13,6 +13,7 @@ import de.mhus.con.api.Conductor;
 import de.mhus.con.api.ConfigType;
 import de.mhus.con.api.ConfigTypes;
 import de.mhus.con.api.Configurator;
+import de.mhus.con.api.DirectLoadScheme;
 import de.mhus.con.api.Lifecycle;
 import de.mhus.con.api.Plugin;
 import de.mhus.con.api.Plugin.SCOPE;
@@ -93,16 +94,24 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 		// 1 load resource
 		Scheme scheme = schemes.get(uri);
 		String content = null;
-		File cf = null;
-		try {
-		    cf = scheme.load(con, uri);
-		    if (cf != null)
-		        content = MFile.readFile(cf);
-		} catch (IOException e) {
-		    throw new MException(e);
+		String path = null;
+		if (scheme instanceof DirectLoadScheme) {
+			content = ((DirectLoadScheme)scheme).loadContent(uri);
+			path = uri.getPath();
+		} else {
+			File cf = null;
+			try {
+			    cf = scheme.load(con, uri);
+			    if (cf != null)
+			        content = MFile.readFile(cf);
+			} catch (IOException e) {
+			    throw new MException(e);
+			}
+			if (cf != null)
+				path = cf.getPath();
 		}
 		if (content == null) throw new NotFoundException("configuration not found", uri);
-		ConfigType type = types.get(cf);
+		ConfigType type = types.getForPath(path);
 		YMap docE = type.create(con, content);
 		if (docE.isEmpty()) {
 		    log().w("Content is empty",uri);
@@ -268,6 +277,9 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 
     protected void loadProjects(YList projectsE) {
         if (projectsE == null) return;
+        // no project overloading
+        ((ProjectsImpl)con.getProjects()).collection.clear();
+        
         for (YMap map : projectsE.toMapList()) {
             loadProject(map);
         }

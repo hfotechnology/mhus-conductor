@@ -111,13 +111,14 @@ public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin
 			try {
 		        String mvnPath = ConUtil.cmdLocation(context.getConductor(), "mvn");
 		        String cmd = mvnPath + " help:evaluate -Dexpression=project.modules";
-				String[] res = ConUtil.execute(context.getStep().getTitle() + " " + context.getProject().getName(), context.getProject().getRootDir(), cmd);
+				String[] res = ConUtil.execute(context.getStep().getTitle() + " " + context.getProject().getName(), rootDir, cmd);
 				String content = res[0];
 				int pos = content.indexOf("<strings>");
 				if (pos > 0) {
 					content = content.substring(pos);
 					pos = content.indexOf("</strings>");
 					content = content.substring(0,pos+10);
+					log().t(content);
 					Element strE = MXml.loadXml(content).getDocumentElement();
 					for (String value : MXml.getValues(strE, "string")) {
 						isLeaf = false;
