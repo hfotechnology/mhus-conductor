@@ -31,17 +31,21 @@ lifecycles:
     - clean
     - install
     properties:
-      touchDirectory: true
+      touchDirectory: ${touchDirectory:false}
+      processSubModules: ${processSubModules:true}
+      modifiedOnly: ${modifiedOnly:true}
     sort: order
 
 - name: build
   steps:
-  - title: Rebuild
+  - title: Build
     target: con.maven
     arguments:
     - install
     properties:
-      touchDirectory: true
+      touchDirectory: ${touchDirectory:false}
+      processSubModules: ${processSubModules:true}
+      modifiedOnly: ${modifiedOnly:true}
     sort: order
 
 - name: clean

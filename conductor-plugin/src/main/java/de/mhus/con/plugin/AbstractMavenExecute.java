@@ -52,7 +52,7 @@ public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin
 			if (context.getStep().getProperties().getBoolean("modifiedOnly", false)) {
 				long lastModified = dir.lastModified();
 				if (!hasYounger(dir,lastModified)) {
-					log().d("not modified, skip");
+					log().d("not modified, skip",module);
 					continue;
 				}
 				needTouch = true;
@@ -74,7 +74,7 @@ public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin
     		if (file.isDirectory()) {
     			if (hasYounger(file, lastModified)) return true;
     		} else
-			if (file.lastModified() < lastModified) {
+			if (file.lastModified() > lastModified) {
 				log().t("Younger File", file);
 				return true;
 			}
