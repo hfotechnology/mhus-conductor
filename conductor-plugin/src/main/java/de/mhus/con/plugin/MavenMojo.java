@@ -15,7 +15,7 @@ public class MavenMojo extends AbstractMavenExecute {
 	public void execute2(File dir, Context context) throws Exception {
         String mvnPath = ConUtil.cmdLocation(context.getConductor(), "mvn");
 		String cmd = mvnPath + " " + MString.join(context.getStep().getArguments(), " "); //TODO add quotes and or escapes
-		String[] res = ConUtil.execute(context.getStep().getTitle() + " " + context.getProject().getName(), dir, cmd);
+		String[] res = ConUtil.execute(context.getStep().getTitle() + " " + context.getProject().getName(), dir, cmd, true);
 		if (!res[2].equals("0"))
 		    throw new MojoException(context, "not successful",cmd,res[1],res[2]);
 	}

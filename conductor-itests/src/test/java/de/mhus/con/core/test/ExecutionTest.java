@@ -126,7 +126,7 @@ public class ExecutionTest {
     public void testCmdExecute() throws IOException {
         String mvnPath = ConUtil.cmdLocationOrNull(null, "mvn");
         if (mvnPath != null) {
-    		ConUtil.execute("TEST", new File("../conductor-api"), mvnPath + " install");
+    		ConUtil.execute("TEST", new File("../conductor-api"), mvnPath + " install", true);
     	} else {
         	System.err.println("Maven not found, skip test: " + mvnPath);
         }
@@ -134,7 +134,7 @@ public class ExecutionTest {
     
 	//@Test
 	public void testConPing() throws IOException {
-		ConUtil.execute("TEST",new File("."), "ping -c 3 -i 2 google.com");
+		ConUtil.execute("TEST",new File("."), "ping -c 3 -i 2 google.com", true);
 	}
 	
 	//@Test

@@ -22,7 +22,7 @@ public class MavenScheme extends MLog implements Scheme {
 //			MavenCli cli = new MavenCli();
 //			cli.doMain(new String[]{"clean", "install"}, "project_dir", System.out, System.out);
 			String mvnPath = ConUtil.cmdLocation(con, "mvn");
-			repositoryLocation = ConUtil.execute("MVN",con.getRoot(), mvnPath + " help:evaluate -Dexpression=settings.localRepository -q -DforceStdout")[0];
+			repositoryLocation = ConUtil.execute("MVN",con.getRoot(), mvnPath + " help:evaluate -Dexpression=settings.localRepository -q -DforceStdout", false)[0];
 		}
 		
 		File dir = new File(repositoryLocation);
@@ -64,7 +64,7 @@ public class MavenScheme extends MLog implements Scheme {
             +" -Dversion="+version
             + (ext == null ? "" : " -Dpackaging="+ext)
             + (classifier == null ? "" : " -Dclassifier="+classifier)
-			+" -DrepoUrl=");
+			+" -DrepoUrl=", true);
 		
 		if (location.exists())
 			return location;

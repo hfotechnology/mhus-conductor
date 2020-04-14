@@ -33,7 +33,7 @@ public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin
     	
     	LinkedList<String> modules = new LinkedList<>();
     	// collect sub LEAF modules
-    	if (context.getStep().getProperties().getBoolean("processSubModules", true)) {
+    	if (context.getStep().getProperties().getBoolean("processSubModules", false)) {
     		// check for pom and modules
     		if (hasModules(context.getProject().getRootDir())) {
     			// collect modules
@@ -111,7 +111,7 @@ public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin
 			try {
 		        String mvnPath = ConUtil.cmdLocation(context.getConductor(), "mvn");
 		        String cmd = mvnPath + " help:evaluate -Dexpression=project.modules";
-				String[] res = ConUtil.execute(context.getStep().getTitle() + " " + context.getProject().getName(), rootDir, cmd);
+				String[] res = ConUtil.execute(context.getStep().getTitle() + " " + context.getProject().getName(), rootDir, cmd, false);
 				String content = res[0];
 				int pos = content.indexOf("<strings>");
 				if (pos > 0) {

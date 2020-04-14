@@ -31,8 +31,8 @@ lifecycles:
     - clean
     - install
     properties:
-      touchDirectory: ${touchDirectory:false}
-      processSubModules: ${processSubModules:true}
+      touchDirectory: ${touchDirectory:true}
+      processSubModules: ${processSubModules:false}
       modifiedOnly: ${modifiedOnly:true}
     sort: order
 
@@ -43,7 +43,7 @@ lifecycles:
     arguments:
     - install
     properties:
-      touchDirectory: ${touchDirectory:false}
+      touchDirectory: ${touchDirectory:true}
       processSubModules: ${processSubModules:true}
       modifiedOnly: ${modifiedOnly:true}
     sort: order
