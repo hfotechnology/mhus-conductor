@@ -9,8 +9,10 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import de.mhus.conductor.api.meta.Version;
+import de.mhus.lib.core.MCast;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.MSystem;
+import de.mhus.lib.core.MValidator;
 import de.mhus.lib.core.console.Console;
 import de.mhus.lib.core.console.Console.COLOR;
 import de.mhus.lib.core.logging.Log;
@@ -48,6 +50,8 @@ public class ConUtil {
                 if (o1 == null && o2 == null) return 0;
                 if (o1 == null) return -1;
                 if (o2 == null) return 1;
+                if (MValidator.isNumber(o1) && MValidator.isNumber(o2))
+                    return Double.compare(MCast.todouble(o1, 0), MCast.todouble(o2, 0));
                 return o1.compareTo(o2);
             }
         });
