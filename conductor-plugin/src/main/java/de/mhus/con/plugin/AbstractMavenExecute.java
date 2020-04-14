@@ -10,6 +10,7 @@ import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Context;
 import de.mhus.con.api.ExecutePlugin;
 import de.mhus.lib.core.MLog;
+import de.mhus.lib.core.MString;
 import de.mhus.lib.core.MXml;
 
 /**
@@ -23,12 +24,11 @@ import de.mhus.lib.core.MXml;
 public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin {
 
     @Override
-    public final void execute(Context context) throws Exception {
+    public final boolean execute(Context context) throws Exception {
     	
     	// if not project scope - ignore mvn stuff
     	if (context.getProject() == null) {
-			execute2(null, context);
-			return;
+			return execute2(null, null, context);
     	}
     	
     	LinkedList<String> modules = new LinkedList<>();
@@ -44,6 +44,7 @@ public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin
     	if (modules.size() == 0)
     		modules.add("");
     	
+    	boolean done = false;
     	// iterate all modules
     	for (String module : modules) {
 			File dir = new File(context.getProject().getRootDir(), module);
@@ -59,7 +60,8 @@ public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin
 			}
 			if (modules.size() > 1)
 				ConUtil.getConsole().println(">>> Execute Sub-Module: " + module);
-			execute2(dir, context);
+			boolean taskDone = execute2(dir, module, context);
+			if (taskDone) done = true;
 			
 			if (needTouch) {
 				long time = System.currentTimeMillis();
@@ -67,6 +69,8 @@ public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin
 				dir.setLastModified(time);
 			}
     	}
+    	
+    	return done;
     }
 
     protected boolean hasYounger(File dir, long lastModified) {
@@ -135,6 +139,10 @@ public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin
 		}
 		return isLeaf;
     }
+	
+	public String getCmdName(Context context, String moduleName) {
+	    return context.getStep().getTitle() + " " + context.getProject().getName() + (MString.isSet(moduleName) ? "/" + moduleName : "");
+	}
 
-	public abstract void execute2(File dir, Context context) throws Exception;
+	public abstract boolean execute2(File dir, String moduleName, Context context) throws Exception;
 }

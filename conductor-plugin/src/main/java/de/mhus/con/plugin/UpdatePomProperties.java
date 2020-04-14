@@ -20,21 +20,21 @@ import de.mhus.lib.core.MXml;
 public class UpdatePomProperties extends MLog implements ExecutePlugin {
 
     @Override
-    public void execute(Context context) throws Exception {
+    public boolean execute(Context context) throws Exception {
         
         IReadProperties pp = context.getProject().getProperties();
         
         File pomFile = new File(context.getProject().getRootDir(), "pom.xml");
         if (!pomFile.exists()) {
             log().i("pom.xml not found in project, skip");
-            return;
+            return false;
         }
         Document pomDoc = MXml.loadXml(pomFile);
         Element pomE = pomDoc.getDocumentElement();
         Element propE = MXml.getElementByPath(pomE, "properties");
         if (propE == null) {
             log().d("pom properties not found, skip");
-            return;
+            return false;
         }
 
         boolean changed = false;
@@ -66,6 +66,7 @@ public class UpdatePomProperties extends MLog implements ExecutePlugin {
             MXml.saveXml(pomDoc, pomFile, false);
         }
         
+        return true;
     }
 
 }

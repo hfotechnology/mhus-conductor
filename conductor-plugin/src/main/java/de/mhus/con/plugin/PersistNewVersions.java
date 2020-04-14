@@ -14,7 +14,7 @@ import de.mhus.lib.core.MProperties;
 public class PersistNewVersions extends MLog implements ExecutePlugin {
 
     @Override
-    public void execute(Context context) throws Exception {
+    public boolean execute(Context context) throws Exception {
         String historyFilePath = context.getStep().getProperties().getString("historyFile", "history.properties");
         File historyFile = ConUtil.getFile(context.getConductor().getRoot(), historyFilePath);
         MProperties history = new MProperties();
@@ -29,7 +29,8 @@ public class PersistNewVersions extends MLog implements ExecutePlugin {
 
         log().t("persist",history,historyFile);
         history.save(historyFile);
-        
+
+        return true;
     }
 
 }

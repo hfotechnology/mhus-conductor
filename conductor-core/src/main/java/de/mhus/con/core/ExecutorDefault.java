@@ -143,9 +143,10 @@ public class ExecutorDefault extends MLog implements Executor {
 	        }
 	        interceptors.forEach(i -> i.executeBegin(context));
 	        
+	        boolean done = false;
 	        ConductorPlugin impl = loadMojo(context);
 	        try {
-	        	((ExecutePlugin)impl).execute(context);
+	        	done = ((ExecutePlugin)impl).execute(context);
 	        } catch (Throwable t) {
 	            if (project != null) ((ProjectImpl)project).setStatus(Project.STATUS.FAILURE);
 	            interceptors.forEach(i -> i.executeError(context, t));
@@ -155,8 +156,10 @@ public class ExecutorDefault extends MLog implements Executor {
 	        	} else
 	        		throw t;
 	        }
-	        if (project != null && project.getStatus() != STATUS.FAILURE) ((ProjectImpl)project).setStatus(Project.STATUS.SUCCESS);
-            interceptors.forEach(i -> i.executeEnd(context));
+	        if (project != null && project.getStatus() != STATUS.FAILURE && done) ((ProjectImpl)project).setStatus(Project.STATUS.SUCCESS);
+	        
+	        final boolean d = done;
+            interceptors.forEach(i -> i.executeEnd(context, d));
         } catch (Throwable t) {
         	throw new MRuntimeException(project,t);
         }

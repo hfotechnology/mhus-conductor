@@ -9,8 +9,9 @@ import de.mhus.con.api.Context;
 public class TestMojo extends AbstractMavenExecute {
 
 	@Override
-	public void execute2(File dir, Context context) {
-		System.err.println("TestPlugin for: " + context + " - Dir: " + dir);
+	public boolean execute2(File dir, String moduleName, Context context) {
+		System.err.println("TestPlugin for: " + context + "/" + moduleName + " - Dir: " + dir);
+        return true;
 	}
 
 }

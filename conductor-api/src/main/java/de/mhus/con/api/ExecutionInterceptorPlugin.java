@@ -8,7 +8,7 @@ public interface ExecutionInterceptorPlugin extends ConductorPlugin {
 
     void executeError(Context context, Throwable t);
 
-    void executeEnd(Context context);
+    void executeEnd(Context context, boolean done);
 
     void executeEnd(Conductor con, String lifecycle, Steps steps, List<ErrorInfo> errors);
 

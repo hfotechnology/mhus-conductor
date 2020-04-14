@@ -20,24 +20,24 @@ import de.mhus.lib.errors.MException;
 public class UpdatePomParentVersion extends MLog implements ExecutePlugin {
 
     @Override
-    public void execute(Context context) throws Exception {
+    public boolean execute(Context context) throws Exception {
 
         File pomFile = new File(context.getProject().getRootDir(), "pom.xml");
         if (!pomFile.exists()) {
             log().i("pom.xml not found in project, skip");
-            return;
+            return false;
         }
         Document pomDoc = MXml.loadXml(pomFile);
         Element pomE = pomDoc.getDocumentElement();
         Element parentE = MXml.getElementByPath(pomE, "parent");
         if (parentE == null) {
             log().d("pom parent not found, skip");
-            return;
+            return false;
         }
         Element versionE = MXml.getElementByPath(parentE, "version");
         if (versionE == null) {
             log().d("pom parent version not found, skip");
-            return;
+            return false;
         }
 
         String version = context.getStep().getProperties().getString("version");
@@ -47,7 +47,7 @@ public class UpdatePomParentVersion extends MLog implements ExecutePlugin {
         
         if (MXml.getValue(versionE, false).equals(version)) {
             log().i("version not changed",version);
-            return;
+            return false;
         }
         
         // remove all
@@ -62,6 +62,7 @@ public class UpdatePomParentVersion extends MLog implements ExecutePlugin {
         log().d("update pom",pomFile);
         MXml.saveXml(pomDoc, pomFile, false);
         
+        return true;
     }
 
 }

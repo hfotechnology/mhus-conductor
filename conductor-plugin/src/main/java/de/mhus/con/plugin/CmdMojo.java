@@ -12,11 +12,12 @@ import de.mhus.lib.core.MString;
 public class CmdMojo extends AbstractMavenExecute {
 
 	@Override
-	public void execute2(File dir, Context context) throws Exception {
+	public boolean execute2(File dir, String moduleName, Context context) throws Exception {
 		String cmd = MString.join(context.getStep().getArguments(), " "); //TODO add quotes and or escapes
-		String[] res = ConUtil.execute(context.getStep().getTitle() + " " + context.getProject().getName(), dir, cmd, true);
+		String[] res = ConUtil.execute(getCmdName(context, moduleName), dir, cmd, true);
 		if (!res[2].equals("0"))
 		    throw new MojoException(context, "not successful",cmd,res[1],res[2]);
+		return true;
 	}
 
 }

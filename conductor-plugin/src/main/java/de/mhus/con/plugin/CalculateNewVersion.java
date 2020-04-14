@@ -15,7 +15,7 @@ import de.mhus.lib.core.MProperties;
 public class CalculateNewVersion extends MLog implements ExecutePlugin {
 
     @Override
-    public void execute(Context context) throws Exception {
+    public boolean execute(Context context) throws Exception {
         String versionsFilePath = context.getStep().getProperties().getString("versionsFile", "versions.properties");
         File versionsFile = ConUtil.getFile(
                 context
@@ -64,6 +64,7 @@ public class CalculateNewVersion extends MLog implements ExecutePlugin {
         } else {
             log().i("versions file not found",versionsFile);
         }
+        return true;
     }
 
 }

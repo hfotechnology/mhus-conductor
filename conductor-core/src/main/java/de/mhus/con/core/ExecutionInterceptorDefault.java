@@ -76,8 +76,11 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
     }
 
     @Override
-    public void executeEnd(Context context) {
-        results.add(new Result(STATUS.SUCCESS,context));
+    public void executeEnd(Context context, boolean done) {
+        if (done)
+            results.add(new Result(STATUS.SUCCESS,context));
+        else
+            results.add(new Result(STATUS.SKIPPED,context));
     }
 
     @Override
