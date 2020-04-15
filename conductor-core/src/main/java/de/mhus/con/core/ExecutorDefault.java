@@ -324,4 +324,8 @@ public class ExecutorDefault extends MLog implements Executor {
         return currentStepCount;
     }
 
+	public void setConductor(Conductor con) {
+		this.con = con;
+	}
+
 }

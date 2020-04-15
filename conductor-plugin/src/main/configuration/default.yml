@@ -103,6 +103,10 @@ plugins:
     uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: calculateNewVersion
     scope: step
+  - target: con.nextSnapshotVersions
+    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    mojo: nextSnapshotVersions
+    scope: step
   - target: con.cmd
     uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: cmd
