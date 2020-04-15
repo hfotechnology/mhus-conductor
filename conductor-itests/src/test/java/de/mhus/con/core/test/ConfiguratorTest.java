@@ -8,6 +8,7 @@ import java.net.URI;
 
 import org.junit.jupiter.api.Test;
 
+import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
 import de.mhus.con.api.Context;
 import de.mhus.con.api.Lifecycle;
@@ -35,8 +36,8 @@ public class ConfiguratorTest {
         ((ConfigTypesImpl)config.getTypes()).put("yml", new YmlConfigType());
         ((ConfigTypesImpl)config.getTypes()).put("yaml", new YmlConfigType());
         
-        config.getValidators().add(new ProjectsValidator());
-        
+        config.getValidators().put("project",new ProjectsValidator());
+        config.getDefaultProperties().setString(ConUtil.PROPERTY_VALIDATORS, "project");
         
         URI uri = URI.create("file:conductor.yml");
         config.configure(uri, con, null);

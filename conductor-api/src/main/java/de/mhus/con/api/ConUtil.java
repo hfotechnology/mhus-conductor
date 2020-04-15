@@ -36,6 +36,7 @@ public class ConUtil {
     public static final String PROPERTY_ROOT = "conductor.root";
     public static final String PROPERTY_HOME = "conductor.home";
     // private static Console console;
+    public static final String PROPERTY_VALIDATORS = "conductor.validators";
 	
     public static void orderProjects(LinkedList<Project> projects, String order, boolean orderAsc) {
         projects.sort(new Comparator<Project>() {

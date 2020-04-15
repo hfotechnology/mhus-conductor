@@ -22,7 +22,16 @@ lifecycles:
     properties:
       processSubModules: true
       modifiedOnly: true
-      
+
+- name: git.pull
+  steps:
+  - title: Clone
+    target: con.git.clone
+  - title: Pull
+    target: con.git
+    arguments:
+    - pull
+
 - name: rebuild
   steps:
   - title: Rebuild
@@ -100,6 +109,9 @@ plugins:
   - target: con.git
     uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: git
+  - target: con.git.clone
+    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    mojo: git.clone
   - target: con.maven
     uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: maven

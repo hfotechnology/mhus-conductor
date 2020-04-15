@@ -8,8 +8,8 @@ import de.mhus.con.api.Project;
 import de.mhus.con.api.Validator;
 import de.mhus.lib.errors.MException;
 
-@AValidator(name="project")
-public class ProjectsValidator implements Validator {
+@AValidator(name="maven")
+public class MavenValidator implements Validator {
 
     @Override
     public void validate(Conductor con) throws MException {
@@ -18,6 +18,10 @@ public class ProjectsValidator implements Validator {
             File rootDir = p.getRootDir();
             if (!rootDir.exists() || !rootDir.isDirectory())
                 throw new MException("project root dir not exists",p,rootDir);
+            // check for pom
+            File f = new File(rootDir,"pom.xml");
+            if (!f.exists() || !f.isFile())
+                throw new MException("project pom file not exists",p,f);
 
         }
     }

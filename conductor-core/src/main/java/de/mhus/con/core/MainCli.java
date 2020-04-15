@@ -192,7 +192,7 @@ public class MainCli extends MLog implements Cli {
 		for (Entry<String, ConfigType> entry : configTypes.entrySet())
 			((ConfigTypesImpl)config.getTypes()).put(entry.getKey(), entry.getValue());
 		for (Entry<String, Validator> entry :validators.entrySet())
-			config.getValidators().add(entry.getValue());
+			config.getValidators().put(entry.getKey(),entry.getValue());
 
         if (configFile == null) {
         	// set default

@@ -3,9 +3,10 @@ package de.mhus.con.core;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.mhus.con.api.ConUtil;
@@ -42,11 +43,13 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 	protected ConfigTypes types = new ConfigTypesImpl();
 	protected Conductor con;
 	protected Set<String> loadedUris = new HashSet<>();
-	protected List<Validator> validators = new LinkedList<>();
+	protected Map<String,Validator> validators = new HashMap<>();
+	protected MProperties defaultProperties = new MProperties();
 	
 	@Override
 	public void configure(URI uri, Conductor con, IProperties properties) throws MException {
 		this.con = con;
+        ((ConductorImpl)con).properties.putReadProperties(defaultProperties);
 		((ConductorImpl)con).schemes = schemes;
 		
 		overwrite(MUri.toUri(uri.toString()));
@@ -83,8 +86,13 @@ public class ConfiguratorDefault extends MLog implements Configurator {
     }
 
     protected void validate() throws MException {
-        for (Validator validator : validators) {
-            validator.validate(con);
+        String[] validatorList = con.getProperties().getString(ConUtil.PROPERTY_VALIDATORS, "").split(",");
+        for (String name : validatorList) {
+            Validator validator = validators.get(name);
+            if (validator != null) {
+                validator.validate(con);
+            } else
+                log().w("Validator not found", name);
         }
     }
 
@@ -358,8 +366,12 @@ public class ConfiguratorDefault extends MLog implements Configurator {
         return loadedUris;
     }
 
-    public List<Validator> getValidators() {
+    public Map<String,Validator> getValidators() {
         return validators;
+    }
+
+    public MProperties getDefaultProperties() {
+        return defaultProperties;
     }
 
 }

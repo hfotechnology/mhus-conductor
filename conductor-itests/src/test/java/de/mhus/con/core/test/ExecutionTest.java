@@ -103,8 +103,8 @@ public class ExecutionTest {
         ((ConfigTypesImpl)config.getTypes()).put("yml", new YmlConfigType());
         ((ConfigTypesImpl)config.getTypes()).put("yaml", new YmlConfigType());
         
-        config.getValidators().add(new ProjectsValidator());
-        
+        config.getValidators().put("project", new ProjectsValidator());
+        config.getDefaultProperties().setString(ConUtil.PROPERTY_VALIDATORS, "project");
         
         URI uri = URI.create("file:conductor.yml");
         config.configure(uri, con, null);
