@@ -135,4 +135,8 @@ plugins:
   - target: con.validateProject
     uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: con.validate
+  - target: con.includeLifecycle
+    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    mojo: con.includeLifecycle
+    scope: step
     
