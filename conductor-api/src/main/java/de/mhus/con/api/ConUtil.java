@@ -22,6 +22,7 @@ import de.mhus.lib.errors.NotFoundException;
 
 public class ConUtil {
 
+	public static final Object consoleLock = new Object();
 	private static final Log log = Log.getLog(Conductor.class);
 	public static final String PROPERTY_FAE = "conductor.fae";
 	public static final String PROPERTY_CMD_PATH = "conductor.cmd.";
@@ -37,6 +38,8 @@ public class ConUtil {
     public static final String PROPERTY_HOME = "conductor.home";
     // private static Console console;
     public static final String PROPERTY_VALIDATORS = "conductor.validators";
+	public static final String PROPERTY_PARALLEL = "conductor.parallel";
+	public static final String PROPERTY_THREADS = "conductor.threads";
 	
     public static void orderProjects(LinkedList<Project> projects, String order, boolean orderAsc) {
         projects.sort(new Comparator<Project>() {
@@ -101,7 +104,7 @@ public class ConUtil {
                         while ((line = errReader.readLine()) != null) {
                             
                             if (output)
-                                synchronized (process) {
+                                synchronized (consoleLock) {
                                     console.print("[");
                                     console.setColor(COLOR.RED, null);
                                     console.print(shortName);
@@ -123,7 +126,7 @@ public class ConUtil {
             while ((line = outReader.readLine()) != null) {
                 
                 if (output)
-                    synchronized (process) {
+                    synchronized (consoleLock) {
                         console.print("[");
                         console.setColor(COLOR.GREEN, null);
                         console.print(shortName);

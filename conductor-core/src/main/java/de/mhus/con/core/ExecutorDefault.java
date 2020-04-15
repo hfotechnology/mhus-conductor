@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -125,8 +126,62 @@ public class ExecutorDefault extends MLog implements Executor {
     protected void execute(Step step, LinkedList<Project> projects, Plugin plugin) {
     	if (projects == null || projects.size() == 0)
     		log().w("no projects selected",step);
-        for (Project project : projects)
-            execute(step, project, plugin, projects);
+    	
+    	if (con.getProperties().getBoolean(ConUtil.PROPERTY_PARALLEL, false) && step.getProperties().getInt(ConUtil.PROPERTY_THREADS, 0) > 0) {
+    		LinkedList<Project> queue = new LinkedList<>(projects);
+    		Thread[] threads = new Thread[step.getProperties().getInt(ConUtil.PROPERTY_THREADS, 0)];
+    		log().d("Parallel",threads.length);
+    		for (int i = 0; i < threads.length; i++) {
+    			threads[i] = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						log().d(Thread.currentThread().getId(),"Started");
+						while (queue.size() > 0) {
+							Project task = null;
+							synchronized (queue) {
+								try {
+									task = queue.getFirst();
+								} catch (NoSuchElementException e) {
+									break;
+								}
+							}
+							if (task == null) break; // paranoia
+							log().d(Thread.currentThread().getId(),"Task",task);
+							execute(step, task, plugin, projects);
+						}
+						log().d(Thread.currentThread().getId(),"Finished");
+					}
+				});
+    			threads[i].start();    			
+    		}
+    		
+    		boolean done = false;
+    		int cnt = 0;
+    		while (!done) {
+    			done = true;
+    			for (Thread thread : threads) {
+    				if (thread.isAlive()) {
+    					done = false;
+    				}
+    				if (!done)
+						try {
+							Thread.sleep(1000);
+							cnt++;
+							if (cnt % 60 == 0)
+								synchronized (ConUtil.consoleLock) {
+									System.out.println("Wait for tasks to finish");
+								}
+						} catch (InterruptedException e) {
+							new MRuntimeException(e);
+						}
+    			}
+    		}
+    		
+    	} else {
+	        for (Project project : projects)
+	            execute(step, project, plugin, projects);
+    	}
     }
 
     protected void execute(Step step, Project project, Plugin plugin, LinkedList<Project> projectList) {
