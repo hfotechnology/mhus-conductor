@@ -128,3 +128,11 @@ plugins:
   - target: con.updatePomParentVersion
     uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: updatePomParentVersion
+  - target: con.validateStep
+    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    mojo: con.validate
+    scope: step
+  - target: con.validateProject
+    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    mojo: con.validate
+    

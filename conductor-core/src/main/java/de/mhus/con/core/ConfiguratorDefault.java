@@ -51,6 +51,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 		this.con = con;
         ((ConductorImpl)con).properties.putReadProperties(defaultProperties);
 		((ConductorImpl)con).schemes = schemes;
+        ((ConductorImpl)con).validators = validators;
 		
 		overwrite(MUri.toUri(uri.toString()));
 		initEntries();
