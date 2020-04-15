@@ -243,9 +243,10 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
         STATUS status = STATUS.SKIPPED;
         for (Result result : results)
             if (result.step.getId() == step.getId()) {
-                status = result.status;
-                if (status == STATUS.FAILURE);
-                return status;
+                if (result.status == STATUS.SUCCESS)
+                    status = result.status;
+                if (status == STATUS.FAILURE)
+                    return STATUS.FAILURE;
             }
         return status;
     }

@@ -61,6 +61,7 @@ public class ConUtil {
 	public static String[] execute(String name, File rootDir, String cmd, boolean infoOut) throws IOException {
 		
 		log.i(name,"execute",cmd,rootDir);
+		String shortName = MString.truncateNice(name, 40, 15);
 
 		ProcessBuilder processBuilder = new ProcessBuilder();
 		if (rootDir != null)
@@ -102,7 +103,7 @@ public class ConUtil {
                                 synchronized (process) {
                                     console.print("[");
                                     console.setColor(COLOR.RED, null);
-                                    console.print(name);
+                                    console.print(shortName);
                                     console.cleanup();
                                     console.print("] ");
                                     console.println(line);
@@ -124,7 +125,7 @@ public class ConUtil {
                     synchronized (process) {
                         console.print("[");
                         console.setColor(COLOR.GREEN, null);
-                        console.print(name);
+                        console.print(shortName);
                         console.cleanup();
                         console.print("] ");
                         console.println(line);

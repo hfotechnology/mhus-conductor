@@ -74,6 +74,10 @@ public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin
     }
 
     protected boolean hasYounger(File dir, long lastModified) {
+        // TODO Configurable ignore list
+        if (dir.getName().equals("target") || dir.getName().equals("bin") || dir.getName().startsWith(".")) 
+            return false;
+        
     	for (File file : dir.listFiles()) {
     		if (file.isDirectory()) {
     			if (hasYounger(file, lastModified)) return true;
