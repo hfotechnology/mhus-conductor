@@ -23,4 +23,8 @@ public class XList<T> implements IList<T>{
 		list.add(entry);
 	}
 
+	public T get(int index) {
+	    return list.get(index);
+	}
+	
 }

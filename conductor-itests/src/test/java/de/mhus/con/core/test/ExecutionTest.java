@@ -48,7 +48,7 @@ public class ExecutionTest {
         
         String[] args = new String[] {
                 "-vvv",
-                "-p",
+                "-d",
                 root.getAbsolutePath(),
                 "newVersion"
         };

@@ -31,6 +31,10 @@ public class XCollection<T> implements ICollection<T> {
 		collection.put(name, entry);
 	}
 
+    public void remove(String name) {
+        collection.remove(name);
+    }
+    
     @Override
     public Iterator<T> iterator() {
         return collection.values().iterator();

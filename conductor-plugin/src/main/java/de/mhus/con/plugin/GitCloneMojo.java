@@ -19,19 +19,19 @@ public class GitCloneMojo extends MLog implements ExecutePlugin {
         String gitUrl = context.getProject().getProperties().getString("gitUrl", null);
         String gitBranch = context.getProject().getProperties().getString("gitBranch", null);
         if (gitUrl == null) {
-            log().d("gitUrl not set, skip");
+            log().w("gitUrl not set, skip"); // or error?
             return false;
         }
         if (dir.exists() && dir.isDirectory()) {
-            log().d("dir exists, nothing to do");
-            return true;
+            log().i("project exists, nothing to do");
+            return false;
         }
         
         // create directory
         dir.mkdirs();
         
         String gitPath = ConUtil.cmdLocation(context.getConductor(), "git");
-        String cmd = gitPath + " clone " + gitUrl + " ." + (gitBranch != null ? " -b " + gitBranch : "");
+        String cmd = gitPath + " clone --progress " + gitUrl + " ." + (gitBranch != null ? " -b " + gitBranch : "");
         String[] res = ConUtil.execute(context.getStep().getTitle() + " " + context.getProject().getName(), dir, cmd, true);
         if (!res[2].equals("0"))
             throw new MojoException(context, "not successful",cmd,res[1],res[2]);

@@ -7,8 +7,8 @@ import de.mhus.con.api.AOption;
 import de.mhus.con.api.Cli;
 import de.mhus.con.api.MainOptionHandler;
 
-@AOption(alias= {"-p"})
-public class MainOptionPath implements MainOptionHandler {
+@AOption(alias= {"-d"})
+public class MainOptionDirectory implements MainOptionHandler {
 
     @Override
     public void execute(Cli cli, String cmd, LinkedList<String> queue) {
@@ -18,12 +18,12 @@ public class MainOptionPath implements MainOptionHandler {
 
     @Override
     public String getUsage(String cmd) {
-        return "<path>";
+        return "<directory>";
     }
 
     @Override
     public String getDescription(String cmd) {
-        return "Set execution root path";
+        return "Set execution root directory";
     }
 
 }

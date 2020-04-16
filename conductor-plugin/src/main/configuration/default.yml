@@ -8,21 +8,6 @@ projects:
 
 lifecycles:
 
-- name: con.test1
-  steps:
-  - title: Test Maven Sub-Modules
-    target: con.test
-    properties:
-      processSubModules: true
-
-- name: con.test2
-  steps:
-  - title: Test Modified Maven Sub-Modules
-    target: con.test
-    properties:
-      processSubModules: true
-      modifiedOnly: true
-
 - name: git.pull
   steps:
   - title: Clone
@@ -30,6 +15,14 @@ lifecycles:
   - title: Pull
     target: con.git
     arguments:
+    - pull
+
+- name: git.reset
+  steps:
+  - title: Reset
+    target: con.git
+    arguments:
+    - "reset --HARD"
     - pull
 
 - name: rebuild
@@ -65,7 +58,22 @@ lifecycles:
     - clean
     sort: order
 
-- name: newVersion
+- name: test.test1
+  steps:
+  - title: Test Maven Sub-Modules
+    target: con.test
+    properties:
+      processSubModules: true
+
+- name: test.test2
+  steps:
+  - title: Test Modified Maven Sub-Modules
+    target: con.test
+    properties:
+      processSubModules: true
+      modifiedOnly: true
+
+- name: test.newVersion
   title: Configure new versions
   steps:
   - title: Calculate new versions
