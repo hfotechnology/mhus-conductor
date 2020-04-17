@@ -11,7 +11,7 @@ public class ConfigTypeYaml implements ConfigType {
 
 	@Override
 	public YMap create(Conductor con, String content) {
-	    return MYaml.loadFromString(content);
+	    return MYaml.loadMapFromString(content);
 	}
 
 }
