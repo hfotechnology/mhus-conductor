@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +40,7 @@ public class ConUtil {
     public static final String PROPERTY_VALIDATORS = "conductor.validators";
 	public static final String PROPERTY_PARALLEL = "conductor.parallel";
 	public static final String PROPERTY_THREADS = "conductor.threads";
+    private static final Object[] SCAN_PACKAGES = new Object[] { "de.mhus.con" };
 	
     public static void orderProjects(List<Project> projects, String order, boolean orderAsc) {
         projects.sort(new Comparator<Project>() {
@@ -253,8 +253,8 @@ public class ConUtil {
         return file;
     }
 
-    public static String getMainPackageName() {
-        return "de.mhus.con";
+    public static Object[] getMainPackageName() {
+        return SCAN_PACKAGES;
     }
 
 }

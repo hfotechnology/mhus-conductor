@@ -57,7 +57,7 @@ public class MainCli extends MLog implements Cli {
 	}
 	
 	public MainCli() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		String pack = ConUtil.getMainPackageName();
+		Object[] pack = ConUtil.getMainPackageName();
 		log().t("Scan Package", pack);
 		
 		Reflections reflections = new Reflections(pack);
@@ -70,7 +70,7 @@ public class MainCli extends MLog implements Cli {
 				for (String alias : def.alias()) {
 					MainOptionHandler old = optionHandlers.put(alias, (MainOptionHandler) inst);
 					if (old != null)
-						log().w("Overwrite",alias);
+						log().w("Overwrite",alias, old.getClass(), clazz);
 				}
 			}
 		}
@@ -83,7 +83,7 @@ public class MainCli extends MLog implements Cli {
 				for (String alias : def.name()) {
 					Scheme old = schemes.put(alias, (Scheme) inst);
 					if (old != null)
-						log().w("Overwrite",alias);
+						log().w("Overwrite",alias, old.getClass(), clazz);
 				}
 			}
 		}
@@ -96,20 +96,7 @@ public class MainCli extends MLog implements Cli {
 				for (String alias : def.name()) {
 					ConfigType old = configTypes.put(alias, (ConfigType) inst);
 					if (old != null)
-						log().w("Overwrite",alias);
-				}
-			}
-		}
-		
-		for (Class<?> clazz : reflections.getTypesAnnotatedWith(AConfigType.class) ) {
-			AConfigType def = clazz.getAnnotation(AConfigType.class);
-			log().t("AConfigType",clazz,def);
-			if (def != null) {
-				Object inst = clazz.getConstructor().newInstance();
-				for (String alias : def.name()) {
-					ConfigType old = configTypes.put(alias, (ConfigType) inst);
-					if (old != null)
-						log().w("Overwrite",alias);
+						log().w("Overwrite",alias, old.getClass(), clazz);
 				}
 			}
 		}
@@ -122,7 +109,7 @@ public class MainCli extends MLog implements Cli {
 				for (String alias : def.name()) {
 					Validator old = validators.put(alias, (Validator) inst);
 					if (old != null)
-						log().w("Overwrite",alias);
+						log().w("Overwrite",alias, old.getClass(), clazz);
 				}
 			}
 		}

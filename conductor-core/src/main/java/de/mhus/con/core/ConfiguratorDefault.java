@@ -29,6 +29,7 @@ import de.mhus.lib.core.MCast;
 import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MProperties;
+import de.mhus.lib.core.MString;
 import de.mhus.lib.core.MValidator;
 import de.mhus.lib.core.util.MUri;
 import de.mhus.lib.core.yaml.YList;
@@ -89,6 +90,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
     protected void validate() throws MException {
         String[] validatorList = con.getProperties().getString(ConUtil.PROPERTY_VALIDATORS, "").split(",");
         for (String name : validatorList) {
+            if (MString.isEmpty(name)) continue;
             Validator validator = validators.get(name);
             if (validator != null) {
                 validator.validate(con);

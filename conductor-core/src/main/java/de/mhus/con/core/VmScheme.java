@@ -27,7 +27,7 @@ public class VmScheme extends MLog implements DirectLoadScheme {
 
 	@Override
 	public ConductorPlugin loadPlugin(MUri uri, String mojoName) throws NotFoundException, IOException {
-        String pack = ConUtil.getMainPackageName();
+        Object[] pack = ConUtil.getMainPackageName();
         log().t("Scan Package", pack);
         
         Reflections reflections = new Reflections(pack);
