@@ -17,6 +17,7 @@ import de.mhus.lib.core.MCast;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.console.Console;
+import de.mhus.lib.core.console.Console.COLOR;
 import de.mhus.lib.core.yaml.MYaml;
 import de.mhus.lib.core.yaml.YList;
 
@@ -33,10 +34,14 @@ public class MainOptionConsole implements MainOptionHandler {
     
             Console console = ConUtil.getConsole();
             LinkedList<String> history = new LinkedList<String>();
+            LinkedList<String> historySteps = new LinkedList<String>();
             
-    		System.out.println("Conductor debug console");
-    		System.out.print("> ");
+    		console.println("Conductor debug console");
             while (true) {
+                console.setColor(COLOR.GREEN, null);
+                console.print("> ");
+                console.cleanup();
+                console.flush();
                 String line = console.readLine(history);
                 try {
                     if (line == null || line.equals("quit"))
@@ -121,14 +126,16 @@ public class MainOptionConsole implements MainOptionHandler {
                     } else
                     if (line.equals("steps:")) {
                         System.out.println("Finish the input with '---' in a single line:");
-                		System.out.print("# ");
                 		StringBuilder stepDef = new StringBuilder();
                     	while (true) {
-                            String line2 = console.readLine(history);
+                    	    console.setColor(COLOR.RED, null);
+                    	    console.print("$ ");
+                    	    console.cleanup();
+                    	    console.flush();
+                            String line2 = console.readLine(historySteps);
                     		if (line2.equals("---"))
                     			break;
                     		stepDef.append(line2).append('\n');
-                    		System.out.print("# ");
                     	}
                     	System.out.println("Execute Steps:\n" + stepDef);
                     	
@@ -187,7 +194,6 @@ public class MainOptionConsole implements MainOptionHandler {
                         ((MProperties)con().getProperties()).put(k, v);
                     } else
                         System.out.println("unknown command");
-            		System.out.print("> ");
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }

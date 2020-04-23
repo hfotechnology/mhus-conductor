@@ -54,7 +54,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 		((ConductorImpl)con).schemes = schemes;
         ((ConductorImpl)con).validators = validators;
 		
-		overwrite(MUri.toUri(uri.toString()));
+		overwrite(MUri.toUri(uri.toString()), true);
 		initEntries();
 		if (properties != null)
 			((ConductorImpl)con).properties.putReadProperties(properties);
@@ -99,7 +99,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
         }
     }
 
-    protected void overwrite(MUri uri) throws MException {
+    protected void overwrite(MUri uri, boolean rebase) throws MException {
 		log().d("load uri",uri);
 		loadedUris.add(uri.toString());
 		// 1 load resource
@@ -145,8 +145,43 @@ public class ConfiguratorDefault extends MLog implements Configurator {
         YList lifecyclesE = docE.getList("lifecycles");
         loadLifecycles(lifecyclesE);
         
-		
+        if (rebase) {
+            YMap rebaseE = docE.getMap("rebase");
+            rebase(rebaseE);
+        }
+            
 	}
+
+    private void rebase(YMap rebaseE) throws MException {
+        if (rebaseE == null) return;
+
+        String base = rebaseE.getString("base", "");
+        if (MString.isSet(base)) {
+
+            File baseDir = new File(base);
+            if (!baseDir.isAbsolute())
+                baseDir = new File(con.getRoot(), base).getAbsoluteFile();
+            ((ConductorImpl)con).root = baseDir;
+            
+            String configFile = rebaseE.getString("configuration", null);
+            if (configFile == null) configFile = MainCli.findDefaultFile(con.getRoot());
+            
+            // import rebase
+            MUri uri = MUri.toUri(configFile);
+            log().i("rebase",uri);
+            overwrite(uri, false);
+            
+        }
+
+        YList projectsE = rebaseE.getList("projects");
+        if (projectsE != null) {
+            // remove all projects not in list
+            HashSet<String> names = new HashSet<>();
+            con.getProjects().forEach(p -> names.add(p.getName()));
+            projectsE.toStringList().forEach(n -> names.remove(n));
+            names.forEach(n -> ((ConductorImpl)con).projects.remove(n) );
+        }
+    }
 
     private void loadProperties(YMap propertiesE) {
         if (propertiesE == null) return;
@@ -348,7 +383,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 			if (loadedUris.contains(uri.toString())) {
 				log().d("Ignore, already loaded",uriStr);
 			} else {
-				overwrite(uri);
+				overwrite(uri, false);
 			}
 		}
 	}

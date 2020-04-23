@@ -38,6 +38,7 @@ public class MainCli extends MLog implements Cli {
 	protected File rootDir = new File(".");
 	protected ConductorImpl con;
 	protected String configFile;
+	private MProperties overlayProperties = new MProperties();
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -183,20 +184,27 @@ public class MainCli extends MLog implements Cli {
 
         if (configFile == null) {
         	// set default
-        	File file = new File(rootDir, "conductor.yml");
-        	if (file.exists() && file.isFile())
-        		configFile = "file:conductor.yml";
-        	else
-        		configFile = "mvn:de.mhus.conductor/conductor-plugin/"+Version.VERSION+"/yml/configuration-default";
+        	configFile = findDefaultFile(rootDir);
         }
         URI uri = URI.create(configFile);
         
         con = new ConductorImpl(rootDir);
         
-        config.configure(uri, con, null);
+        config.configure(uri, con, overlayProperties);
 		
 	}
 
+	public static String findDefaultFile(File rootDir) {
+        // set default
+        File file = new File(rootDir, "conductor.yml");
+        String config = null;
+        if (file.exists() && file.isFile())
+            config = "file:conductor.yml";
+        else
+            config = "mvn:de.mhus.conductor/conductor-plugin/"+Version.VERSION+"/yml/configuration-default";
+	    return config;
+	}
+	
 	@Override
 	public Map<String, MainOptionHandler> getOptions() {
 		return optionHandlers;
@@ -206,6 +214,7 @@ public class MainCli extends MLog implements Cli {
 		if (con == null) return;
 		con.close();
 		con = null;
+		overlayProperties.clear();
 	}
 
     @Override
@@ -231,6 +240,10 @@ public class MainCli extends MLog implements Cli {
             log().w(e);
         }
         return con;
+    }
+
+    public MProperties getOverlayProperties() {
+        return overlayProperties;
     }
 
 }

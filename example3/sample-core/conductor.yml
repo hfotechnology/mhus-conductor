@@ -1,0 +1,5 @@
+
+rebase: 
+  base: ../sample-parent
+  projects:
+  - sample-core
