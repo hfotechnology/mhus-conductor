@@ -245,7 +245,7 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
             if (result.step.getId() == step.getId()) {
                 if (result.status == STATUS.SUCCESS)
                     status = result.status;
-                if (status == STATUS.FAILURE)
+                if (result.status == STATUS.FAILURE)
                     return STATUS.FAILURE;
             }
         return status;

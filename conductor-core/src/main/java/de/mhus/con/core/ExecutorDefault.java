@@ -208,6 +208,7 @@ public class ExecutorDefault extends MLog implements Executor {
 	        	errors.add(new ErrorsInfoImpl(context, t));
 	        	if (con.getProperties().getBoolean(ConUtil.PROPERTY_FAE, false)) {
 	        		log().e(context,t);
+	        		return;
 	        	} else
 	        		throw t;
 	        }
