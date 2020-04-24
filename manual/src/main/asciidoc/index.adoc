@@ -53,6 +53,8 @@ include::admin-guide/default-lifecycles.adoc[]
 
 include::admin-guide/default-plugins.adoc[]
 
+include::admin-guide/additional-maven-plugins.adoc[]
+
 == Developer Guide
 
 include::developer-guide/api.adoc[]
