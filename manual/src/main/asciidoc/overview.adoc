@@ -1,0 +1,30 @@
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+== Overview
+
+MHUS Conductor is a tool to manage multiple connected software projects
+at the same time.
+
+Conductor can be used to build rebuild maven projects and it recognices
+which sub projects are changed. It automatically pulls changes from git
+repository.
+
+Conductor can deploy projects and set automatically new version strings
+in maven pom files.
+
+It's designed to process complex release deploy processes creating new versions,
+tags and switch to the next SNAPSHOT version.
+
+Conductor can even helpyou manage single projects.
