@@ -35,8 +35,8 @@ import de.mhus.con.api.Steps;
 import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MString;
-import de.mhus.lib.core.lang.Value;
 import de.mhus.lib.core.util.MUri;
+import de.mhus.lib.core.util.Value;
 import de.mhus.lib.errors.MRuntimeException;
 import de.mhus.lib.errors.NotFoundException;
 
