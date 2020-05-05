@@ -1,9 +1,8 @@
 package de.mhus.con.api;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +11,7 @@ import de.mhus.conductor.api.meta.Version;
 import de.mhus.lib.core.MCast;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.MSystem;
+import de.mhus.lib.core.MSystem.ExecuteControl;
 import de.mhus.lib.core.MValidator;
 import de.mhus.lib.core.console.Console;
 import de.mhus.lib.core.console.Console.COLOR;
@@ -66,66 +66,23 @@ public class ConUtil {
 	public static String[] execute(String name, File rootDir, String cmd, boolean infoOut) throws IOException {
 		
 		log.i(name,"execute",cmd,rootDir);
-		String shortName = MString.truncateNice(name, 40, 15);
-
-		ProcessBuilder processBuilder = new ProcessBuilder();
-		if (rootDir != null)
-		    processBuilder.directory(rootDir);
-		if (MSystem.isWindows())
-			// Windows
-			processBuilder.command("cmd.exe", "/c", cmd);
-		else
-			// Unix
-			processBuilder.command("/bin/bash", "-c", cmd);
-
-		Console console = getConsole();
 		
-		boolean output = infoOut || log.isLevelEnabled(LEVEL.DEBUG);
-		
-        try {
+		final String shortName = MString.truncateNice(name, 40, 15);
+        final Console console = getConsole();
+        final boolean output = infoOut || log.isLevelEnabled(LEVEL.DEBUG);
 
-            Process process = processBuilder.start();
+        final StringBuilder stdOutBuilder = new StringBuilder();
+        final StringBuilder stdErrBuilder = new StringBuilder();
 
-            BufferedReader outReader =
-                    new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            StringBuilder stdOutBuilder = new StringBuilder();
-
-            final BufferedReader errReader =
-                    new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
-            StringBuilder stdErrBuilder = new StringBuilder();
-
-            Thread errorWriterTask = new Thread(new Runnable() {
-                
-                @Override
-                public void run() {
-                    String line;
-                    try {
-                        while ((line = errReader.readLine()) != null) {
-                            
-                            if (output)
-                                synchronized (consoleLock) {
-                                    console.print("[");
-                                    console.setColor(COLOR.RED, null);
-                                    console.print(shortName);
-                                    console.cleanup();
-                                    console.print("] ");
-                                    console.println(line);
-                                    console.flush();
-                                }
-                            if (stdErrBuilder.length() > 0) 
-                                stdErrBuilder.append("\n");
-                            stdErrBuilder.append(line);
-                        }
-                    } catch (Throwable t) {}
-                }
-            });
-            errorWriterTask.start();
+        int exitCode = MSystem.execute(shortName, rootDir, cmd, new ExecuteControl() {
             
-            String line;
-            while ((line = outReader.readLine()) != null) {
-                
+		    @Override
+		    public void stdin(PrintWriter writer) {
+
+		    }
+		    
+            @Override
+            public void stdout(String line) {
                 if (output)
                     synchronized (consoleLock) {
                         console.print("[");
@@ -137,26 +94,33 @@ public class ConUtil {
                         console.flush();
                     }
                 if (stdOutBuilder.length() > 0) 
-                	stdOutBuilder.append("\n");
+                    stdOutBuilder.append("\n");
                 stdOutBuilder.append(line);
             }
-
-
-            int exitCode = process.waitFor();
             
-            errorWriterTask.interrupt();
             
-    		String stderr = stdErrBuilder.toString();
-    		String stdout = stdOutBuilder.toString();
-    		log.i(name,"exitCode",exitCode);
-    		return new String[] {stdout, stderr, String.valueOf(exitCode)};
-            
+            @Override
+            public void stderr(String line) {
+                if (output)
+                    synchronized (consoleLock) {
+                        console.print("[");
+                        console.setColor(COLOR.RED, null);
+                        console.print(shortName);
+                        console.cleanup();
+                        console.print("] ");
+                        console.println(line);
+                        console.flush();
+                    }
+                if (stdErrBuilder.length() > 0) 
+                    stdErrBuilder.append("\n");
+                stdErrBuilder.append(line);
+            }
+        });
 
-        } catch (InterruptedException e) {
-            throw new IOException(e);
-        }
-		
-		
+		String stderr = stdErrBuilder.toString();
+		String stdout = stdOutBuilder.toString();
+		log.i(name,"exitCode",exitCode);
+		return new String[] {stdout, stderr, String.valueOf(exitCode)};
 	}
 
 	public static Console getConsole() {

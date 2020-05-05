@@ -26,5 +26,14 @@ public interface Context {
      * @return List or null
      */
     List<Project> getProjects();
+
+    /**
+     * Return a property value or default. Search from Step to Project to General.
+     * 
+     * @param key
+     * @param def
+     * @return Value or default
+     */
+    String getRecursiveProperty(String key, String def);
     
 }

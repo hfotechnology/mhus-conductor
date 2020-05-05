@@ -123,7 +123,10 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
                 if (result.step.getId() == step.getId() && result.project != null) {
                     Project p = result.project;
                     String pn = p.getName();
-                    console.setColor(COLOR.BRIGHT_BLACK, null);
+                    if (p.getStatus() == STATUS.SKIPPED)
+                        console.setColor(COLOR.BRIGHT_BLACK, null);
+                    else
+                        console.setColor(COLOR.WHITE, null);
                     console.print("    ");
                     console.print(pn);
                     console.print(" ");

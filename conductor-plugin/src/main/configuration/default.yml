@@ -25,6 +25,16 @@ lifecycles:
     - "reset --HARD"
     - pull
 
+- name: reset
+  steps:
+  - title: Reset Directory Touch
+    target: con.reset
+    properties:
+      touchDirectory: false
+      processSubModules: ${processSubModules:false}
+      modifiedOnly: false
+    sort: order
+
 - name: rebuild
   steps:
   - title: Rebuild
@@ -35,12 +45,12 @@ lifecycles:
     properties:
       touchDirectory: ${touchDirectory:true}
       processSubModules: ${processSubModules:false}
-      modifiedOnly: ${modifiedOnly:false}
+      modifiedOnly: ${modifiedOnly:true}
     sort: order
 
 - name: build
   steps:
-  - title: Build
+  - title: Maven Build
     target: con.maven
     arguments:
     - install
@@ -56,6 +66,14 @@ lifecycles:
     target: con.maven
     arguments:
     - clean
+    sort: order
+
+- name: docker.build
+  steps:
+  - title: Docker Build
+    target: con.docker
+    arguments:
+    - build
     sort: order
 
 - name: test.test1
@@ -151,4 +169,10 @@ plugins:
     uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: con.includeLifecycle
     scope: step
+  - target: con.reset
+    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    mojo: resetDirectoryTouch
+  - target: con.docker
+    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    mojo: docker
     

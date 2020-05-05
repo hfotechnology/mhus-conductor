@@ -118,4 +118,19 @@ public class ContextImpl extends MLog implements Context {
         return projects;
     }
 
+    @Override
+    public String getRecursiveProperty(String key, String def) {
+        String value = step.getProperties().getString(key, null);
+        if (value == null && project != null)
+            value = project.getProperties().getString(key, null);
+        if (value == null && con != null) {
+            value = con.getProperties().getString(key, null);
+            if (value != null)
+                value = make(value);
+        }
+        if (value == null)
+            value = def;
+        return value;
+    }
+
 }
