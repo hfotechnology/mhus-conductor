@@ -72,35 +72,11 @@
         <groupId>de.mhus.lib</groupId>
         <artifactId>lib-core</artifactId>
     </dependency>
-	<!-- 
-	<dependency>
-	    <groupId>org.bouncycastle</groupId>
-	    <artifactId>bcprov-jdk16</artifactId>
-	</dependency>
-	<dependency>
-	    <groupId>org.bouncycastle</groupId>
-	    <artifactId>bcmail-jdk16</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.httpcomponents</groupId>
-		<artifactId>httpclient</artifactId>
-	</dependency>
-	<dependency>
-	  <groupId>net.bytebuddy</groupId>
-	  <artifactId>byte-buddy</artifactId>
-	</dependency>
-	<dependency>
-	    <groupId>net.bytebuddy</groupId>
-	    <artifactId>byte-buddy-agent</artifactId>
-	</dependency>
-	 -->
 	
-<!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
-<dependency>
-    <groupId>org.yaml</groupId>
-    <artifactId>snakeyaml</artifactId>
-    <version>1.26</version>
-</dependency>
+	<dependency>
+	    <groupId>org.yaml</groupId>
+	    <artifactId>snakeyaml</artifactId>
+	</dependency>
 
 
 	
