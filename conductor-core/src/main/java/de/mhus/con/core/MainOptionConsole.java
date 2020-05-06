@@ -27,7 +27,7 @@ import de.mhus.lib.core.console.Console.COLOR;
 import de.mhus.lib.core.yaml.MYaml;
 import de.mhus.lib.core.yaml.YList;
 
-@AOption(alias="--console")
+@AOption(alias="-console")
 public class MainOptionConsole implements MainOptionHandler {
 
 	private Cli cli;
@@ -42,7 +42,7 @@ public class MainOptionConsole implements MainOptionHandler {
             LinkedList<String> history = new LinkedList<String>();
             LinkedList<String> historySteps = new LinkedList<String>();
             
-    		console.println("Conductor debug console");
+    		console.println("Conductor console");
             while (true) {
                 console.setColor(COLOR.GREEN, null);
                 console.print("> ");
@@ -130,19 +130,23 @@ public class MainOptionConsole implements MainOptionHandler {
                     	}
                         System.out.println("###################################################################");
                     } else
-                    if (line.equals("steps:")) {
-                        System.out.println("Finish the input with '---' in a single line:");
+                    if (line.trim().startsWith("- title:")|| line.equals("steps")) {
                 		StringBuilder stepDef = new StringBuilder();
-                    	while (true) {
-                    	    console.setColor(COLOR.RED, null);
-                    	    console.print("$ ");
-                    	    console.cleanup();
-                    	    console.flush();
-                            String line2 = console.readLine(historySteps);
-                    		if (line2.equals("---"))
-                    			break;
-                    		stepDef.append(line2).append('\n');
-                    	}
+                		if (!line.equals("steps")) {
+                		    stepDef.append(line);
+                		} else {
+                            System.out.println("Finish the input with '---' in a single line:");
+                        	while (true) {
+                        	    console.setColor(COLOR.RED, null);
+                        	    console.print("$ ");
+                        	    console.cleanup();
+                        	    console.flush();
+                                String line2 = console.readLine(historySteps);
+                        		if (line2.equals("---"))
+                        			break;
+                        		stepDef.append(line2).append('\n');
+                        	}
+                		}
                     	System.out.println("Execute Steps:\n" + stepDef);
                     	
                     	String name = UUID.randomUUID().toString();
@@ -171,7 +175,8 @@ public class MainOptionConsole implements MainOptionHandler {
                         System.out.println("projects [key=value] [orderBy] - print or filter projects");
                         System.out.println("env                        - print properties");
                         System.out.println("<key>=<value>              - set property");
-                        System.out.println("steps:                     - insert and execute a list of steps");
+                        System.out.println("steps                      - insert and execute a list of steps");
+                        System.out.println("- title:                   - insert and execute directly a list of steps (copy & paste only)");
                         System.out.println("-<option>                  - execute option (e.g. --help)");
                         System.out.println("quit                       - quit shell");
                         System.out.println("backup <file>              - save property status");
@@ -192,7 +197,7 @@ public class MainOptionConsole implements MainOptionHandler {
                         for (Project project : con.getProjects()) {
                             MConfig pp = new MConfig();
                             MConfig p = new MConfig();
-                            p.setString("name", project.getName());
+                            pp.setString("name", project.getName());
                             p.putReadProperties(project.getProperties());
                             pp.setObject("properties", p);
                             projectsC.add(pp);

@@ -9,8 +9,14 @@ public class LabelsImpl extends XCollection<String> implements Labels {
 		for (String sKey : selector.keys()) {
 			String sValue = selector.get(sKey);
 			String lValue = getOrNull(sKey);
-			if (lValue == null) return false;
-			if (!lValue.matches(sValue)) return false;
+			if (lValue == null) {
+			    log().t(sKey, "not found in project");
+			    return false;
+			}
+			if (!lValue.equals(sValue) && !lValue.matches(sValue)) {
+			    log().t(lValue,"not matches",sValue);
+			    return false;
+			}
 		}
 		return true;
 	}

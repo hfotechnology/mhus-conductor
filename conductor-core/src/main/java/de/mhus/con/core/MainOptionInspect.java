@@ -16,7 +16,7 @@ import de.mhus.con.api.Scheme;
 import de.mhus.con.api.Step;
 import de.mhus.con.api.Validator;
 
-@AOption(alias = "--inspect")
+@AOption(alias = "-inspect")
 public class MainOptionInspect implements MainOptionHandler {
 
     @Override

@@ -349,6 +349,7 @@ public class ConfiguratorDefault extends MLog implements Configurator {
         	project.labels = new LabelsImpl();
     	    for (String key : l.getKeys())
     	    	((LabelsImpl)project.labels).put(key, l.getString(key));
+    	    ((LabelsImpl)project.labels).put("_name", project.name);
         }
 		YMap propertiesE = map.getMap("properties");
         loadProjectProperties(propertiesE, project);

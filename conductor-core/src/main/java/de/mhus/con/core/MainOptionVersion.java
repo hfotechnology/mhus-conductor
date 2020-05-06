@@ -7,7 +7,7 @@ import de.mhus.con.api.Cli;
 import de.mhus.con.api.MainOptionHandler;
 import de.mhus.conductor.api.meta.Version;
 
-@AOption(alias="--version")
+@AOption(alias="-version")
 public class MainOptionVersion implements MainOptionHandler {
 
 	@Override

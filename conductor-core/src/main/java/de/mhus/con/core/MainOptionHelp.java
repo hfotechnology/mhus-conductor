@@ -8,7 +8,7 @@ import de.mhus.con.api.AOption;
 import de.mhus.con.api.Cli;
 import de.mhus.con.api.MainOptionHandler;
 
-@AOption(alias="--help")
+@AOption(alias="-help")
 public class MainOptionHelp implements MainOptionHandler {
 
 	@Override

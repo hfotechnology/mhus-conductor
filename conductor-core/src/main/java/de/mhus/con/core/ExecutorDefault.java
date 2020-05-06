@@ -68,6 +68,8 @@ public class ExecutorDefault extends MLog implements Executor {
         } catch (Throwable t) {
         	log().d(currentLifecycle,t);
         	throw new MRuntimeException(currentLifecycle,t);
+        } finally  {
+            errors.clear();
         }
     }
 
@@ -81,7 +83,6 @@ public class ExecutorDefault extends MLog implements Executor {
         } finally {
             interceptors.forEach(i -> i.executeEnd(con, lifecycle, steps, errors));
         }
-        errors.clear();
     }
 
     protected void execute(Step step) {

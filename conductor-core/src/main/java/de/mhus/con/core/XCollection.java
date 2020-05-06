@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import de.mhus.con.api.ICollection;
+import de.mhus.lib.core.MLog;
 import de.mhus.lib.errors.MRuntimeException;
 
-public class XCollection<T> implements ICollection<T> {
+public class XCollection<T> extends MLog implements ICollection<T> {
 
 	protected HashMap<String, T> collection = new HashMap<>();
 
