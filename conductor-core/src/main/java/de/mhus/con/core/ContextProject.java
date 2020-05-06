@@ -73,4 +73,8 @@ public class ContextProject implements Project {
         return inst.getStatus();
     }
 
+    public Project getInstance() {
+        return inst;
+    }
+    
 }

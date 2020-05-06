@@ -70,11 +70,13 @@ lifecycles:
 
 - name: docker.build
   steps:
+  - title: Load Version
+    target: con.loadVersion
   - title: Docker Build
     target: con.docker
     arguments:
     - build
-    - '-t ${project.name}:${project.version}'
+    - '-t ${project._name}:${project.version}'
     - '.'
     sort: order
 
@@ -177,4 +179,7 @@ plugins:
   - target: con.docker
     uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
     mojo: docker
+  - target: con.loadVersion
+    uri: vm:de.mhus.conductor/conductor-plugin/${conductor.version}
+    mojo: loadPomVersion
     

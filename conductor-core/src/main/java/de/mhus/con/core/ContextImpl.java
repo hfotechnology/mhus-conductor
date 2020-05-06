@@ -67,10 +67,15 @@ public class ContextImpl extends MLog implements Context {
 		this.executor = executor;
 		this.projects = projects;
 
-		if (step != null)
+		if (step != null) {
 		    putReadProperties("step.", step.getProperties());
-		if (project != null)
+		    properties.put("step._title", step.getTitle());
+            properties.put("step._target", step.getTarget());
+		}
+		if (project != null) {
 		    putReadProperties("project.", project.getProperties());
+		    properties.put("project._name", project.getName());
+		}
 		if (con != null && con.getProjects() != null)
     		for (Project p : con.getProjects())
                 putReadProperties("projects." + p.getName() + ".", p.getProperties());

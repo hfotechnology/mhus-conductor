@@ -3,6 +3,7 @@ package de.mhus.con.core;
 import java.util.Iterator;
 
 import de.mhus.con.api.Labels;
+import de.mhus.con.api.Project;
 
 public class ContextLabels implements Labels {
 
@@ -54,5 +55,9 @@ public class ContextLabels implements Labels {
 	public String toString() {
 		return inst.toString();
 	}
+
+    public Labels getInstance() {
+        return inst;
+    }
 
 }

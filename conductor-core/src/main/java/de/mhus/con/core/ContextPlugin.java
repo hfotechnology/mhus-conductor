@@ -1,6 +1,7 @@
 package de.mhus.con.core;
 
 import de.mhus.con.api.Plugin;
+import de.mhus.con.api.Project;
 
 public class ContextPlugin implements Plugin {
 
@@ -36,5 +37,9 @@ public class ContextPlugin implements Plugin {
 	public String toString() {
 		return inst.toString();
 	}
+
+    public Plugin getInstance() {
+        return inst;
+    }
 
 }
