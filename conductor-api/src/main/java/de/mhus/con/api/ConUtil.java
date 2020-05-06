@@ -1,3 +1,16 @@
+/**
+ * Copyright 2018 Mike Hummel
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.mhus.con.api;
 
 import java.io.File;
@@ -22,13 +35,14 @@ import de.mhus.lib.errors.NotFoundException;
 
 public class ConUtil {
 
-	public static final Object consoleLock = new Object();
-	private static final Log log = Log.getLog(Conductor.class);
-	public static final String PROPERTY_FAE = "conductor.fae";
-	public static final String PROPERTY_CMD_PATH = "conductor.cmd.";
-	public static final String PROPERTY_PATH = "conductor.path";
-	public static final String DEFAULT_PATHES_UNIX = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin";
-	public static final String DEFAULT_PATHES_WINDOWS = "C:\\Program Files;C:\\Winnt;C:\\Winnt\\System32";
+    public static final Object consoleLock = new Object();
+    private static final Log log = Log.getLog(Conductor.class);
+    public static final String PROPERTY_FAE = "conductor.fae";
+    public static final String PROPERTY_CMD_PATH = "conductor.cmd.";
+    public static final String PROPERTY_PATH = "conductor.path";
+    public static final String DEFAULT_PATHES_UNIX = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+    public static final String DEFAULT_PATHES_WINDOWS =
+            "C:\\Program Files;C:\\Winnt;C:\\Winnt\\System32";
     public static final String PROPERTY_VERSION = "conductor.version";
     public static final String PROPERTY_LIFECYCLE = "conductor.lifecycle";
     public static final String PROPERTY_DOWNLOAD_SNAPSHOTS = "conductor.downloadSnapshots";
@@ -38,165 +52,188 @@ public class ConUtil {
     public static final String PROPERTY_HOME = "conductor.home";
     // private static Console console;
     public static final String PROPERTY_VALIDATORS = "conductor.validators";
-	public static final String PROPERTY_PARALLEL = "conductor.parallel";
-	public static final String PROPERTY_THREADS = "conductor.threads";
-    private static final Object[] SCAN_PACKAGES = new Object[] { "de.mhus.con" };
+    public static final String PROPERTY_PARALLEL = "conductor.parallel";
+    public static final String PROPERTY_THREADS = "conductor.threads";
+    private static final Object[] SCAN_PACKAGES = new Object[] {"de.mhus.con"};
     public static final String PROPERTY_TRY = "conductor.try";
     public static final String PROPERTY_STEP_IGNORE_RETURN_CODE = "step.ignoreReturnCode";
-	
+
     public static void orderProjects(List<Project> projects, String order, boolean orderAsc) {
-        projects.sort(new Comparator<Project>() {
+        projects.sort(
+                new Comparator<Project>() {
 
-            @Override
-            public int compare(Project o1, Project o2) {
-                int ret = compare( o1.getLabels().getOrNull(order), o2.getLabels().getOrNull(order));
-                if (!orderAsc) ret = ret * -1;
-                return ret;
-            }
+                    @Override
+                    public int compare(Project o1, Project o2) {
+                        int ret =
+                                compare(
+                                        o1.getLabels().getOrNull(order),
+                                        o2.getLabels().getOrNull(order));
+                        if (!orderAsc) ret = ret * -1;
+                        return ret;
+                    }
 
-            private int compare(String o1, String o2) {
-                if (o1 == null && o2 == null) return 0;
-                if (o1 == null) return -1;
-                if (o2 == null) return 1;
-                if (MValidator.isNumber(o1) && MValidator.isNumber(o2))
-                    return Double.compare(MCast.todouble(o1, 0), MCast.todouble(o2, 0));
-                return o1.compareTo(o2);
-            }
-        });
+                    private int compare(String o1, String o2) {
+                        if (o1 == null && o2 == null) return 0;
+                        if (o1 == null) return -1;
+                        if (o2 == null) return 1;
+                        if (MValidator.isNumber(o1) && MValidator.isNumber(o2))
+                            return Double.compare(MCast.todouble(o1, 0), MCast.todouble(o2, 0));
+                        return o1.compareTo(o2);
+                    }
+                });
     }
 
-	public static String[] execute(String name, File rootDir, String cmd, boolean infoOut) throws IOException {
-		
-		log.i(name,"execute",cmd,rootDir);
-		
-		final String shortName = MString.truncateNice(name, 40, 15);
+    public static String[] execute(String name, File rootDir, String cmd, boolean infoOut)
+            throws IOException {
+
+        log.i(name, "execute", cmd, rootDir);
+
+        final String shortName = MString.truncateNice(name, 40, 15);
         final Console console = getConsole();
         final boolean output = infoOut || log.isLevelEnabled(LEVEL.DEBUG);
 
         final StringBuilder stdOutBuilder = new StringBuilder();
         final StringBuilder stdErrBuilder = new StringBuilder();
 
-        int exitCode = MSystem.execute(shortName, rootDir, cmd, new ExecuteControl() {
-            
-		    @Override
-		    public void stdin(PrintWriter writer) {
+        int exitCode =
+                MSystem.execute(
+                        shortName,
+                        rootDir,
+                        cmd,
+                        new ExecuteControl() {
 
-		    }
-		    
-            @Override
-            public void stdout(String line) {
-                if (output)
-                    synchronized (consoleLock) {
-                        console.print("[");
-                        console.setColor(COLOR.GREEN, null);
-                        console.print(shortName);
-                        console.cleanup();
-                        console.print("] ");
-                        console.println(line);
-                        console.flush();
-                    }
-                if (stdOutBuilder.length() > 0) 
-                    stdOutBuilder.append("\n");
-                stdOutBuilder.append(line);
-            }
-            
-            
-            @Override
-            public void stderr(String line) {
-                if (output)
-                    synchronized (consoleLock) {
-                        console.print("[");
-                        console.setColor(COLOR.RED, null);
-                        console.print(shortName);
-                        console.cleanup();
-                        console.print("] ");
-                        console.println(line);
-                        console.flush();
-                    }
-                if (stdErrBuilder.length() > 0) 
-                    stdErrBuilder.append("\n");
-                stdErrBuilder.append(line);
-            }
-        });
+                            @Override
+                            public void stdin(PrintWriter writer) {}
 
-		String stderr = stdErrBuilder.toString();
-		String stdout = stdOutBuilder.toString();
-		log.i(name,"exitCode",exitCode);
-		return new String[] {stdout, stderr, String.valueOf(exitCode)};
-	}
+                            @Override
+                            public void stdout(String line) {
+                                if (output)
+                                    synchronized (consoleLock) {
+                                        console.print("[");
+                                        console.setColor(COLOR.GREEN, null);
+                                        console.print(shortName);
+                                        console.cleanup();
+                                        console.print("] ");
+                                        console.println(line);
+                                        console.flush();
+                                    }
+                                if (stdOutBuilder.length() > 0) stdOutBuilder.append("\n");
+                                stdOutBuilder.append(line);
+                            }
 
-	public static Console getConsole() {
-	    Console ret = Console.get();
-	    log.t("Console",ret.getClass());
-	    return ret;
-//	    if (console == null) {
-//	        String term = System.getenv("TERM");
-//            if (term != null) {
-//                term = term.toLowerCase();
-//                if (term.indexOf("xterm") >= 0) {
-//                    try {
-//                        console = new XTermConsole() {
-//                            @Override
-//                            public boolean isSupportColor() {
-//                                return true;
-//                            }
-//        
-//                        };
-//                    } catch (IOException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//            if (console == null) console = Console.get();
-//            Console.set(console);
-//	    }
-//        return console;
+                            @Override
+                            public void stderr(String line) {
+                                if (output)
+                                    synchronized (consoleLock) {
+                                        console.print("[");
+                                        console.setColor(COLOR.RED, null);
+                                        console.print(shortName);
+                                        console.cleanup();
+                                        console.print("] ");
+                                        console.println(line);
+                                        console.flush();
+                                    }
+                                if (stdErrBuilder.length() > 0) stdErrBuilder.append("\n");
+                                stdErrBuilder.append(line);
+                            }
+                        });
+
+        String stderr = stdErrBuilder.toString();
+        String stdout = stdOutBuilder.toString();
+        log.i(name, "exitCode", exitCode);
+        return new String[] {stdout, stderr, String.valueOf(exitCode)};
+    }
+
+    public static Console getConsole() {
+        Console ret = Console.get();
+        log.t("Console", ret.getClass());
+        return ret;
+        //	    if (console == null) {
+        //	        String term = System.getenv("TERM");
+        //            if (term != null) {
+        //                term = term.toLowerCase();
+        //                if (term.indexOf("xterm") >= 0) {
+        //                    try {
+        //                        console = new XTermConsole() {
+        //                            @Override
+        //                            public boolean isSupportColor() {
+        //                                return true;
+        //                            }
+        //
+        //                        };
+        //                    } catch (IOException e) {
+        //                        // TODO Auto-generated catch block
+        //                        e.printStackTrace();
+        //                    }
+        //                }
+        //            }
+        //            if (console == null) console = Console.get();
+        //            Console.set(console);
+        //	    }
+        //        return console;
     }
 
     public static String cmdLocationOrNull(Conductor con, String cmd) {
-		try {
-			return cmdLocation(con, cmd);
-		} catch (NotFoundException e) {
-			return null;
-		}
-	}
-	
-	//TODO cache findings
-	public static String cmdLocation(Conductor con, String cmd) throws NotFoundException {
-		if (con != null) {
-			// check direct configuration
-			String path = con.getProperties().getString(ConUtil.PROPERTY_CMD_PATH + cmd.toUpperCase(), null);
-			if (path != null) return path;
-		}
-		String[] pathes = null;
-		String systemPath = System.getenv("PATH");
-		if (MSystem.isWindows())
-			pathes = con.getProperties().getString(ConUtil.PROPERTY_PATH, DEFAULT_PATHES_WINDOWS 
-			        + (systemPath == null ? "" : ";" + systemPath) ).split(";");
-		else
-			pathes = con.getProperties().getString(ConUtil.PROPERTY_PATH, DEFAULT_PATHES_UNIX 
-			        + (systemPath == null ? "" : ":" + systemPath) ).split(":");
-		
-		for (String path : pathes) {
-			File file = new File(path + File.separator + cmd);
-			if (file.exists() && file.isFile() && file.canExecute() && file.canRead())
-				return file.getAbsolutePath();
-		}
-		throw new NotFoundException("Command not found",cmd);
-	}
+        try {
+            return cmdLocation(con, cmd);
+        } catch (NotFoundException e) {
+            return null;
+        }
+    }
+
+    // TODO cache findings
+    public static String cmdLocation(Conductor con, String cmd) throws NotFoundException {
+        if (con != null) {
+            // check direct configuration
+            String path =
+                    con.getProperties()
+                            .getString(ConUtil.PROPERTY_CMD_PATH + cmd.toUpperCase(), null);
+            if (path != null) return path;
+        }
+        String[] pathes = null;
+        String systemPath = System.getenv("PATH");
+        if (MSystem.isWindows())
+            pathes =
+                    con.getProperties()
+                            .getString(
+                                    ConUtil.PROPERTY_PATH,
+                                    DEFAULT_PATHES_WINDOWS
+                                            + (systemPath == null ? "" : ";" + systemPath))
+                            .split(";");
+        else
+            pathes =
+                    con.getProperties()
+                            .getString(
+                                    ConUtil.PROPERTY_PATH,
+                                    DEFAULT_PATHES_UNIX
+                                            + (systemPath == null ? "" : ":" + systemPath))
+                            .split(":");
+
+        for (String path : pathes) {
+            File file = new File(path + File.separator + cmd);
+            if (file.exists() && file.isFile() && file.canExecute() && file.canRead())
+                return file.getAbsolutePath();
+        }
+        throw new NotFoundException("Command not found", cmd);
+    }
 
     public static MUri getDefaultConfiguration(String name) {
         String ext = MString.afterLastIndex(name, '.');
         name = MString.beforeLastIndex(name, '.');
-        MUri uri = MUri.toUri("mvn:de.mhus.conductor/conductor-plugin/"+Version.VERSION+"/"+ext+"/"+name);
+        MUri uri =
+                MUri.toUri(
+                        "mvn:de.mhus.conductor/conductor-plugin/"
+                                + Version.VERSION
+                                + "/"
+                                + ext
+                                + "/"
+                                + name);
         return uri;
     }
 
     public static File getFile(File root, String path) {
         File f = new File(path);
-        if (!f.isAbsolute())
-            f = new File(root, path);
+        if (!f.isAbsolute()) f = new File(root, path);
         return f;
     }
 
@@ -207,10 +244,12 @@ public class ConUtil {
         return new File(home);
     }
 
-    public static File createTempFile(Conductor con, Class<?> owner, String suffix) throws IOException {
+    public static File createTempFile(Conductor con, Class<?> owner, String suffix)
+            throws IOException {
         File tmp = new File(getHome(), "tmp");
         if (tmp.exists() && tmp.isDirectory()) {
-            File file = new File(tmp, owner.getSimpleName() + "-" + UUID.randomUUID() + "." + suffix);
+            File file =
+                    new File(tmp, owner.getSimpleName() + "-" + UUID.randomUUID() + "." + suffix);
             file.deleteOnExit();
             return file;
         }
@@ -222,5 +261,4 @@ public class ConUtil {
     public static Object[] getMainPackageName() {
         return SCAN_PACKAGES;
     }
-
 }

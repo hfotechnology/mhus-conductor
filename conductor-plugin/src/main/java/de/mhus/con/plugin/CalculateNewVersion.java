@@ -1,3 +1,16 @@
+/**
+ * Copyright 2018 Mike Hummel
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.mhus.con.plugin;
 
 import java.io.File;
@@ -16,26 +29,26 @@ public class CalculateNewVersion extends MLog implements ExecutePlugin {
 
     @Override
     public boolean execute(Context context) throws Exception {
-        String versionsFilePath = context.getStep().getProperties().getString("versionsFile", "versions.properties");
-        File versionsFile = ConUtil.getFile(
-                context
-                .getConductor()
-                .getRoot()
-                , versionsFilePath);
-        log().t("versions file",versionsFile);
+        String versionsFilePath =
+                context.getStep().getProperties().getString("versionsFile", "versions.properties");
+        File versionsFile = ConUtil.getFile(context.getConductor().getRoot(), versionsFilePath);
+        log().t("versions file", versionsFile);
         if (versionsFile.exists() && versionsFile.isFile()) {
             MProperties versions = MProperties.load(versionsFile);
-            
+
             // load history
-            String historyFilePath = context.getStep().getProperties().getString("historyFile", "history.properties");
+            String historyFilePath =
+                    context.getStep()
+                            .getProperties()
+                            .getString("historyFile", "history.properties");
             File historyFile = ConUtil.getFile(context.getConductor().getRoot(), historyFilePath);
-            log().t("histroy file",historyFile);
+            log().t("histroy file", historyFile);
             MProperties history = new MProperties();
             if (historyFile.exists() && historyFile.isFile())
                 history = MProperties.load(historyFile);
-            
-            log().t("versions",versions, history);
-            
+
+            log().t("versions", versions, history);
+
             // find versions for projects
             for (Project project : context.getConductor().getProjects()) {
                 boolean changed = true;
@@ -44,27 +57,26 @@ public class CalculateNewVersion extends MLog implements ExecutePlugin {
                 if (version == null) {
                     version = history.getString(name, null);
                     changed = false;
-                    log().d("version from history",name,version);
-                } else
-                if (version.equals(history.getString(name, null))) {
+                    log().d("version from history", name, version);
+                } else if (version.equals(history.getString(name, null))) {
                     changed = false;
-                    log().d("version not changed",name,version);
+                    log().d("version not changed", name, version);
                 }
                 if (version == null) {
-                    log().w("project version not found",name);
+                    log().w("project version not found", name);
                 } else {
                     if (changed) {
-                        log().i("Project changed",name,version);
+                        log().i("Project changed", name, version);
                     }
-                    ((MProperties)project.getProperties()).setString("version", version);
-                    ((LabelsImpl)project.getLabels()).put("version.changed", String.valueOf(changed));
+                    ((MProperties) project.getProperties()).setString("version", version);
+                    ((LabelsImpl) project.getLabels())
+                            .put("version.changed", String.valueOf(changed));
                 }
             }
-            
+
         } else {
-            log().i("versions file not found",versionsFile);
+            log().i("versions file not found", versionsFile);
         }
         return true;
     }
-
 }

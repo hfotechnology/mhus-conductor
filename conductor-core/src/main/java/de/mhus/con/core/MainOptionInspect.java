@@ -1,3 +1,16 @@
+/**
+ * Copyright 2018 Mike Hummel
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.mhus.con.core;
 
 import java.util.LinkedList;
@@ -21,23 +34,16 @@ public class MainOptionInspect implements MainOptionHandler {
 
     @Override
     public void execute(Cli cli, String cmd, LinkedList<String> queue) {
-        
+
         String what = "all";
-        if (!queue.isEmpty())
-            what = queue.removeFirst();
-        
-        if (what.equals("environment"))
-            inspectEnvironment();
-        else if (what.equals("cli"))
-            inspectCli(cli);
-        else if (what.equals("projects"))
-            inspectProjects(cli);
-        else if (what.equals("lifecycles"))
-            inspectLifecycles(cli);
-        else if (what.equals("conductor"))
-            inspectConductor(cli);
-        else if (what.equals("plugins"))
-            inspectPlugins(cli);
+        if (!queue.isEmpty()) what = queue.removeFirst();
+
+        if (what.equals("environment")) inspectEnvironment();
+        else if (what.equals("cli")) inspectCli(cli);
+        else if (what.equals("projects")) inspectProjects(cli);
+        else if (what.equals("lifecycles")) inspectLifecycles(cli);
+        else if (what.equals("conductor")) inspectConductor(cli);
+        else if (what.equals("plugins")) inspectPlugins(cli);
         else if (what.equals("all")) {
             cli.getConductor(); // init conductor
             inspectEnvironment();
@@ -54,8 +60,7 @@ public class MainOptionInspect implements MainOptionHandler {
             inspectLifecycles(cli);
             System.out.println("PLUGINS:");
             inspectPlugins(cli);
-        } else
-            System.err.println("Unknow scope");
+        } else System.err.println("Unknow scope");
     }
 
     private void inspectEnvironment() {
@@ -92,8 +97,12 @@ public class MainOptionInspect implements MainOptionHandler {
                 System.out.println("      Target    : " + step.getTarget());
                 System.out.println("      Condition : " + step.getCondition());
                 System.out.println("      Selector  : " + step.getSelector());
-                System.out.println("      Order     : " + step.getSortBy() + " " + (step.isOrderAsc() ? "ASC" : "DESC"));
-                System.out.println("      Properties: " + step.getProperties() );
+                System.out.println(
+                        "      Order     : "
+                                + step.getSortBy()
+                                + " "
+                                + (step.isOrderAsc() ? "ASC" : "DESC"));
+                System.out.println("      Properties: " + step.getProperties());
             }
         }
     }
@@ -112,23 +121,26 @@ public class MainOptionInspect implements MainOptionHandler {
     private void inspectCli(Cli cli) {
         System.out.println("Schemes:");
         for (Entry<String, Scheme> entry : cli.getSchemes().entrySet())
-            System.out.println(entry.getKey() + ": " + entry.getValue().getClass().getCanonicalName());
-        
+            System.out.println(
+                    entry.getKey() + ": " + entry.getValue().getClass().getCanonicalName());
+
         System.out.println();
         System.out.println("Config Types:");
         for (Entry<String, ConfigType> entry : cli.getConfigTypes().entrySet())
-            System.out.println(entry.getKey() + ": " + entry.getValue().getClass().getCanonicalName());
-         
+            System.out.println(
+                    entry.getKey() + ": " + entry.getValue().getClass().getCanonicalName());
+
         System.out.println();
         System.out.println("Validators:");
         for (Entry<String, Validator> entry : cli.getValidators().entrySet())
-            System.out.println(entry.getKey() + ": " + entry.getValue().getClass().getCanonicalName());
+            System.out.println(
+                    entry.getKey() + ": " + entry.getValue().getClass().getCanonicalName());
 
         System.out.println();
         System.out.println("Options:");
         for (Entry<String, MainOptionHandler> entry : cli.getOptions().entrySet())
-            System.out.println(entry.getKey() + ": " + entry.getValue().getClass().getCanonicalName());
-        
+            System.out.println(
+                    entry.getKey() + ": " + entry.getValue().getClass().getCanonicalName());
     }
 
     @Override
@@ -140,5 +152,4 @@ public class MainOptionInspect implements MainOptionHandler {
     public String getDescription(String cmd) {
         return "Inspect current conductor configuration";
     }
-
 }

@@ -1,3 +1,16 @@
+/**
+ * Copyright 2018 Mike Hummel
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.mhus.con.core.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,116 +50,112 @@ public class ExecutionTest {
     @Test
     public void testNewVersion() throws Exception {
         File to = new File("target/scenario");
-        if (to.exists())
-            MFile.deleteDir(to);
+        if (to.exists()) MFile.deleteDir(to);
         to.mkdirs();
-        
+
         File from = new File("../example2");
         MFile.copyDir(from, to);
-        
+
         File root = new File(to, "sample-parent");
-        
-        String[] args = new String[] {
-                "-vvv",
-                "-d",
-                root.getAbsolutePath(),
-                "newVersion"
-        };
-        
+
+        String[] args = new String[] {"-vvv", "-d", root.getAbsolutePath(), "newVersion"};
+
         MainCli.main(args);
-        
+
         // test
         {
             Element pomE = MXml.loadXml(new File(to, "sample-parent/pom.xml")).getDocumentElement();
             String version = MXml.getValue(pomE, "/version", "");
-            assertEquals("1.0.0",version);
+            assertEquals("1.0.0", version);
             {
                 String pVersion = MXml.getValue(pomE, "properties/sample-core.version", "");
-                assertEquals("1.0.0",pVersion);
+                assertEquals("1.0.0", pVersion);
             }
             {
                 String pVersion = MXml.getValue(pomE, "properties/sample-api.version", "");
-                assertEquals("0.0.1",pVersion);
+                assertEquals("0.0.1", pVersion);
             }
         }
         {
             Element pomE = MXml.loadXml(new File(to, "sample-api/pom.xml")).getDocumentElement();
             String version = MXml.getValue(pomE, "/version", "");
-            assertEquals("1.0.0-SNAPSHOT",version);
+            assertEquals("1.0.0-SNAPSHOT", version);
             String parent = MXml.getValue(pomE, "/parent/version", "");
-            assertEquals("1.0.0-SNAPSHOT",parent);
+            assertEquals("1.0.0-SNAPSHOT", parent);
         }
         {
             Element pomE = MXml.loadXml(new File(to, "sample-core/pom.xml")).getDocumentElement();
             String version = MXml.getValue(pomE, "/version", "");
-            assertEquals("1.0.0",version);
+            assertEquals("1.0.0", version);
             String parent = MXml.getValue(pomE, "/parent/version", "");
-            assertEquals("1.0.0",parent);
+            assertEquals("1.0.0", parent);
         }
         {
-            MProperties hist = MProperties.load(new File(to,"sample-parent/history.properties"));
+            MProperties hist = MProperties.load(new File(to, "sample-parent/history.properties"));
             assertEquals("1.0.0", hist.getString("core"));
             assertEquals("1.0.0", hist.getString("parent"));
             assertEquals("0.0.1", hist.getString("api"));
         }
     }
-    @Test
-    public void testExecution() throws MException, ParserConfigurationException, SAXException, IOException {
 
-		TestUtil.enableDebug();
+    @Test
+    public void testExecution()
+            throws MException, ParserConfigurationException, SAXException, IOException {
+
+        TestUtil.enableDebug();
 
         Conductor con = new ConductorImpl(new File("../example/sample-parent"));
-        
+
         ConfiguratorDefault config = new ConfiguratorDefault();
-        ((SchemesImpl)config.getSchemes()).put("file", new FileScheme() );
-        ((SchemesImpl)config.getSchemes()).put("mvn", new DummyScheme() );
-        ((ConfigTypesImpl)config.getTypes()).put("yml", new YmlConfigType());
-        ((ConfigTypesImpl)config.getTypes()).put("yaml", new YmlConfigType());
-        
+        ((SchemesImpl) config.getSchemes()).put("file", new FileScheme());
+        ((SchemesImpl) config.getSchemes()).put("mvn", new DummyScheme());
+        ((ConfigTypesImpl) config.getTypes()).put("yml", new YmlConfigType());
+        ((ConfigTypesImpl) config.getTypes()).put("yaml", new YmlConfigType());
+
         config.getValidators().put("project", new ProjectsValidator());
         config.getDefaultProperties().setString(ConUtil.PROPERTY_VALIDATORS, "project");
-        
+
         URI uri = URI.create("file:conductor.yml");
         config.configure(uri, con, null);
 
         String mvnPath = ConUtil.cmdLocationOrNull(con, "mvn");
         if (mvnPath != null) {
-	        ((MProperties)con.getProperties()).put("conductor.version", TestUtil.conrentVersion());
-	        ((SchemesImpl)con.getSchemes()).put("mvn",new MavenScheme());
-	        
-	        ExecutorDefault executor = new ExecutorDefault();
-	        executor.execute(con, "default");
-	        
+            ((MProperties) con.getProperties()).put("conductor.version", TestUtil.conrentVersion());
+            ((SchemesImpl) con.getSchemes()).put("mvn", new MavenScheme());
+
+            ExecutorDefault executor = new ExecutorDefault();
+            executor.execute(con, "default");
+
         } else {
-        	System.err.println("Maven not found, skip test: " + mvnPath);
+            System.err.println("Maven not found, skip test: " + mvnPath);
         }
     }
-    
+
     // @Test
     public void testCmdExecute() throws IOException {
         String mvnPath = ConUtil.cmdLocationOrNull(null, "mvn");
         if (mvnPath != null) {
-    		ConUtil.execute("TEST", new File("../conductor-api"), mvnPath + " install", true);
-    	} else {
-        	System.err.println("Maven not found, skip test: " + mvnPath);
+            ConUtil.execute("TEST", new File("../conductor-api"), mvnPath + " install", true);
+        } else {
+            System.err.println("Maven not found, skip test: " + mvnPath);
         }
     }
-    
-	//@Test
-	public void testConPing() throws IOException {
-		ConUtil.execute("TEST",new File("."), "ping -c 3 -i 2 google.com", true);
-	}
-	
-	//@Test
-	public void testDirectPing() {
-		ProcessBuilder processBuilder = new ProcessBuilder();
-		if (MSystem.isWindows())
-			// Windows
-			processBuilder.command("cmd.exe", "/c", "ping -n 3 google.com");
-		else
-			// Unix
-			processBuilder.command("/bin/bash", "-c", "ping -c 3 google.com");
-			
+
+    // @Test
+    public void testConPing() throws IOException {
+        ConUtil.execute("TEST", new File("."), "ping -c 3 -i 2 google.com", true);
+    }
+
+    // @Test
+    public void testDirectPing() {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        if (MSystem.isWindows())
+            // Windows
+            processBuilder.command("cmd.exe", "/c", "ping -n 3 google.com");
+        else
+            // Unix
+            processBuilder.command("/bin/bash", "-c", "ping -c 3 google.com");
+
         try {
 
             Process process = processBuilder.start();
@@ -167,7 +176,5 @@ public class ExecutionTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-		
-	}
-	
+    }
 }

@@ -1,3 +1,16 @@
+/**
+ * Copyright 2018 Mike Hummel
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.mhus.con.core.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,28 +40,28 @@ public class ConfiguratorTest {
 
     @Test
     public void testLoading() throws MException {
-        
+
         Conductor con = new ConductorImpl(new File("../example/sample-parent"));
-        
+
         ConfiguratorDefault config = new ConfiguratorDefault();
-        ((SchemesImpl)config.getSchemes()).put("file", new FileScheme() );
-        ((SchemesImpl)config.getSchemes()).put("mvn", new DummyScheme() );
-        ((ConfigTypesImpl)config.getTypes()).put("yml", new YmlConfigType());
-        ((ConfigTypesImpl)config.getTypes()).put("yaml", new YmlConfigType());
-        
-        config.getValidators().put("project",new ProjectsValidator());
+        ((SchemesImpl) config.getSchemes()).put("file", new FileScheme());
+        ((SchemesImpl) config.getSchemes()).put("mvn", new DummyScheme());
+        ((ConfigTypesImpl) config.getTypes()).put("yml", new YmlConfigType());
+        ((ConfigTypesImpl) config.getTypes()).put("yaml", new YmlConfigType());
+
+        config.getValidators().put("project", new ProjectsValidator());
         config.getDefaultProperties().setString(ConUtil.PROPERTY_VALIDATORS, "project");
-        
+
         URI uri = URI.create("file:conductor.yml");
         config.configure(uri, con, null);
-        
+
         // test parameters
         assertEquals("4", con.getProperties().getString("overwriteMe"));
         assertEquals("1", con.getProperties().getString("rootWasThere"));
         assertEquals("1", con.getProperties().getString("parentWasThere"));
         assertEquals("1", con.getProperties().getString("defaultLifecycleWasThere"));
         assertEquals("1", con.getProperties().getString("conductorWasThere"));
-        
+
         // test projects
         assertEquals(4, con.getProjects().size());
         {
@@ -66,17 +79,18 @@ public class ConfiguratorTest {
             assertEquals(4, con.getProjects().select(labels).size());
         }
         Context context = new ContextImpl(con);
-        
+
         // test plugins
         assertEquals(8, con.getPlugins().size());
-        assertEquals("2.0.0", TestUtil.getPluginVersion( context.make(con.getPlugins().get("newParent").getUri()) ) );
+        assertEquals(
+                "2.0.0",
+                TestUtil.getPluginVersion(
+                        context.make(con.getPlugins().get("newParent").getUri())));
 
         // test lifecycle
         assertEquals(1, con.getLifecycles().size());
         Lifecycle lc = con.getLifecycles().get("default");
         assertNotNull(lc);
         assertEquals(22, lc.getSteps().size());
-        
-        
     }
 }

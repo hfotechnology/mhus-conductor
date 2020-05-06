@@ -1,3 +1,16 @@
+/**
+ * Copyright 2018 Mike Hummel
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.mhus.con.core;
 
 import java.io.File;
@@ -27,22 +40,22 @@ import de.mhus.lib.core.console.Console.COLOR;
 import de.mhus.lib.core.yaml.MYaml;
 import de.mhus.lib.core.yaml.YList;
 
-@AOption(alias="-console")
+@AOption(alias = "-console")
 public class MainOptionConsole implements MainOptionHandler {
 
-	private Cli cli;
+    private Cli cli;
 
     @Override
-	public void execute(Cli cli, String cmd, LinkedList<String> queue) {
-	    this.cli = cli;
-	    try {
+    public void execute(Cli cli, String cmd, LinkedList<String> queue) {
+        this.cli = cli;
+        try {
             ExecutorDefault exec = new ExecutorDefault();
-    
+
             Console console = ConUtil.getConsole();
             LinkedList<String> history = new LinkedList<String>();
             LinkedList<String> historySteps = new LinkedList<String>();
-            
-    		console.println("Conductor console");
+
+            console.println("Conductor console");
             while (true) {
                 console.setColor(COLOR.GREEN, null);
                 console.print("> ");
@@ -50,12 +63,10 @@ public class MainOptionConsole implements MainOptionHandler {
                 console.flush();
                 String line = console.readLine(history);
                 try {
-                    if (line == null || line.equals("quit"))
-                    	break;
+                    if (line == null || line.equals("quit")) break;
                     if (MString.isEmptyTrim(line)) {
                         // nothing
-                    } else
-                    if (line.startsWith("projects")) {
+                    } else if (line.startsWith("projects")) {
                         if (line.trim().equals("projects")) {
                             for (Project p : con().getProjects()) {
                                 System.out.println(p.getName());
@@ -68,7 +79,9 @@ public class MainOptionConsole implements MainOptionHandler {
                             for (int i = 1; i < parts.length; i++) {
                                 String part = parts[i];
                                 if (MString.isIndex(part, '=')) {
-                                    selector.put(MString.beforeIndex(part, '='), MString.afterIndex(part, '='));
+                                    selector.put(
+                                            MString.beforeIndex(part, '='),
+                                            MString.afterIndex(part, '='));
                                 } else {
                                     orderBy = part;
                                 }
@@ -81,13 +94,12 @@ public class MainOptionConsole implements MainOptionHandler {
                                 System.out.println(p.getName());
                             }
                         }
-    
-                    } else
-                    if (line.equals("lifecycles")) {
+
+                    } else if (line.equals("lifecycles")) {
                         for (Lifecycle lf : con().getLifecycles())
-                            System.out.println(lf.getName() + "  -  " + lf.getSteps().size() + " Steps");
-                    } else
-                    if (line.startsWith("lifecycle")) {
+                            System.out.println(
+                                    lf.getName() + "  -  " + lf.getSteps().size() + " Steps");
+                    } else if (line.startsWith("lifecycle")) {
                         String[] parts = line.split(" ");
                         String lifecycleName = parts[1].trim();
                         Lifecycle lf = con().getLifecycles().get(lifecycleName);
@@ -99,90 +111,92 @@ public class MainOptionConsole implements MainOptionHandler {
                             System.out.println("    " + step);
                             cnt++;
                         }
-                    } else
-                    if (line.startsWith("execute")) {
+                    } else if (line.startsWith("execute")) {
                         String[] parts = line.split(" ");
-                    	String lifecycleName = parts[1].trim();
-                    	
+                        String lifecycleName = parts[1].trim();
+
                         exec.setConductor(con());
-    
-                        System.out.println("###################################################################");
-                    	if (parts.length == 2) 
-                    	    exec.execute(con(), lifecycleName);
-                    	else {
-                    	    int stepNr = MCast.toint(parts[2], -1);
-                    	    Lifecycle lf = con().getLifecycles().get(lifecycleName);
-                    	    if (stepNr < 0 || stepNr >= lf.getSteps().size()) {
-                    	        System.out.println("Index out of bounds");
-                    	    } else {
-                    	        Step step = ((StepsImpl)lf.getSteps()).get(stepNr);
+
+                        System.out.println(
+                                "###################################################################");
+                        if (parts.length == 2) exec.execute(con(), lifecycleName);
+                        else {
+                            int stepNr = MCast.toint(parts[2], -1);
+                            Lifecycle lf = con().getLifecycles().get(lifecycleName);
+                            if (stepNr < 0 || stepNr >= lf.getSteps().size()) {
+                                System.out.println("Index out of bounds");
+                            } else {
+                                Step step = ((StepsImpl) lf.getSteps()).get(stepNr);
                                 String name = UUID.randomUUID().toString();
                                 StepsImpl steps = new StepsImpl();
                                 steps.add(step);
                                 LifecycleImpl lifecycle = new LifecycleImpl(name, steps);
-                                ((LifecyclesImpl)con().getLifecycles()).put(name, lifecycle);
+                                ((LifecyclesImpl) con().getLifecycles()).put(name, lifecycle);
                                 try {
                                     exec.execute(con(), name);
                                 } finally {
-                                    ((LifecyclesImpl)con().getLifecycles()).remove(name);
+                                    ((LifecyclesImpl) con().getLifecycles()).remove(name);
                                 }
-                    	    }
-                    	}
-                        System.out.println("###################################################################");
-                    } else
-                    if (line.trim().startsWith("- title:")|| line.equals("steps")) {
-                		StringBuilder stepDef = new StringBuilder();
-                		if (!line.equals("steps")) {
-                		    stepDef.append(line);
-                		} else {
-                            System.out.println("Finish the input with '---' in a single line:");
-                        	while (true) {
-                        	    console.setColor(COLOR.RED, null);
-                        	    console.print("$ ");
-                        	    console.cleanup();
-                        	    console.flush();
-                                String line2 = console.readLine(historySteps);
-                        		if (line2.equals("---"))
-                        			break;
-                        		stepDef.append(line2).append('\n');
-                        	}
-                		}
-                    	System.out.println("Execute Steps:\n" + stepDef);
-                    	
-                    	String name = UUID.randomUUID().toString();
-                    	StepsImpl steps = new StepsImpl();
-                    	LifecycleImpl lifecycle = new LifecycleImpl(name, steps);
-                    	
-                    	ConfiguratorDefault config = new ConfiguratorDefault();
-                    	YList executeE = MYaml.loadListFromString(stepDef.toString());
-                    	config.loadSteps(executeE, steps);
-                    	
-                        exec.setConductor(con());
-                        
-                        ((LifecyclesImpl)con().getLifecycles()).put(name, lifecycle);
-                    	try {
-                    	    System.out.println("###################################################################");
-                    	    exec.execute(con(), name);
-                            System.out.println("###################################################################");
-                    	} finally {
-                            ((LifecyclesImpl)con().getLifecycles()).remove(name);
+                            }
                         }
-                    } else
-                    if (line.equals("help")) {
+                        System.out.println(
+                                "###################################################################");
+                    } else if (line.trim().startsWith("- title:") || line.equals("steps")) {
+                        StringBuilder stepDef = new StringBuilder();
+                        if (!line.equals("steps")) {
+                            stepDef.append(line);
+                        } else {
+                            System.out.println("Finish the input with '---' in a single line:");
+                            while (true) {
+                                console.setColor(COLOR.RED, null);
+                                console.print("$ ");
+                                console.cleanup();
+                                console.flush();
+                                String line2 = console.readLine(historySteps);
+                                if (line2.equals("---")) break;
+                                stepDef.append(line2).append('\n');
+                            }
+                        }
+                        System.out.println("Execute Steps:\n" + stepDef);
+
+                        String name = UUID.randomUUID().toString();
+                        StepsImpl steps = new StepsImpl();
+                        LifecycleImpl lifecycle = new LifecycleImpl(name, steps);
+
+                        ConfiguratorDefault config = new ConfiguratorDefault();
+                        YList executeE = MYaml.loadListFromString(stepDef.toString());
+                        config.loadSteps(executeE, steps);
+
+                        exec.setConductor(con());
+
+                        ((LifecyclesImpl) con().getLifecycles()).put(name, lifecycle);
+                        try {
+                            System.out.println(
+                                    "###################################################################");
+                            exec.execute(con(), name);
+                            System.out.println(
+                                    "###################################################################");
+                        } finally {
+                            ((LifecyclesImpl) con().getLifecycles()).remove(name);
+                        }
+                    } else if (line.equals("help")) {
                         System.out.println("execute <name> [step nr]   - execute a lifecycle");
                         System.out.println("lifecycles                 - list lifecycles");
                         System.out.println("lifecycle <name>           - print lifecycle details");
-                        System.out.println("projects [key=value] [orderBy] - print or filter projects");
+                        System.out.println(
+                                "projects [key=value] [orderBy] - print or filter projects");
                         System.out.println("env                        - print properties");
                         System.out.println("<key>=<value>              - set property");
-                        System.out.println("steps                      - insert and execute a list of steps");
-                        System.out.println("- title:                   - insert and execute directly a list of steps (copy & paste only)");
-                        System.out.println("-<option>                  - execute option (e.g. --help)");
+                        System.out.println(
+                                "steps                      - insert and execute a list of steps");
+                        System.out.println(
+                                "- title:                   - insert and execute directly a list of steps (copy & paste only)");
+                        System.out.println(
+                                "-<option>                  - execute option (e.g. --help)");
                         System.out.println("quit                       - quit shell");
                         System.out.println("backup <file>              - save property status");
                         System.out.println("restore <file>             - load property status");
-                    } else
-                    if (line.startsWith("backup ")) {
+                    } else if (line.startsWith("backup ")) {
                         String file = MString.afterIndex(line, ' ').trim();
                         if (!file.endsWith(".yaml")) file = file + ".yaml";
                         System.out.println(">>> Save to " + file);
@@ -203,8 +217,7 @@ public class MainOptionConsole implements MainOptionHandler {
                             projectsC.add(pp);
                         }
                         M.l(IConfigFactory.class).write(out, new File(file));
-                    } else
-                    if (line.startsWith("restore ")) {
+                    } else if (line.startsWith("restore ")) {
                         String file = MString.afterIndex(line, ' ').trim();
                         if (!file.endsWith(".yaml")) file = file + ".yaml";
                         System.out.println(">>> Load from " + file);
@@ -215,7 +228,7 @@ public class MainOptionConsole implements MainOptionHandler {
                             {
                                 IConfig p = in.getObjectOrNull("properties");
                                 if (p != null) {
-                                    ((MProperties)con.getProperties()).putReadProperties(p);
+                                    ((MProperties) con.getProperties()).putReadProperties(p);
                                 }
                             }
                             ConfigList projectsC = in.getArrayOrCreate("projects");
@@ -225,40 +238,35 @@ public class MainOptionConsole implements MainOptionHandler {
                                 if (name != null && p != null) {
                                     Project project = con.getProjects().getOrNull(name);
                                     if (project != null) {
-                                        ((MProperties)project.getProperties()).putReadProperties(p);
-                                    } else
-                                        System.out.println("*** Project not found " + name);
+                                        ((MProperties) project.getProperties())
+                                                .putReadProperties(p);
+                                    } else System.out.println("*** Project not found " + name);
                                 }
                             }
                         } else {
                             System.out.println("file not found");
                         }
-                    } else
-                    if (line.equals("env")) {
-                        for ( Entry<String, Object> entry : con().getProperties().entrySet())
+                    } else if (line.equals("env")) {
+                        for (Entry<String, Object> entry : con().getProperties().entrySet())
                             System.out.println(entry.getKey() + "=" + entry.getValue());
                         for (Project p : con().getProjects()) {
                             System.out.println("Project: " + p.getName());
-                            for ( Entry<String, Object> entry : p.getProperties().entrySet())
+                            for (Entry<String, Object> entry : p.getProperties().entrySet())
                                 System.out.println("  " + entry.getKey() + "=" + entry.getValue());
                         }
-                    } else
-                    if (line.startsWith("-")) {
-                    	String[] parts = line.split(" ");
-                    	MainOptionHandler option = ((MainCli)cli).getOptions().get(parts[0]);
-                    	if (option != null) {
-                    		LinkedList<String> q = new LinkedList<>();
-                    		for (int i = 1; i < parts.length; i++)
-                    			q.add(parts[i]);
-                    		option.execute(cli, parts[0], q);
-                    	} 
-                    } else
-                    if (line.contains("=")) {
+                    } else if (line.startsWith("-")) {
+                        String[] parts = line.split(" ");
+                        MainOptionHandler option = ((MainCli) cli).getOptions().get(parts[0]);
+                        if (option != null) {
+                            LinkedList<String> q = new LinkedList<>();
+                            for (int i = 1; i < parts.length; i++) q.add(parts[i]);
+                            option.execute(cli, parts[0], q);
+                        }
+                    } else if (line.contains("=")) {
                         String k = MString.beforeIndex(line, '=');
                         String v = MString.afterIndex(line, '=');
-                        ((MProperties)con().getProperties()).put(k, v);
-                    } else
-                        System.out.println("unknown command");
+                        ((MProperties) con().getProperties()).put(k, v);
+                    } else System.out.println("unknown command");
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
@@ -266,20 +274,19 @@ public class MainOptionConsole implements MainOptionHandler {
         } finally {
             cli = null;
         }
-	}
+    }
 
-	@Override
-	public String getUsage(String cmd) {
-		return null;
-	}
+    @Override
+    public String getUsage(String cmd) {
+        return null;
+    }
 
-	@Override
-	public String getDescription(String cmd) {
-		return "execute debug console";
-	}
+    @Override
+    public String getDescription(String cmd) {
+        return "execute debug console";
+    }
 
-	public Conductor con() {
-	    return ((MainCli)cli).getConductor();
-	}
-	
+    public Conductor con() {
+        return ((MainCli) cli).getConductor();
+    }
 }

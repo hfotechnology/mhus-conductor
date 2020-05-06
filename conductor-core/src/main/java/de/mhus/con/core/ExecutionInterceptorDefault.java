@@ -1,3 +1,16 @@
+/**
+ * Copyright 2018 Mike Hummel
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.mhus.con.core;
 
 import java.util.LinkedList;
@@ -42,14 +55,13 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
             int pIndex = 0;
             for (Project p : context.getProjects()) {
                 pIndex++;
-                if (p.getName().equals(context.getProject().getName()))
-                    break;
+                if (p.getName().equals(context.getProject().getName())) break;
             }
             console.print(pIndex);
             console.print("/");
             console.print(context.getProjects().size());
             console.print("] ");
-            
+
         } else {
             console.print(" --- ");
         }
@@ -67,20 +79,17 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
         console.println();
         console.setBold(false);
         console.flush();
-
     }
 
     @Override
     public void executeError(Context context, Throwable t) {
-        results.add(new Result(STATUS.FAILURE,context));
+        results.add(new Result(STATUS.FAILURE, context));
     }
 
     @Override
     public void executeEnd(Context context, boolean done) {
-        if (done)
-            results.add(new Result(STATUS.SUCCESS,context));
-        else
-            results.add(new Result(STATUS.SKIPPED,context));
+        if (done) results.add(new Result(STATUS.SUCCESS, context));
+        else results.add(new Result(STATUS.SKIPPED, context));
     }
 
     @Override
@@ -94,7 +103,7 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
         console.println(lifecycle);
         console.println();
         console.setBold(false);
-/* Per Step view */
+        /* Per Step view */
         for (Step step : steps) {
             String name = step.getTitle() + " ";
             console.print("  ");
@@ -103,30 +112,28 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
             console.print(" ");
             STATUS status = getStepStatus(step);
             switch (status) {
-            case FAILURE:
-                console.setColor(COLOR.BRIGHT_RED, null);
-                isError = true;
-                break;
-            case SKIPPED:
-                console.setColor(COLOR.BRIGHT_YELLOW, null);
-                break;
-            case SUCCESS:
-                console.setColor(COLOR.BRIGHT_GREEN, null);
-                break;
-            default:
-                break;
+                case FAILURE:
+                    console.setColor(COLOR.BRIGHT_RED, null);
+                    isError = true;
+                    break;
+                case SKIPPED:
+                    console.setColor(COLOR.BRIGHT_YELLOW, null);
+                    break;
+                case SUCCESS:
+                    console.setColor(COLOR.BRIGHT_GREEN, null);
+                    break;
+                default:
+                    break;
             }
             console.println(status);
             console.cleanup();
-            
+
             for (Result result : results) {
                 if (result.step.getId() == step.getId() && result.project != null) {
                     Project p = result.project;
                     String pn = p.getName();
-                    if (p.getStatus() == STATUS.SKIPPED)
-                        console.setColor(COLOR.BRIGHT_BLACK, null);
-                    else
-                        console.setColor(COLOR.WHITE, null);
+                    if (p.getStatus() == STATUS.SKIPPED) console.setColor(COLOR.BRIGHT_BLACK, null);
+                    else console.setColor(COLOR.WHITE, null);
                     console.print("    ");
                     console.print(pn);
                     console.print(" ");
@@ -134,8 +141,35 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
                     console.print(" ");
 
                     switch (p.getStatus()) {
+                        case FAILURE:
+                            console.setColor(COLOR.RED, null);
+                            break;
+                        case SKIPPED:
+                            console.setColor(COLOR.YELLOW, null);
+                            break;
+                        case SUCCESS:
+                            console.setColor(COLOR.GREEN, null);
+                            break;
+                        default:
+                            break;
+                    }
+                    console.println(p.getStatus());
+                    console.cleanup();
+                }
+            }
+        }
+
+        /* Per Project view
+                for (Project p : con.getProjects()) {
+                    String name = p.getName() + " ";
+                    console.print("  ");
+                    console.print(name);
+                    console.print(MString.rep('.', 60 - name.length()));
+                    console.print(" ");
+                    switch (p.getStatus()) {
                     case FAILURE:
                         console.setColor(COLOR.RED, null);
+                        isError = true;
                         break;
                     case SKIPPED:
                         console.setColor(COLOR.YELLOW, null);
@@ -148,60 +182,32 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
                     }
                     console.println(p.getStatus());
                     console.cleanup();
-                }
-            }
-
-        }
-        
-/* Per Project view        
-        for (Project p : con.getProjects()) {
-            String name = p.getName() + " ";
-            console.print("  ");
-            console.print(name);
-            console.print(MString.rep('.', 60 - name.length()));
-            console.print(" ");
-            switch (p.getStatus()) {
-            case FAILURE:
-                console.setColor(COLOR.RED, null);
-                isError = true;
-                break;
-            case SKIPPED:
-                console.setColor(COLOR.YELLOW, null);
-                break;
-            case SUCCESS:
-                console.setColor(COLOR.GREEN, null);
-                break;
-            default:
-                break;
-            }
-            console.println(p.getStatus());
-            console.cleanup();
-            for (Result result : results) {
-                if (result.project != null && result.project.getName().equals(p.getName())) {
-                    String stepTitle = result.step.getTitle();
-                    console.print("    ");
-                    console.setColor(COLOR.BRIGHT_BLACK, null);
-                    console.print(stepTitle);
-                    console.print(" ");
-                    console.print(MString.rep('.', 57 - stepTitle.length()));
-                    console.print(" ");
-                    switch (result.status) {
-                    case FAILURE:
-                        console.setColor(COLOR.RED, null);
-                        isError = true;
-                        break;
-                    case SUCCESS:
-                        console.setColor(COLOR.GREEN, null);
-                        break;
-                    default:
-                        break;
+                    for (Result result : results) {
+                        if (result.project != null && result.project.getName().equals(p.getName())) {
+                            String stepTitle = result.step.getTitle();
+                            console.print("    ");
+                            console.setColor(COLOR.BRIGHT_BLACK, null);
+                            console.print(stepTitle);
+                            console.print(" ");
+                            console.print(MString.rep('.', 57 - stepTitle.length()));
+                            console.print(" ");
+                            switch (result.status) {
+                            case FAILURE:
+                                console.setColor(COLOR.RED, null);
+                                isError = true;
+                                break;
+                            case SUCCESS:
+                                console.setColor(COLOR.GREEN, null);
+                                break;
+                            default:
+                                break;
+                            }
+                            console.println(result.status);
+                            console.cleanup();
+                        }
                     }
-                    console.println(result.status);
-                    console.cleanup();
                 }
-            }
-        }
-*/        
+        */
         console.println();
         console.setBold(true);
         console.println("------------------------------------------------------------------------");
@@ -246,10 +252,8 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
         STATUS status = STATUS.SKIPPED;
         for (Result result : results)
             if (result.step.getId() == step.getId()) {
-                if (result.status == STATUS.SUCCESS)
-                    status = result.status;
-                if (result.status == STATUS.FAILURE)
-                    return STATUS.FAILURE;
+                if (result.status == STATUS.SUCCESS) status = result.status;
+                if (result.status == STATUS.FAILURE) return STATUS.FAILURE;
             }
         return status;
     }
@@ -271,6 +275,5 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
             this.project = context.getProject();
             this.status = status;
         }
-        
     }
 }

@@ -1,3 +1,16 @@
+/**
+ * Copyright 2018 Mike Hummel
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.mhus.con.core;
 
 import java.io.File;
@@ -31,191 +44,188 @@ import de.mhus.lib.errors.NotFoundException;
 
 public class MainCli extends MLog implements Cli {
 
-	protected Map<String, MainOptionHandler> optionHandlers = new HashMap<>();
-	protected Map<String, Scheme> schemes = new HashMap<>();
-	protected Map<String, ConfigType> configTypes = new HashMap<>();
-	protected Map<String, Validator> validators = new HashMap<>();
-	protected File rootDir = new File(".");
-	protected ConductorImpl con;
-	protected String configFile;
-	private MProperties overlayProperties = new MProperties();
-	
-	public static void main(String[] args) throws Exception {
-		
-	    ConUtil.getConsole();
-	    
-		if (args == null || args.length == 0) {
-			System.out.println("Try --help");
-			return;
-		}
-		
-		LinkedList<String> queue = new LinkedList<>();
-		for (String arg : args)
-			queue.add(arg);
-		
-		new MainCli().execute(queue);
-		
-	}
-	
-	public MainCli() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		Object[] pack = ConUtil.getMainPackageName();
-		log().t("Scan Package", pack);
-		
-		Reflections reflections = new Reflections(pack);
-				
-		for (Class<?> clazz : reflections.getTypesAnnotatedWith(AOption.class) ) {
-			AOption def = clazz.getAnnotation(AOption.class);
-			log().t("AOption",clazz,def);
-			if (def != null) {
-				Object inst = clazz.getConstructor().newInstance();
-				for (String alias : def.alias()) {
-					MainOptionHandler old = optionHandlers.put(alias, (MainOptionHandler) inst);
-					if (old != null)
-						log().w("Overwrite",alias, old.getClass(), clazz);
-				}
-			}
-		}
-		
-		for (Class<?> clazz : reflections.getTypesAnnotatedWith(AScheme.class) ) {
-			AScheme def = clazz.getAnnotation(AScheme.class);
-			log().t("AScheme",clazz,def);
-			if (def != null) {
-				Object inst = clazz.getConstructor().newInstance();
-				for (String alias : def.name()) {
-					Scheme old = schemes.put(alias, (Scheme) inst);
-					if (old != null)
-						log().w("Overwrite",alias, old.getClass(), clazz);
-				}
-			}
-		}
+    protected Map<String, MainOptionHandler> optionHandlers = new HashMap<>();
+    protected Map<String, Scheme> schemes = new HashMap<>();
+    protected Map<String, ConfigType> configTypes = new HashMap<>();
+    protected Map<String, Validator> validators = new HashMap<>();
+    protected File rootDir = new File(".");
+    protected ConductorImpl con;
+    protected String configFile;
+    private MProperties overlayProperties = new MProperties();
 
-		for (Class<?> clazz : reflections.getTypesAnnotatedWith(AConfigType.class) ) {
-			AConfigType def = clazz.getAnnotation(AConfigType.class);
-			log().t("AConfigType",clazz,def);
-			if (def != null) {
-				Object inst = clazz.getConstructor().newInstance();
-				for (String alias : def.name()) {
-					ConfigType old = configTypes.put(alias, (ConfigType) inst);
-					if (old != null)
-						log().w("Overwrite",alias, old.getClass(), clazz);
-				}
-			}
-		}
-		
-		for (Class<?> clazz : reflections.getTypesAnnotatedWith(AValidator.class) ) {
-			AValidator def = clazz.getAnnotation(AValidator.class);
-			log().t("AValidator",clazz,def);
-			if (def != null) {
-				Object inst = clazz.getConstructor().newInstance();
-				for (String alias : def.name()) {
-					Validator old = validators.put(alias, (Validator) inst);
-					if (old != null)
-						log().w("Overwrite",alias, old.getClass(), clazz);
-				}
-			}
-		}
-		
-		log().t("optionHandlers",optionHandlers);
-	}
-	
-	protected void execute(LinkedList<String> queue) throws MException {
-		
-		MProperties execProperties = null;
-		String execLifecycle = null;
-		
-		while (queue.size() > 0) {
-			String next = queue.removeFirst();
-			if (next.startsWith("-")) {
-				if (execLifecycle != null) {
-					executeLifecycle(execLifecycle, execProperties);
-					execLifecycle = null;
-					execProperties = null;
-				}
-				executeOption(next, queue);
-				
-			} else
-			if (execLifecycle == null) {
-				execLifecycle = next;
-				execProperties = new MProperties();
-			} else {
-				if (MString.isIndex(next, '='))
-					execProperties.put(MString.beforeIndex(next, '=').trim(), MString.afterIndex(next, '='));
-			}
-		}
-		
-		if (execLifecycle != null) {
-			executeLifecycle(execLifecycle, execProperties);
-			execLifecycle = null;
-			execProperties = null;
-		}
-		
-		resetCon();
-		
-	}
+    public static void main(String[] args) throws Exception {
 
-	private void executeOption(String next, LinkedList<String> queue) throws NotFoundException {
-		MainOptionHandler handler = optionHandlers.get(next);
-		if (handler == null) throw new NotFoundException("option",next);
-		handler.execute(this,next, queue);
-	}
+        ConUtil.getConsole();
 
-	private void executeLifecycle(String execLifecycle, MProperties execProperties) throws MException {
-		
-		createConductor();
+        if (args == null || args.length == 0) {
+            System.out.println("Try --help");
+            return;
+        }
 
-		((MProperties)con.getProperties()).putReadProperties(execProperties);
+        LinkedList<String> queue = new LinkedList<>();
+        for (String arg : args) queue.add(arg);
+
+        new MainCli().execute(queue);
+    }
+
+    public MainCli()
+            throws ClassNotFoundException, IOException, InstantiationException,
+                    IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+                    NoSuchMethodException, SecurityException {
+        Object[] pack = ConUtil.getMainPackageName();
+        log().t("Scan Package", pack);
+
+        Reflections reflections = new Reflections(pack);
+
+        for (Class<?> clazz : reflections.getTypesAnnotatedWith(AOption.class)) {
+            AOption def = clazz.getAnnotation(AOption.class);
+            log().t("AOption", clazz, def);
+            if (def != null) {
+                Object inst = clazz.getConstructor().newInstance();
+                for (String alias : def.alias()) {
+                    MainOptionHandler old = optionHandlers.put(alias, (MainOptionHandler) inst);
+                    if (old != null) log().w("Overwrite", alias, old.getClass(), clazz);
+                }
+            }
+        }
+
+        for (Class<?> clazz : reflections.getTypesAnnotatedWith(AScheme.class)) {
+            AScheme def = clazz.getAnnotation(AScheme.class);
+            log().t("AScheme", clazz, def);
+            if (def != null) {
+                Object inst = clazz.getConstructor().newInstance();
+                for (String alias : def.name()) {
+                    Scheme old = schemes.put(alias, (Scheme) inst);
+                    if (old != null) log().w("Overwrite", alias, old.getClass(), clazz);
+                }
+            }
+        }
+
+        for (Class<?> clazz : reflections.getTypesAnnotatedWith(AConfigType.class)) {
+            AConfigType def = clazz.getAnnotation(AConfigType.class);
+            log().t("AConfigType", clazz, def);
+            if (def != null) {
+                Object inst = clazz.getConstructor().newInstance();
+                for (String alias : def.name()) {
+                    ConfigType old = configTypes.put(alias, (ConfigType) inst);
+                    if (old != null) log().w("Overwrite", alias, old.getClass(), clazz);
+                }
+            }
+        }
+
+        for (Class<?> clazz : reflections.getTypesAnnotatedWith(AValidator.class)) {
+            AValidator def = clazz.getAnnotation(AValidator.class);
+            log().t("AValidator", clazz, def);
+            if (def != null) {
+                Object inst = clazz.getConstructor().newInstance();
+                for (String alias : def.name()) {
+                    Validator old = validators.put(alias, (Validator) inst);
+                    if (old != null) log().w("Overwrite", alias, old.getClass(), clazz);
+                }
+            }
+        }
+
+        log().t("optionHandlers", optionHandlers);
+    }
+
+    protected void execute(LinkedList<String> queue) throws MException {
+
+        MProperties execProperties = null;
+        String execLifecycle = null;
+
+        while (queue.size() > 0) {
+            String next = queue.removeFirst();
+            if (next.startsWith("-")) {
+                if (execLifecycle != null) {
+                    executeLifecycle(execLifecycle, execProperties);
+                    execLifecycle = null;
+                    execProperties = null;
+                }
+                executeOption(next, queue);
+
+            } else if (execLifecycle == null) {
+                execLifecycle = next;
+                execProperties = new MProperties();
+            } else {
+                if (MString.isIndex(next, '='))
+                    execProperties.put(
+                            MString.beforeIndex(next, '=').trim(), MString.afterIndex(next, '='));
+            }
+        }
+
+        if (execLifecycle != null) {
+            executeLifecycle(execLifecycle, execProperties);
+            execLifecycle = null;
+            execProperties = null;
+        }
+
+        resetCon();
+    }
+
+    private void executeOption(String next, LinkedList<String> queue) throws NotFoundException {
+        MainOptionHandler handler = optionHandlers.get(next);
+        if (handler == null) throw new NotFoundException("option", next);
+        handler.execute(this, next, queue);
+    }
+
+    private void executeLifecycle(String execLifecycle, MProperties execProperties)
+            throws MException {
+
+        createConductor();
+
+        ((MProperties) con.getProperties()).putReadProperties(execProperties);
         ExecutorDefault executor = new ExecutorDefault();
-        
+
         executor.execute(con, execLifecycle);
+    }
 
-	}
+    private void createConductor() throws MException {
+        if (con != null) return;
+        log().d("Create conductor object");
+        ConfiguratorDefault config = new ConfiguratorDefault();
 
-	private void createConductor() throws MException {
-		if (con != null) return;
-		log().d("Create conductor object");
-		ConfiguratorDefault config = new ConfiguratorDefault();
-		
-		for (Entry<String, Scheme> entry : schemes.entrySet())
-			((SchemesImpl)config.getSchemes()).put(entry.getKey(), entry.getValue() );
-		for (Entry<String, ConfigType> entry : configTypes.entrySet())
-			((ConfigTypesImpl)config.getTypes()).put(entry.getKey(), entry.getValue());
-		for (Entry<String, Validator> entry :validators.entrySet())
-			config.getValidators().put(entry.getKey(),entry.getValue());
+        for (Entry<String, Scheme> entry : schemes.entrySet())
+            ((SchemesImpl) config.getSchemes()).put(entry.getKey(), entry.getValue());
+        for (Entry<String, ConfigType> entry : configTypes.entrySet())
+            ((ConfigTypesImpl) config.getTypes()).put(entry.getKey(), entry.getValue());
+        for (Entry<String, Validator> entry : validators.entrySet())
+            config.getValidators().put(entry.getKey(), entry.getValue());
 
         if (configFile == null) {
-        	// set default
-        	configFile = findDefaultFile(rootDir);
+            // set default
+            configFile = findDefaultFile(rootDir);
         }
         URI uri = URI.create(configFile);
-        
-        con = new ConductorImpl(rootDir);
-        
-        config.configure(uri, con, overlayProperties);
-		
-	}
 
-	public static String findDefaultFile(File rootDir) {
+        con = new ConductorImpl(rootDir);
+
+        config.configure(uri, con, overlayProperties);
+    }
+
+    public static String findDefaultFile(File rootDir) {
         // set default
         File file = new File(rootDir, "conductor.yml");
         String config = null;
-        if (file.exists() && file.isFile())
-            config = "file:conductor.yml";
+        if (file.exists() && file.isFile()) config = "file:conductor.yml";
         else
-            config = "mvn:de.mhus.conductor/conductor-plugin/"+Version.VERSION+"/yml/configuration-default";
-	    return config;
-	}
-	
-	@Override
-	public Map<String, MainOptionHandler> getOptions() {
-		return optionHandlers;
-	}
+            config =
+                    "mvn:de.mhus.conductor/conductor-plugin/"
+                            + Version.VERSION
+                            + "/yml/configuration-default";
+        return config;
+    }
 
-	public void resetCon() {
-		if (con == null) return;
-		con.close();
-		con = null;
-		overlayProperties.clear();
-	}
+    @Override
+    public Map<String, MainOptionHandler> getOptions() {
+        return optionHandlers;
+    }
+
+    public void resetCon() {
+        if (con == null) return;
+        con.close();
+        con = null;
+        overlayProperties.clear();
+    }
 
     @Override
     public Map<String, Scheme> getSchemes() {
@@ -245,5 +255,4 @@ public class MainCli extends MLog implements Cli {
     public MProperties getOverlayProperties() {
         return overlayProperties;
     }
-
 }

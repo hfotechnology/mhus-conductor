@@ -1,3 +1,16 @@
+/**
+ * Copyright 2018 Mike Hummel
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.mhus.con.plugin;
 
 import java.io.File;
@@ -16,7 +29,7 @@ import de.mhus.lib.core.MString;
 import de.mhus.lib.core.MXml;
 import de.mhus.lib.errors.MException;
 
-@AMojo(name="updatePomParentVersion")
+@AMojo(name = "updatePomParentVersion")
 public class UpdatePomParentVersion extends MLog implements ExecutePlugin {
 
     @Override
@@ -41,15 +54,15 @@ public class UpdatePomParentVersion extends MLog implements ExecutePlugin {
         }
 
         String version = context.getStep().getProperties().getString("version");
-        log().t("parent version",version);
-        if (MString.isEmptyTrim(version)) 
+        log().t("parent version", version);
+        if (MString.isEmptyTrim(version))
             throw new MException("parent version is empty, skip. Tip: set step property 'version'");
-        
+
         if (MXml.getValue(versionE, false).equals(version)) {
-            log().i("version not changed",version);
+            log().i("version not changed", version);
             return false;
         }
-        
+
         // remove all
         NodeList l = versionE.getChildNodes();
         for (int i = 0; i < l.getLength(); i++) {
@@ -58,11 +71,10 @@ public class UpdatePomParentVersion extends MLog implements ExecutePlugin {
         }
         Text versionTE = pomDoc.createTextNode(version);
         versionE.appendChild(versionTE);
-        
-        log().d("update pom",pomFile);
+
+        log().d("update pom", pomFile);
         MXml.saveXml(pomDoc, pomFile, false);
-        
+
         return true;
     }
-
 }
