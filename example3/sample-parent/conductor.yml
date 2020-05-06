@@ -7,7 +7,7 @@ projects:
     path: .
     labels:
       group: parent
-      sort: 0
+      order: 0
     properties:
       property.api: sample-api.version
       property.core: sample-core.version
@@ -17,19 +17,19 @@ projects:
     path: ../sample-api
     labels:
       group: bundles
-      sort: 1
+      order: 1
   - name: core
     path: ../sample-core
     labels:
       group: bundles
-      sort: 2
+      order: 2
   - name: api
     path: ../sample-product
     labels:
       group: bundles
-      sort: 3
+      order: 3
   - name: itest
     path: ../sample-test
     labels:
       group: itests
-      sort: 4
+      order: 4

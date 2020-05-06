@@ -41,6 +41,8 @@ public class ConUtil {
 	public static final String PROPERTY_PARALLEL = "conductor.parallel";
 	public static final String PROPERTY_THREADS = "conductor.threads";
     private static final Object[] SCAN_PACKAGES = new Object[] { "de.mhus.con" };
+    public static final String PROPERTY_TRY = "conductor.try";
+    public static final String PROPERTY_STEP_IGNORE_RETURN_CODE = "step.ignoreReturnCode";
 	
     public static void orderProjects(List<Project> projects, String order, boolean orderAsc) {
         projects.sort(new Comparator<Project>() {

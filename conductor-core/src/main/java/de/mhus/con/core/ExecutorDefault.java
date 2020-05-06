@@ -81,6 +81,7 @@ public class ExecutorDefault extends MLog implements Executor {
         } finally {
             interceptors.forEach(i -> i.executeEnd(con, lifecycle, steps, errors));
         }
+        errors.clear();
     }
 
     protected void execute(Step step) {

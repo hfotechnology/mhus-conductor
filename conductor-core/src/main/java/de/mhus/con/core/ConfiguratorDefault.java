@@ -197,6 +197,9 @@ public class ConfiguratorDefault extends MLog implements Configurator {
     }
 
     private void loadProjectProperties(YMap propertiesE, ProjectImpl project) {
+        
+        ((MProperties)project.getProperties()).put("_name", project.getName());
+        
         if (propertiesE == null) return;
         
         if (propertiesE.getBoolean("_clear"))
