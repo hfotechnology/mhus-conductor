@@ -39,7 +39,8 @@ public class ContextImpl extends MLog implements Context {
     private Step step;
     private Executor executor;
     private List<Project> projects;
-
+    private StringCompiler compiler = new ContextCompiler(this);
+    
     public ContextImpl(Conductor con) {
         this.con = con;
         properties = new MProperties();
@@ -63,7 +64,7 @@ public class ContextImpl extends MLog implements Context {
     public String make(String in) {
         if (in == null) return null;
         try {
-            String ret = StringCompiler.compile(in).execute(properties);
+            String ret = compiler.compileString(in).execute(properties);
             log().t("make", in, ret);
             return ret;
         } catch (MException e) {

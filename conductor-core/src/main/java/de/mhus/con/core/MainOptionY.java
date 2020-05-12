@@ -11,33 +11,30 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.mhus.con.api;
+package de.mhus.con.core;
 
 import java.util.LinkedList;
 
-import de.mhus.lib.core.IProperties;
+import de.mhus.con.api.AOption;
+import de.mhus.con.api.Cli;
+import de.mhus.con.api.ConUtil;
+import de.mhus.con.api.MainOptionHandler;
 
-public interface Step {
+@AOption(alias = "-y")
+public class MainOptionY implements MainOptionHandler {
 
-    LinkedList<String> getArguments();
+    @Override
+    public void execute(Cli cli, String cmd, LinkedList<String> queue) {
+        ((MainCli) cli).getOverlayProperties().put(ConUtil.PROPERTY_Y, true);
+    }
 
-    Labels getSelector();
+    @Override
+    public String getUsage(String cmd) {
+        return "";
+    }
 
-    String getSortBy();
-
-    boolean isOrderAsc();
-
-    String getTarget();
-
-    String getCondition();
-
-    boolean matchCondition(Context context);
-
-    String getTitle();
-
-    IProperties getProperties();
-
-    int getId();
-
-    Steps getSubSteps();
+    @Override
+    public String getDescription(String cmd) {
+        return "Automatically Confirm Option";
+    }
 }

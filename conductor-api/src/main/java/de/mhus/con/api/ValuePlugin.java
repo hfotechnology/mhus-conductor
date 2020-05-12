@@ -13,31 +13,10 @@
  */
 package de.mhus.con.api;
 
-import java.util.LinkedList;
+import java.util.Map;
 
-import de.mhus.lib.core.IProperties;
+public interface ValuePlugin extends ConductorPlugin {
 
-public interface Step {
-
-    LinkedList<String> getArguments();
-
-    Labels getSelector();
-
-    String getSortBy();
-
-    boolean isOrderAsc();
-
-    String getTarget();
-
-    String getCondition();
-
-    boolean matchCondition(Context context);
-
-    String getTitle();
-
-    IProperties getProperties();
-
-    int getId();
-
-    Steps getSubSteps();
+    String getValue(Context context, String value, Map<String, Object> attributes) throws Exception;
+    
 }

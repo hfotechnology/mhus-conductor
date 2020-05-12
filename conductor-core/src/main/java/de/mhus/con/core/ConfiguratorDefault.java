@@ -298,6 +298,11 @@ public class ConfiguratorDefault extends MLog implements Configurator {
             YMap propertiesE = map.getMap("properties");
             loadStepProperties(propertiesE, step);
 
+            // sub steps
+            YList subE = map.getList("steps");
+            step.steps = new StepsImpl();
+            loadSteps(subE, step.steps);
+
         } catch (Throwable t) {
             throw new MRuntimeException("step", step, t);
         }

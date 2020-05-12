@@ -85,7 +85,7 @@ public class ExecutorDefault extends MLog implements Executor {
         }
     }
 
-    protected void execute(String lifecycle, Steps steps) {
+    public void execute(String lifecycle, Steps steps) {
         con.getProjects().forEach(p -> ((ProjectImpl) p).setStatus(Project.STATUS.SKIPPED));
         interceptors.forEach(i -> i.executeBegin(con, lifecycle, steps));
         try {
@@ -96,7 +96,7 @@ public class ExecutorDefault extends MLog implements Executor {
         }
     }
 
-    protected void execute(Step step) {
+    public void execute(Step step) {
         currentStepCount++;
         log().d("executeStep", step);
 

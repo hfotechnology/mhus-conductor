@@ -18,8 +18,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import de.mhus.con.api.Plugin.SCOPE;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface AMojo {
     String name();
+    String target() default "";
+    SCOPE scope() default SCOPE.PROJECT;
 }

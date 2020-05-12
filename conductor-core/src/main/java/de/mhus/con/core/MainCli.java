@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import org.reflections.Reflections;
 
 import de.mhus.con.api.AConfigType;
+import de.mhus.con.api.AMojo;
 import de.mhus.con.api.AOption;
 import de.mhus.con.api.AScheme;
 import de.mhus.con.api.AValidator;
@@ -33,6 +34,7 @@ import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
 import de.mhus.con.api.ConfigType;
 import de.mhus.con.api.MainOptionHandler;
+import de.mhus.con.api.Plugin;
 import de.mhus.con.api.Scheme;
 import de.mhus.con.api.Validator;
 import de.mhus.conductor.api.meta.Version;
@@ -48,6 +50,8 @@ public class MainCli extends MLog implements Cli {
     protected Map<String, Scheme> schemes = new HashMap<>();
     protected Map<String, ConfigType> configTypes = new HashMap<>();
     protected Map<String, Validator> validators = new HashMap<>();
+    protected Map<String, Plugin> defaultPlugins = new HashMap<>();
+    
     protected File rootDir = new File(".");
     protected ConductorImpl con;
     protected String configFile;
@@ -88,6 +92,7 @@ public class MainCli extends MLog implements Cli {
                 }
             }
         }
+        log().t("optionHandlers", optionHandlers);
 
         for (Class<?> clazz : reflections.getTypesAnnotatedWith(AScheme.class)) {
             AScheme def = clazz.getAnnotation(AScheme.class);
@@ -100,6 +105,7 @@ public class MainCli extends MLog implements Cli {
                 }
             }
         }
+        log().t("schemes",schemes);
 
         for (Class<?> clazz : reflections.getTypesAnnotatedWith(AConfigType.class)) {
             AConfigType def = clazz.getAnnotation(AConfigType.class);
@@ -112,6 +118,7 @@ public class MainCli extends MLog implements Cli {
                 }
             }
         }
+        log().t("configTypes",configTypes);
 
         for (Class<?> clazz : reflections.getTypesAnnotatedWith(AValidator.class)) {
             AValidator def = clazz.getAnnotation(AValidator.class);
@@ -124,8 +131,24 @@ public class MainCli extends MLog implements Cli {
                 }
             }
         }
+        log().t("validators",validators);
 
-        log().t("optionHandlers", optionHandlers);
+        for (Class<?> clazz : reflections.getTypesAnnotatedWith(AMojo.class)) {
+            AMojo def = clazz.getAnnotation(AMojo.class);
+            log().t("AMojo", clazz, def);
+            if (def != null) {
+                if (MString.isSet(def.target())) {
+                    PluginImpl impl = new PluginImpl();
+                    impl.mojo = def.name();
+                    impl.scope = def.scope();
+                    impl.target = def.target();
+                    impl.uri = "vm:" + def.name();
+                    defaultPlugins.put(def.target(), impl);
+                }
+            }
+        }
+        log().t("defaultPlugins",defaultPlugins);
+        
     }
 
     protected void execute(LinkedList<String> queue) throws MException {
@@ -198,6 +221,9 @@ public class MainCli extends MLog implements Cli {
         URI uri = URI.create(configFile);
 
         con = new ConductorImpl(rootDir);
+        
+        defaultPlugins.values().forEach(i -> ((PluginImpl)i).con = con);
+        con.plugins.collection.putAll(defaultPlugins);
 
         config.configure(uri, con, overlayProperties);
     }

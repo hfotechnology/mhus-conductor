@@ -57,6 +57,7 @@ public class ConUtil {
     private static final Object[] SCAN_PACKAGES = new Object[] {"de.mhus.con"};
     public static final String PROPERTY_TRY = "conductor.try";
     public static final String PROPERTY_STEP_IGNORE_RETURN_CODE = "step.ignoreReturnCode";
+    public static final String PROPERTY_Y = "conductor.confirm";
 
     public static void orderProjects(List<Project> projects, String order, boolean orderAsc) {
         projects.sort(

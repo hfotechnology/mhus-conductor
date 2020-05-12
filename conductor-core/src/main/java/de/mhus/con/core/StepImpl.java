@@ -20,6 +20,7 @@ import de.mhus.con.api.Conductor;
 import de.mhus.con.api.Context;
 import de.mhus.con.api.Labels;
 import de.mhus.con.api.Step;
+import de.mhus.con.api.Steps;
 import de.mhus.lib.core.IProperties;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MString;
@@ -41,6 +42,7 @@ public class StepImpl implements Step {
     protected String title;
     protected MProperties properties = new MProperties();
     private int id;
+    protected StepsImpl steps;
 
     @Override
     public LinkedList<String> getArguments() {
@@ -111,5 +113,10 @@ public class StepImpl implements Step {
     @Override
     public int getId() {
         return id;
+    }
+    
+    @Override
+    public Steps getSubSteps() {
+        return steps;
     }
 }

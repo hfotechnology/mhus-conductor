@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import de.mhus.con.api.Context;
 import de.mhus.con.api.Labels;
 import de.mhus.con.api.Step;
+import de.mhus.con.api.Steps;
 import de.mhus.lib.core.IProperties;
 import de.mhus.lib.core.MProperties;
 
@@ -105,5 +106,10 @@ public class ContextStep implements Step {
 
     public Step getInstance() {
         return inst;
+    }
+
+    @Override
+    public Steps getSubSteps() {
+        return new ContextSteps(context, inst.getSubSteps());
     }
 }
