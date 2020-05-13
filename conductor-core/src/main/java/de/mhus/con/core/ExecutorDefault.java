@@ -45,6 +45,7 @@ import de.mhus.con.api.Project.STATUS;
 import de.mhus.con.api.Scheme;
 import de.mhus.con.api.Step;
 import de.mhus.con.api.Steps;
+import de.mhus.con.api.StopLifecycleException;
 import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MString;
@@ -221,7 +222,7 @@ public class ExecutorDefault extends MLog implements Executor {
                 if (project != null) ((ProjectImpl) project).setStatus(Project.STATUS.FAILURE);
                 interceptors.forEach(i -> i.executeError(context, t));
                 errors.add(new ErrorsInfoImpl(context, t));
-                if (con.getProperties().getBoolean(ConUtil.PROPERTY_FAE, false)) {
+                if (!(t instanceof StopLifecycleException) && con.getProperties().getBoolean(ConUtil.PROPERTY_FAE, false)) {
                     log().e(context, t);
                     return;
                 } else throw t;

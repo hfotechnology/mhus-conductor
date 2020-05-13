@@ -15,9 +15,12 @@ package de.mhus.con.core.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Optional;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.junit.jupiter.api.TestInfo;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -44,5 +47,19 @@ public class TestUtil {
         Document doc = MXml.loadXml(new File("pom.xml"));
         String version = MXml.getValue(doc.getDocumentElement(), "/parent/version", "");
         return version;
+    }
+
+    public static void start(TestInfo testInfo) {
+        if (testInfo == null) {
+            System.out.println(">>> unknown");
+            return;
+        }
+        Optional<Class<?>> clazz = testInfo.getTestClass();
+        Optional<Method> method = testInfo.getTestMethod();
+        System.out.println(">>> " + 
+                (clazz == null || clazz.isEmpty() ? "?" : clazz.get().getCanonicalName()) 
+                + "::" + 
+                (method == null || method.isEmpty() ? "?" : method.get().getName())
+                );
     }
 }

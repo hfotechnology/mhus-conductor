@@ -19,7 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.File;
 import java.net.URI;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
@@ -38,6 +40,11 @@ import de.mhus.lib.errors.MException;
 
 public class ConfiguratorTest {
 
+    @BeforeEach
+    public void beforeEach(TestInfo testInfo) {
+        TestUtil.start(testInfo);
+    }
+    
     @Test
     public void testLoading() throws MException {
 

@@ -4,6 +4,7 @@ import de.mhus.con.api.AMojo;
 import de.mhus.con.api.Context;
 import de.mhus.con.api.ExecutePlugin;
 import de.mhus.con.api.Step;
+import de.mhus.con.core.ContextStep;
 import de.mhus.con.core.ExecutorDefault;
 import de.mhus.lib.core.MLog;
 
@@ -15,7 +16,7 @@ public class SwitchStep extends MLog implements ExecutePlugin {
         for (Step caze : context.getStep().getSubSteps()) {
             if (caze.matchCondition(context)) {
                 log().d("Execute case",caze);
-                ((ExecutorDefault)context.getExecutor()).execute(caze);
+                ((ExecutorDefault)context.getExecutor()).execute( ((ContextStep)caze).getInstance() );
                 return true;
             }
         }
