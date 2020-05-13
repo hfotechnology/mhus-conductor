@@ -3,10 +3,14 @@ package de.mhus.con.plugin;
 import de.mhus.con.api.AMojo;
 import de.mhus.con.api.Context;
 import de.mhus.con.api.ExecutePlugin;
+import de.mhus.con.api.MojoException;
 import de.mhus.con.api.Step;
 import de.mhus.con.core.ContextStep;
 import de.mhus.con.core.ExecutorDefault;
+import de.mhus.lib.core.MCast;
 import de.mhus.lib.core.MLog;
+import de.mhus.lib.core.MProperties;
+import de.mhus.lib.core.MString;
 
 @AMojo(name = "loopProjects",target = "loop")
 public class ProjectLoopMojo extends MLog implements ExecutePlugin {
@@ -14,12 +18,33 @@ public class ProjectLoopMojo extends MLog implements ExecutePlugin {
     @Override
     public boolean execute(Context context) throws Exception {
         boolean done = false;
-        while (context.getStep().matchCondition(context)) {
-            done = true;
-            for (Step caze : context.getStep().getSubSteps()) {
-                if (caze.matchCondition(context)) {
-                    log().d("Execute case",caze);
-                    ((ExecutorDefault)context.getExecutor()).execute( ((ContextStep)caze).getInstance() );
+        
+        String range = context.getStep().getProperties().getString("range",null);
+        if (range != null) {
+            double start = MCast.todouble(MString.beforeIndex(range, '-').trim(), 0);
+            double end   = MCast.todouble(MString.afterIndex(range, '-').trim(), 0);
+            double step = context.getStep().getProperties().getDouble("step",1);
+            if (step == 0) throw new MojoException(context, "step is zero");
+            String indexName = context.getStep().getProperties().getString("index","index");
+            
+            for (double d = start; start < end ? d < end : d > end; d = d + step ) {
+                ((MProperties)context.getConductor().getProperties()).setDouble(indexName, d);
+                done = true;
+                for (Step caze : context.getStep().getSubSteps()) {
+                    if (caze.matchCondition(context)) {
+                        log().d("Execute case",caze);
+                        ((ExecutorDefault)context.getExecutor()).execute( ((ContextStep)caze).getInstance() );
+                    }
+                }
+            }
+        } else {
+            while (context.getStep().matchCondition(context)) {
+                done = true;
+                for (Step caze : context.getStep().getSubSteps()) {
+                    if (caze.matchCondition(context)) {
+                        log().d("Execute case",caze);
+                        ((ExecutorDefault)context.getExecutor()).execute( ((ContextStep)caze).getInstance() );
+                    }
                 }
             }
         }

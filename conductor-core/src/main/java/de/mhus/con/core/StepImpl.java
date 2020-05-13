@@ -94,7 +94,7 @@ public class StepImpl implements Step {
 
         try {
             Condition filter = new Condition(condStr);
-            return filter.matches((Map<String, ?>) context.getProperties());
+            return filter.matches((Map<String, Object>) context.getProperties());
         } catch (MException e) {
             throw new MRuntimeException(this, condStr, e);
         }

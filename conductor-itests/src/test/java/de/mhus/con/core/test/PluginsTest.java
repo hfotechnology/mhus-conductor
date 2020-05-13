@@ -3,8 +3,11 @@ package de.mhus.con.core.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 
@@ -27,34 +30,133 @@ public class PluginsTest {
     private static ByteArrayOutputStream out;
     private static PrintStream orgOut;
 
-    @BeforeAll
-    public static void init() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
-        cli = new MainCli();
-        console = new MainOptionConsole();
-        console.init(cli);
-        out = new ByteArrayOutputStream();
-        YOutputStream swt = new YOutputStream(System.out, out);
-        orgOut = System.out;
-        System.setOut(new PrintStream(swt));
+    @Test
+    void testConfirm() throws MException {
+        
+        InputStream in = System.in;
+        BufferedInputStream newIn = new BufferedInputStream(new ByteArrayInputStream("y\n".getBytes()));
+        System.setIn(newIn);
+        try {
+            out.reset();
+            console.execute(
+                    "- title: Confirm\n"
+                  + "  target: confirm\n"
+                  + "  properties:\n"
+                  + "    prompt: Choose\n"
+                  + "    message: Message\n"
+                  + "");
+    
+            String str = new String(out.toByteArray()).trim();
+            System.out.println("out> " + str);
+            
+            String[] parts = str.split("------------------------------------------------------------------------");
+            
+            assertEquals(
+                    "Message\n" + 
+                    "Choose (y/n) y", parts[2].trim());
+        } finally {
+            System.setIn(in);
+        }
     }
     
-    @AfterAll
-    public static void deinit() {
-        System.setOut(orgOut);
+    @Test
+    void testLoop() throws MException {
+        out.reset();
+        console.execute(
+                "- title: Loop\n"
+              + "  target: loop\n"
+              + "  properties:\n"
+              + "    range: 1-6\n"
+              + "    step: 2\n"
+              + "  steps:\n"
+              + "  - title: Step 1\n"
+              + "    condition: ${#1} == 2\n"
+              + "    target: con.test\n"
+              + "    properties:\n"
+              + "      message: Step 1\n"
+              + "  - title: Step 2\n"
+              + "    target: con.test\n"
+              + "    properties:\n"
+              + "      message: Step 2 ${index}\n"
+              + "");
+
+        String str = new String(out.toByteArray()).trim();
+        System.out.println("out> " + str);
+        
+        String[] parts = str.split("------------------------------------------------------------------------");
+        
+        assertEquals(
+                "Test: Step 2 1.0", parts[4].trim());
+        assertEquals(
+                "Test: Step 2 3.0", parts[6].trim());
+        assertEquals(
+                "Test: Step 2 5.0", parts[8].trim());
+    
     }
     
-    @BeforeEach
-    public void beforeEach(TestInfo testInfo) {
-        TestUtil.start(testInfo);
+    @Test
+    void testSwitch() throws MException {
+        out.reset();
+        console.execute(
+                "- title: Switch\n"
+              + "  target: switch\n"
+              + "  steps:\n"
+              + "  - title: Step 1\n"
+              + "    condition: ${#1} == 2\n"
+              + "    target: con.test\n"
+              + "    properties:\n"
+              + "      message: Step 1\n"
+              + "  - title: Step 2\n"
+              + "    target: con.test\n"
+              + "    properties:\n"
+              + "      message: Step 2\n"
+              + "");
+
+        String str = new String(out.toByteArray()).trim();
+        System.out.println("out> " + str);
+        
+        String[] parts = str.split("------------------------------------------------------------------------");
+        
+        assertEquals(
+                "Test: Step 2", parts[4].trim());
+    }
+
+    @Test
+    void testExecute() throws MException {
+        out.reset();
+        console.execute(
+                "- title: Execute\n"
+              + "  target: execute\n"
+              + "  steps:\n"
+              + "  - title: Step 1\n"
+              + "    target: con.test\n"
+              + "    properties:\n"
+              + "      message: Step 1\n"
+              + "  - title: Step 2\n"
+              + "    target: con.test\n"
+              + "    properties:\n"
+              + "      message: Step 2\n"
+              + "");
+
+        String str = new String(out.toByteArray()).trim();
+        System.out.println("out> " + str);
+        
+        String[] parts = str.split("------------------------------------------------------------------------");
+        
+        assertEquals(
+                "Test: Step 1", parts[4].trim());
+        assertEquals(
+                "Test: Step 2", parts[6].trim());
     }
     
     @Test
     void testGitVersion() throws MException {
         out.reset();
-        console.execute("print ${git.version()}");
+        console.execute("print xxx${git.version()}xxx");
         String str = new String(out.toByteArray()).trim();
         System.out.println("version> " + str);
         assertTrue(str.length() > 0);
+        str = str.split("xxx")[1].trim();
         assertEquals(2, MString.countCharacters(str, '.'));
     }
     
@@ -62,10 +164,11 @@ public class PluginsTest {
     void testMavenVersion() throws MException {
         {
             out.reset();
-            console.execute("print ${maven.version()}");
+            console.execute("print xxx${maven.version()}xxx");
             String str = new String(out.toByteArray()).trim();
             System.out.println("version> " + str);
             assertTrue(str.length() > 0);
+            str = str.split("xxx")[1].trim();
             assertEquals(2, MString.countCharacters(str, '.'));
         }
         {
@@ -91,5 +194,26 @@ public class PluginsTest {
         }
     }
 
+    @BeforeAll
+    public static void init() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+        out = new ByteArrayOutputStream();
+        YOutputStream swt = new YOutputStream(System.out, out);
+        orgOut = System.out;
+        System.setOut(new PrintStream(swt));
+        
+        cli = new MainCli();
+        console = new MainOptionConsole();
+        console.init(cli);
+    }
+    
+    @AfterAll
+    public static void deinit() {
+        System.setOut(orgOut);
+    }
+    
+    @BeforeEach
+    public void beforeEach(TestInfo testInfo) {
+        TestUtil.start(testInfo);
+    }
     
 }

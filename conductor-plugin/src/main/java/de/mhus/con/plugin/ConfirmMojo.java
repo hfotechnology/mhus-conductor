@@ -33,11 +33,16 @@ public class ConfirmMojo implements ExecutePlugin {
         console.print(" (y/n) ");
         console.flush();
         while (true) {
-            int input = console.read();
-            if (input == 'n')
+            int input = System.in.read();
+            console.print((char)input);
+            if (input == 'n') {
+                console.println();
                 throw new StopLifecycleException(context, "Not Confirmed",prompt);
-            if (input == 'y')
+            }
+            if (input == 'y') {
+                console.println();
                 return true;
+            }
         }
     }
 
