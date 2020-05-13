@@ -49,6 +49,16 @@ public class PluginsTest {
     }
     
     @Test
+    void testGitVersion() throws MException {
+        out.reset();
+        console.execute("print ${git.version()}");
+        String str = new String(out.toByteArray()).trim();
+        System.out.println("version> " + str);
+        assertTrue(str.length() > 0);
+        assertEquals(2, MString.countCharacters(str, '.'));
+    }
+    
+    @Test
     void testMavenVersion() throws MException {
         {
             out.reset();
