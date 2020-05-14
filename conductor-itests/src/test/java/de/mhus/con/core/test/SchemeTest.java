@@ -40,6 +40,7 @@ import de.mhus.con.core.ExecutorDefault;
 import de.mhus.con.core.FileScheme;
 import de.mhus.con.core.MavenScheme;
 import de.mhus.con.core.SchemesImpl;
+import de.mhus.con.core.StepImpl;
 import de.mhus.con.core.YmlConfigType;
 import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MProperties;
@@ -133,8 +134,9 @@ public class SchemeTest {
             ((MProperties) con.getProperties()).put("conductor.version", TestUtil.conrentVersion());
             ((SchemesImpl) con.getSchemes()).put("mvn", new MavenScheme());
 
+            StepImpl step = new StepImpl();
             ContextImpl context = new ContextImpl(con);
-            context.init(null, null, null, con.getPlugins().get("test"), null);
+            context.init(null, null, null, con.getPlugins().get("test"), step);
 
             ExecutorDefault exec = new ExecutorDefault();
 

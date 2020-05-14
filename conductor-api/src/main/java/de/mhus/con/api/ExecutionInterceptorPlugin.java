@@ -26,4 +26,8 @@ public interface ExecutionInterceptorPlugin extends ConductorPlugin {
     void executeEnd(Conductor con, String lifecycle, Steps steps, List<ErrorInfo> errors);
 
     void executeBegin(Conductor con, String lifecycle, Steps steps);
+
+    void enterSubSteps(Conductor con, Step step);
+
+    void leaveSubSteps(Conductor con, Step step);
 }

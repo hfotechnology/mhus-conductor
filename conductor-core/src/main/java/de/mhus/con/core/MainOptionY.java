@@ -19,13 +19,16 @@ import de.mhus.con.api.AOption;
 import de.mhus.con.api.Cli;
 import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.MainOptionHandler;
+import de.mhus.lib.core.MProperties;
 
-@AOption(alias = "-y")
+@AOption(alias = {"-y", "-!y"})
 public class MainOptionY implements MainOptionHandler {
 
     @Override
     public void execute(Cli cli, String cmd, LinkedList<String> queue) {
-        ((MainCli) cli).getOverlayProperties().put(ConUtil.PROPERTY_Y, true);
+        ((MainCli) cli).getOverlayProperties().setBoolean(ConUtil.PROPERTY_Y, cmd.equals("-y"));
+        if (((MainCli)cli).isConductor())
+            ((MProperties)cli.getConductor().getProperties()).setBoolean(ConUtil.PROPERTY_VERBOSE, cmd.equals("-y"));
     }
 
     @Override
@@ -35,6 +38,6 @@ public class MainOptionY implements MainOptionHandler {
 
     @Override
     public String getDescription(String cmd) {
-        return "Automatically Confirm Option";
+        return "Automatically confirm questions with 'Yes'";
     }
 }

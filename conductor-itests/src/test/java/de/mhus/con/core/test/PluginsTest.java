@@ -20,6 +20,8 @@ import org.junit.jupiter.api.TestInfo;
 import de.mhus.con.core.MainCli;
 import de.mhus.con.core.MainOptionConsole;
 import de.mhus.lib.core.MString;
+import de.mhus.lib.core.console.Console;
+import de.mhus.lib.core.console.SimpleConsole;
 import de.mhus.lib.core.io.YOutputStream;
 import de.mhus.lib.errors.MException;
 
@@ -201,6 +203,8 @@ public class PluginsTest {
         orgOut = System.out;
         System.setOut(new PrintStream(swt));
         
+        Console.resetConsole();
+        Console.set(new SimpleConsole());
         cli = new MainCli();
         console = new MainOptionConsole();
         console.init(cli);
@@ -209,6 +213,7 @@ public class PluginsTest {
     @AfterAll
     public static void deinit() {
         System.setOut(orgOut);
+        Console.resetConsole();
     }
     
     @BeforeEach

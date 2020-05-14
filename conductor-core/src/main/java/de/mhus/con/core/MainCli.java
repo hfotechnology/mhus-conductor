@@ -281,4 +281,9 @@ public class MainCli extends MLog implements Cli {
     public MProperties getOverlayProperties() {
         return overlayProperties;
     }
+
+    public boolean isConductor() {
+        return con != null;
+    }
+    
 }

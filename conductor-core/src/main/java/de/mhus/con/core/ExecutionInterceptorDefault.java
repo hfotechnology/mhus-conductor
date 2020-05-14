@@ -26,15 +26,17 @@ import de.mhus.con.api.Project.STATUS;
 import de.mhus.con.api.Step;
 import de.mhus.con.api.Steps;
 import de.mhus.lib.core.MDate;
+import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MStopWatch;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.console.Console;
 import de.mhus.lib.core.console.Console.COLOR;
 
-public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
+public class ExecutionInterceptorDefault extends MLog implements ExecutionInterceptorPlugin {
 
     private LinkedList<Result> results;
     private MStopWatch watch;
+    private LinkedList<Step> subSteps = new LinkedList<>();
 
     @Override
     public void executeBegin(Context context) {
@@ -83,13 +85,15 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
 
     @Override
     public void executeError(Context context, Throwable t) {
-        results.add(new Result(STATUS.FAILURE, context));
+        results.add(new Result(STATUS.FAILURE, context, subSteps));
     }
 
     @Override
     public void executeEnd(Context context, boolean done) {
-        if (done) results.add(new Result(STATUS.SUCCESS, context));
-        else results.add(new Result(STATUS.SKIPPED, context));
+        if (done) 
+            results.add(new Result(STATUS.SUCCESS, context, subSteps));
+        else 
+            results.add(new Result(STATUS.SKIPPED, context, subSteps));
     }
 
     @Override
@@ -129,32 +133,66 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
             console.cleanup();
 
             for (Result result : results) {
-                if (result.step.getId() == step.getId() && result.project != null) {
-                    Project p = result.project;
-                    String pn = p.getName();
-                    if (p.getStatus() == STATUS.SKIPPED) console.setColor(COLOR.BRIGHT_BLACK, null);
-                    else console.setColor(COLOR.WHITE, null);
-                    console.print("    ");
-                    console.print(pn);
-                    console.print(" ");
-                    console.print(MString.rep('.', 57 - pn.length()));
-                    console.print(" ");
-
-                    switch (p.getStatus()) {
-                        case FAILURE:
-                            console.setColor(COLOR.RED, null);
-                            break;
-                        case SKIPPED:
-                            console.setColor(COLOR.YELLOW, null);
-                            break;
-                        case SUCCESS:
-                            console.setColor(COLOR.GREEN, null);
-                            break;
-                        default:
-                            break;
+                if (result.parent != null) {
+                    if (con.isVerboseOutput()) {
+                        if (result.main.getId() == step.getId()) {
+                            if (result.status == STATUS.SKIPPED)
+                                console.setColor(COLOR.BRIGHT_BLACK, null);
+                            else 
+                                console.setColor(COLOR.WHITE, null);
+                            console.print("    ");
+                            console.print(MString.rep(' ', result.indent*2));
+                            console.print(result.step.getTitle());
+                            console.print(" ");
+                            console.print(MString.rep('.', 55 - (result.indent*2 + result.step.getTitle().length() ) ) );
+                            console.print(" ");
+                            switch (result.status) {
+                            case FAILURE:
+                                console.setColor(COLOR.RED, null);
+                                break;
+                            case SKIPPED:
+                                console.setColor(COLOR.YELLOW, null);
+                                break;
+                            case SUCCESS:
+                                console.setColor(COLOR.GREEN, null);
+                                break;
+                            default:
+                                break;
+                        }
+                        console.println(result.status);
+                        console.cleanup();
+                        }
                     }
-                    console.println(p.getStatus());
-                    console.cleanup();
+                } else {
+                    if (result.step.getId() == step.getId() && result.project != null) {
+                        Project p = result.project;
+                        String pn = p.getName();
+                        if (p.getStatus() == STATUS.SKIPPED) 
+                            console.setColor(COLOR.BRIGHT_BLACK, null);
+                        else 
+                            console.setColor(COLOR.WHITE, null);
+                        console.print("    ");
+                        console.print(pn);
+                        console.print(" ");
+                        console.print(MString.rep('.', 57 - pn.length()));
+                        console.print(" ");
+    
+                        switch (p.getStatus()) {
+                            case FAILURE:
+                                console.setColor(COLOR.RED, null);
+                                break;
+                            case SKIPPED:
+                                console.setColor(COLOR.YELLOW, null);
+                                break;
+                            case SUCCESS:
+                                console.setColor(COLOR.GREEN, null);
+                                break;
+                            default:
+                                break;
+                        }
+                        console.println(p.getStatus());
+                        console.cleanup();
+                    }
                 }
             }
         }
@@ -267,13 +305,40 @@ public class ExecutionInterceptorDefault implements ExecutionInterceptorPlugin {
     static class Result {
 
         private Step step;
+        private Step parent;
+        private Step main;
         private Project project;
         private STATUS status;
+        private int indent;
 
-        public Result(Project.STATUS status, Context context) {
+        public Result(Project.STATUS status, Context context, LinkedList<Step> subSteps) {
             this.step = context.getStep();
             this.project = context.getProject();
             this.status = status;
+            if (subSteps.size() > 0) {
+                this.parent = subSteps.getLast();
+                this.main = subSteps.getFirst();
+            } else {
+                this.main = step;
+            }
+            this.indent = subSteps.size();
         }
+    }
+
+    @Override
+    public void enterSubSteps(Conductor con, Step step) {
+        subSteps.add(step);
+    }
+
+    public Step getParentStep() {
+        if (subSteps.size() == 0) return null;
+        return subSteps.getLast();
+    }
+
+    @Override
+    public void leaveSubSteps(Conductor con, Step step) {
+        Step s = subSteps.removeLast();
+        if (s != step)
+            log().d("enter and leave are not the same steps",s,step);
     }
 }

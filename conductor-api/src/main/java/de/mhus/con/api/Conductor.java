@@ -33,4 +33,6 @@ public interface Conductor extends Closeable {
     Schemes getSchemes();
 
     ClassLoader getClassLoader();
+
+    boolean isVerboseOutput();
 }

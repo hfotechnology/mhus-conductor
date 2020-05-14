@@ -16,6 +16,7 @@ package de.mhus.con.core;
 import java.io.File;
 import java.util.Map;
 
+import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
 import de.mhus.con.api.Lifecycles;
 import de.mhus.con.api.Plugins;
@@ -79,5 +80,10 @@ public class ConductorImpl implements Conductor {
 
     public Map<String, Validator> getValidators() {
         return validators;
+    }
+
+    @Override
+    public boolean isVerboseOutput() {
+        return getProperties().getBoolean(ConUtil.PROPERTY_VERBOSE, false);
     }
 }

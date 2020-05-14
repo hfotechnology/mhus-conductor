@@ -13,6 +13,7 @@
  */
 package de.mhus.con.core;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,6 +98,38 @@ public class ExecutorDefault extends MLog implements Executor {
         }
     }
 
+    public Closeable enterSubSteps(Step step) {
+        interceptors.forEach(i -> i.enterSubSteps(con, step));
+        return new Closeable() {
+            
+            @Override
+            public void close() throws IOException {
+                ExecutorDefault.this.leaveSubSteps(step);
+            }
+        };
+    }
+    
+    public void leaveSubSteps(Step step) {
+        interceptors.forEach(i -> i.leaveSubSteps(con, step));
+    }
+    
+    public boolean executeInternal(Step step, Project project) {
+        log().d("executeInternalStep", step, project);
+        try {
+            // load plugin
+            String target = step.getTarget();
+            Plugin plugin = con.getPlugins().get(target);
+
+            // unpack project
+            if (project != null && project instanceof ContextProject)
+                project = ((ContextProject)project).getInstance();
+            
+            return execute(step, project, plugin, null);
+        } catch (Throwable t) {
+            throw new MRuntimeException(step, t);
+        }
+    }
+    
     public void execute(Step step) {
         currentStepCount++;
         log().d("executeStep", step);
@@ -199,7 +232,7 @@ public class ExecutorDefault extends MLog implements Executor {
         }
     }
 
-    protected void execute(
+    protected boolean execute(
             Step step, Project project, Plugin plugin, LinkedList<Project> projectList) {
         log().d(">>>", step.getTitle(), project == null ? "-none-" : project.getName());
         log().t("execute", step, project, plugin);
@@ -210,7 +243,7 @@ public class ExecutorDefault extends MLog implements Executor {
 
             if (!step.matchCondition(context)) {
                 log().d("condition not successful", step);
-                return;
+                return false;
             }
             interceptors.forEach(i -> i.executeBegin(context));
 
@@ -224,7 +257,7 @@ public class ExecutorDefault extends MLog implements Executor {
                 errors.add(new ErrorsInfoImpl(context, t));
                 if (!(t instanceof StopLifecycleException) && con.getProperties().getBoolean(ConUtil.PROPERTY_FAE, false)) {
                     log().e(context, t);
-                    return;
+                    return false;
                 } else throw t;
             }
             if (project != null && project.getStatus() != STATUS.FAILURE && done)
@@ -232,6 +265,7 @@ public class ExecutorDefault extends MLog implements Executor {
 
             final boolean d = done;
             interceptors.forEach(i -> i.executeEnd(context, d));
+            return true;
         } catch (Throwable t) {
             throw new MRuntimeException(project, t);
         }

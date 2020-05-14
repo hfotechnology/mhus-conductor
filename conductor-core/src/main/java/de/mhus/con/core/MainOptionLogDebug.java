@@ -17,24 +17,47 @@ import java.util.LinkedList;
 
 import de.mhus.con.api.AOption;
 import de.mhus.con.api.Cli;
+import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.MainOptionHandler;
 import de.mhus.lib.core.MApi;
+import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.logging.Log;
 
-@AOption(alias = {"-v", "-vv", "-vvv"})
+@AOption(alias = {"-v", "-vv", "-vvv","-!v","-vo"})
 public class MainOptionLogDebug implements MainOptionHandler {
 
     @Override
     public void execute(Cli cli, String cmd, LinkedList<String> queue) {
+        if (cmd.equals("-vo")) {
+            ((MainCli)cli).getOverlayProperties().setBoolean(ConUtil.PROPERTY_VERBOSE, true);
+            if (((MainCli)cli).isConductor())
+                ((MProperties)cli.getConductor().getProperties()).setBoolean(ConUtil.PROPERTY_VERBOSE, true);
+            return;
+        }
+        if (cmd.equals("-!v")) {
+            MApi.setDirtyTrace(false);
+            MApi.get()
+            .getLogFactory()
+            .setDefaultLevel(Log.LEVEL.INFO);
+            ((MainCli)cli).getOverlayProperties().setBoolean(ConUtil.PROPERTY_VERBOSE, false);
+            if (((MainCli)cli).isConductor())
+                ((MProperties)cli.getConductor().getProperties()).setBoolean(ConUtil.PROPERTY_VERBOSE, false);
+            return;
+        }
         MApi.setDirtyTrace(cmd.equals("-vv"));
         MApi.get()
                 .getLogFactory()
                 .setDefaultLevel(cmd.equals("-vvv") ? Log.LEVEL.TRACE : Log.LEVEL.DEBUG);
+        ((MainCli)cli).getOverlayProperties().setBoolean(ConUtil.PROPERTY_VERBOSE, true);
+        if (((MainCli)cli).isConductor())
+            ((MProperties)cli.getConductor().getProperties()).setBoolean(ConUtil.PROPERTY_VERBOSE, true);
     }
 
     @Override
     public String getDescription(String cmd) {
-        return "Enable Log DEBUG/TRACE level.";
+        return    "Enable Log DEBUG/TRACE levels.\n"
+                + "-!v disables DEBUG\n"
+                + "-vo enables only Verbose Output";
     }
 
     @Override

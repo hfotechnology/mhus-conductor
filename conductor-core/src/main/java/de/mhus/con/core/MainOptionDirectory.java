@@ -19,13 +19,15 @@ import java.util.LinkedList;
 import de.mhus.con.api.AOption;
 import de.mhus.con.api.Cli;
 import de.mhus.con.api.MainOptionHandler;
+import de.mhus.lib.core.MLog;
 
 @AOption(alias = {"-d"})
-public class MainOptionDirectory implements MainOptionHandler {
+public class MainOptionDirectory extends MLog implements MainOptionHandler {
 
     @Override
     public void execute(Cli cli, String cmd, LinkedList<String> queue) {
         String path = queue.removeFirst();
+        log().d("Set Main Directory",path);
         ((MainCli) cli).rootDir = new File(path);
     }
 

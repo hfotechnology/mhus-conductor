@@ -15,7 +15,6 @@ public class SwitchStep extends MLog implements ExecutePlugin {
     public boolean execute(Context context) throws Exception {
         for (Step caze : context.getStep().getSubSteps()) {
             if (caze.matchCondition(context)) {
-                log().d("Execute case",caze);
                 ((ExecutorDefault)context.getExecutor()).execute( ((ContextStep)caze).getInstance() );
                 return true;
             }

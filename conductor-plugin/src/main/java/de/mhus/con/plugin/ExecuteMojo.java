@@ -1,5 +1,7 @@
 package de.mhus.con.plugin;
 
+import java.io.Closeable;
+
 import de.mhus.con.api.AMojo;
 import de.mhus.con.api.Context;
 import de.mhus.con.api.ExecutePlugin;
@@ -14,14 +16,12 @@ public class ExecuteMojo extends MLog implements ExecutePlugin {
     @Override
     public boolean execute(Context context) throws Exception {
         boolean done = false;
-        for (Step caze : context.getStep().getSubSteps()) {
-            if (caze.matchCondition(context)) {
+        try ( Closeable x = ((ExecutorDefault)context.getExecutor()).enterSubSteps(context.getStep()) ) {
+            for (Step caze : context.getStep().getSubSteps()) {
                 done = true;
-                log().d("Execute case",caze);
-                ((ExecutorDefault)context.getExecutor()).execute( ((ContextStep)caze).getInstance() );
+                ((ExecutorDefault)context.getExecutor()).executeInternal( ((ContextStep)caze).getInstance(), context.getProject() );
             }
         }
-
         return done;
     }
 

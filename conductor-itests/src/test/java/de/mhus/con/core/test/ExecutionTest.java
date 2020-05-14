@@ -65,7 +65,7 @@ public class ExecutionTest {
 
         File root = new File(to, "sample-parent");
 
-        String[] args = new String[] {"-vvv", "-d", root.getAbsolutePath(), "newVersion"};
+        String[] args = new String[] {"-vvv", "-d", root.getAbsolutePath(), "-inspect","all","newVersion"};
 
         MainCli.main(args);
 
