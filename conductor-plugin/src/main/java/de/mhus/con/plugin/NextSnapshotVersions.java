@@ -11,11 +11,39 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*==
+/*@mojo
  * 
+ * == Next Snapshot Version
+ * 
+ * Target: nextSnapshotVersions
+ * Mojo: nextSnapshotVersions
+ * Scope: Project
+ * 
+ * === Scope
+ * 
+ * The plugin calculates the new next snapshot version for a project. The property "version" must be set
+ * in the project properties. It's used as base for the next version. The property "version" is overwritten
+ * with the new version string. The original version string is stored in "version.original".
+ * 
+ * Version strings are a set of numbers, separated by dot and maybe a minus followed by a suffix.
+ * e.g. 1.2.3-SNAPSHOT. The first number is the major, second the minor and last the hotfix counter.
+ * 
+ * The following step properties are used the will be searched recursively:
+ * 
+ * * nextVersionStatic: Set a static version string for the project (all other options will be ignored, "version" must not be set)
+ * * nextVersionStep = major: Will increase the major version, set all other numbers to 0
+ * * nextVersionStep = minor: Will increase the minor version, set all following numbers to 0
+ * * nextVersionStep = hotfix: Will increase the hotfix version
+ * * netVersionSuffix: Add a suffix to the new version. Default is 'SNAPSHOT'. Special values are #date, #timestamp and #buildnr.
+ * 
+ * * #date will add a date without time in iso format YYYYMMDD
+ * * #timestamp will add the current timestamp. 
+ * * #buildnr uses the previous number and increase it by one.
  * 
  */
 package de.mhus.con.plugin;
+
+import java.util.Date;
 
 import de.mhus.con.api.AMojo;
 import de.mhus.con.api.Context;
@@ -23,25 +51,27 @@ import de.mhus.con.api.ExecutePlugin;
 import de.mhus.con.api.Project;
 import de.mhus.con.core.ContextProject;
 import de.mhus.lib.core.MCast;
+import de.mhus.lib.core.MDate;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MString;
 
-@AMojo(name = "nextSnapshotVersions")
+@AMojo(name = "nextSnapshotVersions",target="nextSnapshotVersions")
 public class NextSnapshotVersions extends MLog implements ExecutePlugin {
 
     @Override
     public boolean execute(Context context) throws Exception {
         Project project = context.getProject();
-        String staticVersion = context.getProperties().getString("static", null);
+        String orgiginalVersion = ((MProperties) project.getProperties()).getString("version", null);
+        String staticVersion = context.getRecursiveProperty("nextVersionStatic", null);
         String version = null;
         if (staticVersion != null) {
             version = staticVersion;
         } else {
             String next = context.getRecursiveProperty("nextVersionStep", "minor").toLowerCase().trim();
             String suffix = context.getRecursiveProperty("netVersionSuffix", "SNAPSHOT");
-            String v = ((MProperties) project.getProperties()).getString("version", null);
             String vs = null;
+            String v = orgiginalVersion;
             if (v != null) {
                 if (MString.isIndex(v, '-')) {
                     vs = MString.afterIndex(v, '-');
@@ -72,6 +102,9 @@ public class NextSnapshotVersions extends MLog implements ExecutePlugin {
                 if (v != null) {
                     version = MString.join(parts, '.');
                     if (MString.isSet(suffix)) {
+                        if (suffix.equals("#date"))
+                            suffix = MDate.toIsoDate(new Date()).replace("-", "");
+                        else
                         if (suffix.equals("#timestamp"))
                             suffix = String.valueOf(System.currentTimeMillis());
                         else
@@ -89,6 +122,10 @@ public class NextSnapshotVersions extends MLog implements ExecutePlugin {
             log().i("Next project version", project.getName(), version);
             ((MProperties) ((ContextProject) project).getInstance().getProperties())
                 .setString("version", version);
+            if (orgiginalVersion != null) {
+                ((MProperties) ((ContextProject) project).getInstance().getProperties())
+                .setString("version.original", orgiginalVersion);
+            }
         }
         return true;
     }
