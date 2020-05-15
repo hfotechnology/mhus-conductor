@@ -16,23 +16,18 @@ package de.mhus.con.plugin;
 import de.mhus.con.api.AMojo;
 import de.mhus.con.api.Context;
 import de.mhus.con.api.ExecutePlugin;
-import de.mhus.con.api.Lifecycle;
-import de.mhus.con.api.Step;
-import de.mhus.con.core.ExecutorDefault;
+import de.mhus.con.api.Plugin.SCOPE;
 import de.mhus.lib.core.MLog;
 
-@AMojo(name = "con.includeLifecycle",target="include")
-public class IncludeLifecycle extends MLog implements ExecutePlugin {
+@AMojo(name = "con.includeLifecycle",target="lifecycle",scope=SCOPE.STEP)
+public class Lifecycle extends MLog implements ExecutePlugin {
 
     @Override
     public boolean execute(Context context) throws Exception {
         for (String arg : context.getStep().getArguments()) {
-            log().d(">>> Include Lifecycle", arg);
-            Lifecycle lifecycle = context.getConductor().getLifecycles().get(arg);
-            for (Step step : lifecycle.getSteps()) {
-            	((ExecutorDefault)context.getExecutor()).executeInternal(step, context.getProject());
-            }
-            log().d("<<< End Lifecycle ", arg);
+            System.out.println(">>> Start Lifecycle " + arg);
+            context.getExecutor().execute(context.getConductor(), arg);
+            System.out.println("<<< End Lifecycle " + arg);
         }
         return true;
     }

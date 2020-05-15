@@ -132,35 +132,13 @@ public class ExecutionInterceptorDefault extends MLog implements ExecutionInterc
             console.println(status);
             console.cleanup();
 
+            LinkedList<Result> subSteps = new LinkedList<>();
+            
             for (Result result : results) {
                 if (result.parent != null) {
                     if (con.isVerboseOutput()) {
                         if (result.main.getId() == step.getId()) {
-                            if (result.status == STATUS.SKIPPED)
-                                console.setColor(COLOR.BRIGHT_BLACK, null);
-                            else 
-                                console.setColor(COLOR.WHITE, null);
-                            console.print("    ");
-                            console.print(MString.rep(' ', result.indent*2));
-                            console.print(result.step.getTitle());
-                            console.print(" ");
-                            console.print(MString.rep('.', 55 - (result.indent*2 + result.step.getTitle().length() ) ) );
-                            console.print(" ");
-                            switch (result.status) {
-                            case FAILURE:
-                                console.setColor(COLOR.RED, null);
-                                break;
-                            case SKIPPED:
-                                console.setColor(COLOR.YELLOW, null);
-                                break;
-                            case SUCCESS:
-                                console.setColor(COLOR.GREEN, null);
-                                break;
-                            default:
-                                break;
-                        }
-                        console.println(result.status);
-                        console.cleanup();
+                        	subSteps.addFirst(result);
                         }
                     }
                 } else {
@@ -192,6 +170,34 @@ public class ExecutionInterceptorDefault extends MLog implements ExecutionInterc
                         }
                         console.println(p.getStatus());
                         console.cleanup();
+                        
+                        for (Result sub : subSteps) {
+                            if (sub.status == STATUS.SKIPPED)
+                                console.setColor(COLOR.BRIGHT_BLACK, null);
+                            else 
+                                console.setColor(COLOR.WHITE, null);
+                            console.print("    ");
+                            console.print(MString.rep(' ', sub.indent*2));
+                            console.print(sub.step.getTitle());
+                            console.print(" ");
+                            console.print(MString.rep('.', 55 - (sub.indent*2 + sub.step.getTitle().length() ) ) );
+                            console.print(" ");
+                            switch (sub.status) {
+                            case FAILURE:
+                                console.setColor(COLOR.RED, null);
+                                break;
+                            case SKIPPED:
+                                console.setColor(COLOR.YELLOW, null);
+                                break;
+                            case SUCCESS:
+                                console.setColor(COLOR.GREEN, null);
+                                break;
+                            default:
+                                break;
+	                        }
+	                        console.println(sub.status);
+	                        console.cleanup();
+                        }
                     }
                 }
             }

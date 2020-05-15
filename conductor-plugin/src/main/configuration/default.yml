@@ -50,6 +50,22 @@ lifecycles:
 
 - name: build
   steps:
+  - title: Build
+    target: kind
+    steps:
+    - target: maven
+      steps:
+      - target: include
+        arguments:
+        - maven.build
+    - target: gradel
+      steps:
+      - target: include
+        arguments:
+        - gradel.build
+        
+- name: maven.build
+  steps:
   - title: Maven Build
     target: con.maven
     arguments:
