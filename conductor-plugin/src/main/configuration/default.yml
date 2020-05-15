@@ -38,6 +38,23 @@ lifecycles:
 - name: rebuild
   steps:
   - title: Rebuild
+    target: kind
+    sort: order
+    steps:
+    - target: maven
+      steps:
+      - target: include
+        arguments:
+        - maven.rebuild
+    - target: gradel
+      steps:
+      - target: include
+        arguments:
+        - gradel.rebuild
+
+- name: maven.rebuild
+  steps:
+  - title: Maven Rebuild
     target: con.maven
     arguments:
     - clean
@@ -52,6 +69,7 @@ lifecycles:
   steps:
   - title: Build
     target: kind
+    sort: order
     steps:
     - target: maven
       steps:
@@ -79,6 +97,23 @@ lifecycles:
 - name: clean
   steps:
   - title: Clean
+    target: kind
+    sort: order
+    steps:
+    - target: maven
+      steps:
+      - target: include
+        arguments:
+        - maven.clean
+    - target: gradel
+      steps:
+      - target: include
+        arguments:
+        - gradel. clean
+
+- name: maven.clean
+  steps:
+  - title: Maven Clean
     target: con.maven
     arguments:
     - clean
