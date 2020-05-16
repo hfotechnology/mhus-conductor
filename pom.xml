@@ -54,6 +54,36 @@
 		</developer>
 	</developers>
 
+	<build>
+		<plugins>
+			<plugin>
+			    <groupId>de.mhus.mvn.plugin</groupId>
+				<version>1.0.0-SNAPSHOT</version>
+				<artifactId>manual-collector-maven-plugin</artifactId>
+				<configuration>
+					<outputDirectory>manual/src/main/asciidoc/categories</outputDirectory>
+					<cleanupOutputDirectory>true</cleanupOutputDirectory>
+					<generateIndexFiles>true</generateIndexFiles>
+					<textHeader>"_{{file.path}}_&#xA;&#xA;"</textHeader>
+				</configuration>
+			</plugin>
+			<plugin>
+			    <groupId>de.mhus.mvn.plugin</groupId>
+				<version>1.0.0-SNAPSHOT</version>
+				<artifactId>tmpl-maven-plugin</artifactId>
+				<configuration>
+					<files>
+					        <directory>${basedir}</directory>   
+					        <includes>
+					           <include>*</include>
+					        </includes>
+					</files>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
+
 	<modules>
 		<module>conductor-api</module>
 		<module>conductor-core</module>

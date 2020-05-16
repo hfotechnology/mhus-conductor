@@ -11,15 +11,14 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*@mojo
- * 
- * == Next Snapshot Version
+/*# category:mojo
+ * ==== Next Snapshot Version
  * 
  * Target: nextSnapshotVersions
  * Mojo: nextSnapshotVersions
  * Scope: Project
  * 
- * === Scope
+ * ===== Scope
  * 
  * The plugin calculates the new next snapshot version for a project. The property "version" must be set
  * in the project properties. It's used as base for the next version. The property "version" is overwritten
@@ -27,6 +26,8 @@
  * 
  * Version strings are a set of numbers, separated by dot and maybe a minus followed by a suffix.
  * e.g. 1.2.3-SNAPSHOT. The first number is the major, second the minor and last the hotfix counter.
+ * 
+ * ===== Usage 
  * 
  * The following step properties are used the will be searched recursively:
  * 

@@ -51,7 +51,9 @@ include::admin-guide/plugins.adoc[]
 
 include::admin-guide/default-lifecycles.adoc[]
 
-include::admin-guide/default-plugins.adoc[]
+=== Mojos
+
+include::categories/mojo/index.adoc[]
 
 include::admin-guide/additional-maven-plugins.adoc[]
 
