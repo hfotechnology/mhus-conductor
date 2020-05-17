@@ -11,8 +11,8 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*# category:mojo
- * ==== Next Snapshot Version
+/*# category: mojo
+ *# title: Next Snapshot Version
  * 
  * Target: nextSnapshotVersions
  * Mojo: nextSnapshotVersions
@@ -37,7 +37,8 @@
  * * nextVersionStep = hotfix: Will increase the hotfix version
  * * netVersionSuffix: Add a suffix to the new version. Default is 'SNAPSHOT'. Special values are #date, #timestamp and #buildnr.
  * 
- * * #date will add a date without time in iso format YYYYMMDD
+ * * #date will add a date as string
+ * * #isodate will add a date without time in iso format YYYYMMDD
  * * #timestamp will add the current timestamp. 
  * * #buildnr uses the previous number and increase it by one.
  * 
