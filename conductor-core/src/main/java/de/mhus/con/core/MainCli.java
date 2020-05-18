@@ -56,6 +56,7 @@ public class MainCli extends MLog implements Cli {
     protected ConductorImpl con;
     protected String configFile;
     private MProperties overlayProperties = new MProperties();
+    public LinkedList<String> defaultImports = new LinkedList<>();
 
     public static void main(String[] args) throws Exception {
 
@@ -225,7 +226,7 @@ public class MainCli extends MLog implements Cli {
         defaultPlugins.values().forEach(i -> ((PluginImpl)i).con = con);
         con.plugins.collection.putAll(defaultPlugins);
 
-        config.configure(uri, con, overlayProperties);
+        config.configure(uri, con, overlayProperties, defaultImports);
     }
 
     public static String findDefaultFile(File rootDir) {
@@ -251,6 +252,7 @@ public class MainCli extends MLog implements Cli {
         con.close();
         con = null;
         overlayProperties.clear();
+        defaultImports.clear();
     }
 
     @Override

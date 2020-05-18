@@ -23,6 +23,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.jar.JarEntry;
@@ -113,8 +114,24 @@ public class ExecutorDefault extends MLog implements Executor {
         interceptors.forEach(i -> i.leaveSubSteps(con, step));
     }
     
+    public boolean executeInternalStep(Step step, List<Project> projects) {
+        log().d("executeInternalStep", step);
+        boolean done = false;
+        String target = step.getTarget();
+        Plugin plugin = con.getPlugins().get(target);
+        if (plugin.getScope() == SCOPE.STEP) {
+            done = executeInternal(step, null);
+        } else {
+            for (Project project : projects) {
+                if (executeInternal(step, project))
+                    done = true;
+            }
+        }
+        return done;
+    }
+    
     public boolean executeInternal(Step step, Project project) {
-        log().d("executeInternalStep", step, project);
+        log().d("executeInternal", step, project);
         try {
             // load plugin
             String target = step.getTarget();

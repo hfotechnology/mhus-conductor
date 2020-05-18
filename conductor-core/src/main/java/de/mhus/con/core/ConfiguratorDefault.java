@@ -62,10 +62,19 @@ public class ConfiguratorDefault extends MLog implements Configurator {
 
     @Override
     public void configure(URI uri, Conductor con, IProperties properties) throws MException {
+        configure(uri, con, properties, null);
+    }
+    
+    public void configure(URI uri, Conductor con, IProperties properties, LinkedList<String> defaultImport) throws MException {
         this.con = con;
         ((ConductorImpl) con).properties.putReadProperties(defaultProperties);
         ((ConductorImpl) con).schemes = schemes;
         ((ConductorImpl) con).validators = validators;
+        if (defaultImport != null) {
+            for (String uriStr : defaultImport) {
+                loadImport(uriStr);
+            }
+        }
 
         overwrite(MUri.toUri(uri.toString()), true);
         initEntries();
@@ -382,12 +391,16 @@ public class ConfiguratorDefault extends MLog implements Configurator {
     protected void loadImports(YList importE) throws MException {
         if (importE == null) return;
         for (String uriStr : importE.toStringList()) {
-            MUri uri = MUri.toUri(uriStr);
-            if (loadedUris.contains(uri.toString())) {
-                log().d("Ignore, already loaded", uriStr);
-            } else {
-                overwrite(uri, false);
-            }
+            loadImport(uriStr);
+        }
+    }
+
+    protected void loadImport(String uriStr) throws MException {
+        MUri uri = MUri.toUri(uriStr);
+        if (loadedUris.contains(uri.toString())) {
+            log().d("Ignore, already loaded", uriStr);
+        } else {
+            overwrite(uri, false);
         }
     }
 
