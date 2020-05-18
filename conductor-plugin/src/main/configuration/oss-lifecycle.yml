@@ -1,0 +1,16 @@
+
+lifecycle:
+- name: oss.prepare
+  steps:
+   - title: Add License Headers
+     target: con.maven
+     arguments:
+     - "git-code-format:format-code '-DglobPattern=**/*'"
+   - title: Update tmpl Files
+     target: con.maven
+     arguments:
+     - "de.mhus.mvn.plugin:tmpl-maven-plugin:1.0.0:tmpl"
+   - title: Collect Manual Snippeds
+     target: con.maven
+     arguments:
+     - "de.mhus.mvn.plugin:manual-collector-maven-plugin:1.0.0-SNAPSHOT:collect"

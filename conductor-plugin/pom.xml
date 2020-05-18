@@ -45,6 +45,11 @@
 							   <classifier>configuration-default</classifier>
 	                           <type>yml</type>
 	                       </artifact>
+                           <artifact>
+                               <file>src/main/configuration/oss-lifecycle.yml</file>
+                               <classifier>oss-lifecycle</classifier>
+                               <type>yml</type>
+                           </artifact>
 	                   </artifacts>
 	               </configuration>
 	           </execution>
