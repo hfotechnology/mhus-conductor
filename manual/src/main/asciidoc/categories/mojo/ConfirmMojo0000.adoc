@@ -1,0 +1,14 @@
+==== Confirm Execution
+
+_/de/mhus/con/plugin/ConfirmMojo.java_
+
+
+The plugin will ask the executor to insert y or n. The option y will execute more steps. The other one not.
+
+Modes:
+
+
+
+
+
+

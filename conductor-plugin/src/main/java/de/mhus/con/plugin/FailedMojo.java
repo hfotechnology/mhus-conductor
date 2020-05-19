@@ -1,3 +1,17 @@
+/*#man mojo
+ *#title: Failed
+
+The plugin will stop execution of the lifecycle. It can be used 
+in plugin and step scope.
+
+* Target: failed
+* Scope: STEP
+
+Properties:
+
+* reason: Message why execution is stopped.
+
+*/
 package de.mhus.con.plugin;
 
 import de.mhus.con.api.AMojo;

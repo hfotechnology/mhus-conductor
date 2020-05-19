@@ -1,3 +1,11 @@
+/*#man mojo
+ *#title: Execute Sub Steps
+
+For each project execute the sub steps in a row.
+ 
+IMPORTANT: You can't use scope:step plugins as sub steps.
+
+ */
 package de.mhus.con.plugin;
 
 import java.io.Closeable;

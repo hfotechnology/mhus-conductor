@@ -1,3 +1,13 @@
+/*#man mojo
+ *#title: Confirm Execution
+
+The plugin will ask the executor to insert y or n. The option y will execute more steps. The other one not.
+
+Modes:
+
+
+
+ */
 package de.mhus.con.plugin;
 
 import de.mhus.con.api.AMojo;
