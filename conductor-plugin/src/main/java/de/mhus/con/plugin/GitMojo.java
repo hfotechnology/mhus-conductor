@@ -31,10 +31,6 @@ public class GitMojo extends MLog implements ExecutePlugin {
         String gitPath = ConUtil.cmdLocation(context.getConductor(), "git");
         for (String arg : context.getStep().getArguments()) {
             String cmd = gitPath + " " + arg;
-            if (context.getConductor().getProperties().getBoolean(ConUtil.PROPERTY_TRY, false)) {
-                log().i("Would Execute", cmd, dir);
-                continue;
-            }
             String[] res =
                     ConUtil.execute(
                             context.getStep().getTitle() + " " + context.getProject().getName(),
