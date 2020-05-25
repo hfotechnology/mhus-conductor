@@ -18,7 +18,7 @@ import de.mhus.con.api.Context;
 import de.mhus.con.api.ExecutePlugin;
 import de.mhus.con.api.Lifecycle;
 import de.mhus.con.api.Step;
-import de.mhus.con.core.ExecutorDefault;
+import de.mhus.con.core.ExecutorImpl;
 import de.mhus.lib.core.MLog;
 
 @AMojo(name = "con.includeLifecycle",target="include")
@@ -30,7 +30,7 @@ public class IncludeLifecycle extends MLog implements ExecutePlugin {
             log().d(">>> Include Lifecycle", arg);
             Lifecycle lifecycle = context.getConductor().getLifecycles().get(arg);
             for (Step step : lifecycle.getSteps()) {
-            	((ExecutorDefault)context.getExecutor()).executeInternal(step, context.getProject());
+            	((ExecutorImpl)context.getExecutor()).executeInternal(step, context.getProject());
             }
             log().d("<<< End Lifecycle ", arg);
         }

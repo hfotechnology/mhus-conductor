@@ -34,9 +34,9 @@ import de.mhus.con.api.ExecutePlugin;
 import de.mhus.con.api.Plugin;
 import de.mhus.con.core.ConductorImpl;
 import de.mhus.con.core.ConfigTypesImpl;
-import de.mhus.con.core.ConfiguratorDefault;
+import de.mhus.con.core.ConfiguratorImpl;
 import de.mhus.con.core.ContextImpl;
-import de.mhus.con.core.ExecutorDefault;
+import de.mhus.con.core.ExecutorImpl;
 import de.mhus.con.core.FileScheme;
 import de.mhus.con.core.MavenScheme;
 import de.mhus.con.core.SchemesImpl;
@@ -122,7 +122,7 @@ public class SchemeTest {
         String mvnPath = ConUtil.cmdLocationOrNull(con, "mvn");
         if (mvnPath != null) {
 
-            ConfiguratorDefault config = new ConfiguratorDefault();
+            ConfiguratorImpl config = new ConfiguratorImpl();
             ((SchemesImpl) config.getSchemes()).put("file", new FileScheme());
             ((SchemesImpl) config.getSchemes()).put("mvn", new DummyScheme());
             ((ConfigTypesImpl) config.getTypes()).put("yml", new YmlConfigType());
@@ -138,7 +138,7 @@ public class SchemeTest {
             ContextImpl context = new ContextImpl(con);
             context.init(null, null, null, con.getPlugins().get("test"), step);
 
-            ExecutorDefault exec = new ExecutorDefault();
+            ExecutorImpl exec = new ExecutorImpl();
 
             Plugin plugin = context.getPlugin();
 

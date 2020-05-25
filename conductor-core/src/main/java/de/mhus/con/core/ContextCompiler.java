@@ -45,7 +45,7 @@ public class ContextCompiler extends StringCompiler {
         public void execute(StringBuilder out, Map<String, Object> attributes) throws MException {
             Plugin plugin = context.getConductor().getPlugins().get(name);
             try {
-                ValuePlugin mojo = (ValuePlugin) ((ExecutorDefault)context.getExecutor()).createMojo(context.getConductor(), plugin);
+                ValuePlugin mojo = (ValuePlugin) ((ExecutorImpl)context.getExecutor()).createMojo(context.getConductor(), plugin);
                 String v = mojo.getValue(context, value, attributes);
                 out.append(v);
             } catch (Throwable t) {

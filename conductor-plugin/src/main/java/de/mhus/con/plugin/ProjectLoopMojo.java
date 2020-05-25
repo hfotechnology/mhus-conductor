@@ -8,7 +8,7 @@ import de.mhus.con.api.ExecutePlugin;
 import de.mhus.con.api.MojoException;
 import de.mhus.con.api.Step;
 import de.mhus.con.core.ContextStep;
-import de.mhus.con.core.ExecutorDefault;
+import de.mhus.con.core.ExecutorImpl;
 import de.mhus.lib.core.MCast;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MProperties;
@@ -32,9 +32,9 @@ public class ProjectLoopMojo extends MLog implements ExecutePlugin {
             for (double d = start; start < end ? d < end : d > end; d = d + step ) {
                 ((MProperties)context.getConductor().getProperties()).setDouble(indexName, d);
                 done = true;
-                try ( Closeable x = ((ExecutorDefault)context.getExecutor()).enterSubSteps(context.getStep()) ) {
+                try ( Closeable x = ((ExecutorImpl)context.getExecutor()).enterSubSteps(context.getStep()) ) {
                     for (Step caze : context.getStep().getSubSteps()) {
-                        ((ExecutorDefault)context.getExecutor()).executeInternal( ((ContextStep)caze).getInstance(), context.getProject() );
+                        ((ExecutorImpl)context.getExecutor()).executeInternal( ((ContextStep)caze).getInstance(), context.getProject() );
                     }
                 }
             }
@@ -42,7 +42,7 @@ public class ProjectLoopMojo extends MLog implements ExecutePlugin {
             while (context.getStep().matchCondition(context)) {
                 done = true;
                 for (Step caze : context.getStep().getSubSteps()) {
-                    ((ExecutorDefault)context.getExecutor()).execute( ((ContextStep)caze).getInstance() );
+                    ((ExecutorImpl)context.getExecutor()).execute( ((ContextStep)caze).getInstance() );
                 }
             }
         }

@@ -56,7 +56,7 @@ import de.mhus.lib.core.util.Value;
 import de.mhus.lib.errors.MRuntimeException;
 import de.mhus.lib.errors.NotFoundException;
 
-public class ExecutorDefault extends MLog implements Executor {
+public class ExecutorImpl extends MLog implements Executor {
 
     private Conductor con;
     private LinkedList<ErrorInfo> errors = new LinkedList<>();
@@ -66,7 +66,7 @@ public class ExecutorDefault extends MLog implements Executor {
     private Lifecycle currentLifecycle;
     private int currentStepCount;
 
-    public ExecutorDefault() {
+    public ExecutorImpl() {
         interceptors.add(new ExecutionInterceptorDefault()); // TODO dynamic
     }
 
@@ -105,7 +105,7 @@ public class ExecutorDefault extends MLog implements Executor {
             
             @Override
             public void close() throws IOException {
-                ExecutorDefault.this.leaveSubSteps(step);
+                ExecutorImpl.this.leaveSubSteps(step);
             }
         };
     }

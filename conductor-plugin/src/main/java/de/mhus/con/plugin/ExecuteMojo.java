@@ -15,7 +15,7 @@ import de.mhus.con.api.Context;
 import de.mhus.con.api.ExecutePlugin;
 import de.mhus.con.api.Step;
 import de.mhus.con.core.ContextStep;
-import de.mhus.con.core.ExecutorDefault;
+import de.mhus.con.core.ExecutorImpl;
 import de.mhus.lib.core.MLog;
 
 @AMojo(name = "execute",target = "execute")
@@ -24,10 +24,10 @@ public class ExecuteMojo extends MLog implements ExecutePlugin {
     @Override
     public boolean execute(Context context) throws Exception {
         boolean done = false;
-        try ( Closeable x = ((ExecutorDefault)context.getExecutor()).enterSubSteps(context.getStep()) ) {
+        try ( Closeable x = ((ExecutorImpl)context.getExecutor()).enterSubSteps(context.getStep()) ) {
             for (Step caze : context.getStep().getSubSteps()) {
                 done = true;
-                ((ExecutorDefault)context.getExecutor()).executeInternal( ((ContextStep)caze).getInstance(), context.getProject() );
+                ((ExecutorImpl)context.getExecutor()).executeInternal( ((ContextStep)caze).getInstance(), context.getProject() );
             }
         }
         return done;

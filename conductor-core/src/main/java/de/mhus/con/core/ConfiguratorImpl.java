@@ -51,7 +51,7 @@ import de.mhus.lib.errors.MException;
 import de.mhus.lib.errors.MRuntimeException;
 import de.mhus.lib.errors.NotFoundException;
 
-public class ConfiguratorDefault extends MLog implements Configurator {
+public class ConfiguratorImpl extends MLog implements Configurator {
 
     protected Schemes schemes = new SchemesImpl();
     protected ConfigTypes types = new ConfigTypesImpl();

@@ -8,7 +8,7 @@ import de.mhus.con.api.Context;
 import de.mhus.con.api.ExecutePlugin;
 import de.mhus.con.api.Step;
 import de.mhus.con.core.ContextStep;
-import de.mhus.con.core.ExecutorDefault;
+import de.mhus.con.core.ExecutorImpl;
 import de.mhus.lib.core.MLog;
 
 @AMojo(name = "projectKindSwitch",target = "kind")
@@ -47,9 +47,9 @@ public class ProjectKindSwitchMojo extends MLog implements ExecutePlugin {
         for (Step typeCaze : context.getStep().getSubSteps()) {
             if (typeCaze.getTarget().equalsIgnoreCase(type.name())) {
                 log().d("Found management type",type);
-                try ( Closeable x = ((ExecutorDefault)context.getExecutor()).enterSubSteps(context.getStep()) ) {
+                try ( Closeable x = ((ExecutorImpl)context.getExecutor()).enterSubSteps(context.getStep()) ) {
                     for (Step caze : typeCaze.getSubSteps()) {
-                        ((ExecutorDefault)context.getExecutor()).executeInternal( ((ContextStep)caze).getInstance(), context.getProject() );
+                        ((ExecutorImpl)context.getExecutor()).executeInternal( ((ContextStep)caze).getInstance(), context.getProject() );
                     }
                 }
                 return true;

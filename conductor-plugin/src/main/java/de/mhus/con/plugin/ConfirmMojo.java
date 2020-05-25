@@ -17,7 +17,7 @@ import de.mhus.con.api.ExecutePlugin;
 import de.mhus.con.api.Step;
 import de.mhus.con.api.Plugin.SCOPE;
 import de.mhus.con.core.ContextStep;
-import de.mhus.con.core.ExecutorDefault;
+import de.mhus.con.core.ExecutorImpl;
 import de.mhus.con.api.StopLifecycleException;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.console.Console;
@@ -59,7 +59,7 @@ public class ConfirmMojo implements ExecutePlugin {
                 console.println();
                 if (mode.equals("execute")) {
                     for (Step caze : context.getStep().getSubSteps()) {
-                        ((ExecutorDefault)context.getExecutor()).executeInternalStep( ((ContextStep)caze).getInstance(), context.getProjects() );
+                        ((ExecutorImpl)context.getExecutor()).executeInternalStep( ((ContextStep)caze).getInstance(), context.getProjects() );
                     }
                 }
                 return true;

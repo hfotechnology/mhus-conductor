@@ -33,8 +33,8 @@ import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
 import de.mhus.con.core.ConductorImpl;
 import de.mhus.con.core.ConfigTypesImpl;
-import de.mhus.con.core.ConfiguratorDefault;
-import de.mhus.con.core.ExecutorDefault;
+import de.mhus.con.core.ConfiguratorImpl;
+import de.mhus.con.core.ExecutorImpl;
 import de.mhus.con.core.FileScheme;
 import de.mhus.con.core.MainCli;
 import de.mhus.con.core.MavenScheme;
@@ -113,7 +113,7 @@ public class ExecutionTest {
 
         Conductor con = new ConductorImpl(new File("../example/sample-parent"));
 
-        ConfiguratorDefault config = new ConfiguratorDefault();
+        ConfiguratorImpl config = new ConfiguratorImpl();
         ((SchemesImpl) config.getSchemes()).put("file", new FileScheme());
         ((SchemesImpl) config.getSchemes()).put("mvn", new DummyScheme());
         ((ConfigTypesImpl) config.getTypes()).put("yml", new YmlConfigType());
@@ -130,7 +130,7 @@ public class ExecutionTest {
             ((MProperties) con.getProperties()).put("conductor.version", TestUtil.conrentVersion());
             ((SchemesImpl) con.getSchemes()).put("mvn", new MavenScheme());
 
-            ExecutorDefault executor = new ExecutorDefault();
+            ExecutorImpl executor = new ExecutorImpl();
             executor.execute(con, "default");
 
         } else {

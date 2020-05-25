@@ -198,7 +198,7 @@ public class MainCli extends MLog implements Cli {
         createConductor();
 
         ((MProperties) con.getProperties()).putReadProperties(execProperties);
-        ExecutorDefault executor = new ExecutorDefault();
+        ExecutorImpl executor = new ExecutorImpl();
 
         executor.execute(con, execLifecycle);
     }
@@ -206,7 +206,7 @@ public class MainCli extends MLog implements Cli {
     private void createConductor() throws MException {
         if (con != null) return;
         log().d("Create conductor object");
-        ConfiguratorDefault config = new ConfiguratorDefault();
+        ConfiguratorImpl config = new ConfiguratorImpl();
 
         for (Entry<String, Scheme> entry : schemes.entrySet())
             ((SchemesImpl) config.getSchemes()).put(entry.getKey(), entry.getValue());

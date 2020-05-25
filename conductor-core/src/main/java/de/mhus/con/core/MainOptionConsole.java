@@ -45,13 +45,13 @@ import de.mhus.lib.errors.MException;
 public class MainOptionConsole implements MainOptionHandler {
 
     private Cli cli;
-    private ExecutorDefault exec;
+    private ExecutorImpl exec;
     private Console console;
     private LinkedList<String> historySteps;
 
     public void init(Cli cli) {
         this.cli = cli;
-        exec = new ExecutorDefault();
+        exec = new ExecutorImpl();
         console = ConUtil.getConsole();
         historySteps = new LinkedList<String>();
     }
@@ -181,7 +181,7 @@ public class MainOptionConsole implements MainOptionHandler {
             StepsImpl steps = new StepsImpl();
             LifecycleImpl lifecycle = new LifecycleImpl(name, steps);
 
-            ConfiguratorDefault config = new ConfiguratorDefault();
+            ConfiguratorImpl config = new ConfiguratorImpl();
             YList executeE = MYaml.loadListFromString(stepDef.toString());
             config.loadSteps(executeE, steps);
 

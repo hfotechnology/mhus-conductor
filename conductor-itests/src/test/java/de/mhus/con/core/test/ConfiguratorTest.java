@@ -29,7 +29,7 @@ import de.mhus.con.api.Context;
 import de.mhus.con.api.Lifecycle;
 import de.mhus.con.core.ConductorImpl;
 import de.mhus.con.core.ConfigTypesImpl;
-import de.mhus.con.core.ConfiguratorDefault;
+import de.mhus.con.core.ConfiguratorImpl;
 import de.mhus.con.core.ContextImpl;
 import de.mhus.con.core.FileScheme;
 import de.mhus.con.core.LabelsImpl;
@@ -50,7 +50,7 @@ public class ConfiguratorTest {
 
         Conductor con = new ConductorImpl(new File("../example/sample-parent"));
 
-        ConfiguratorDefault config = new ConfiguratorDefault();
+        ConfiguratorImpl config = new ConfiguratorImpl();
         ((SchemesImpl) config.getSchemes()).put("file", new FileScheme());
         ((SchemesImpl) config.getSchemes()).put("mvn", new DummyScheme());
         ((ConfigTypesImpl) config.getTypes()).put("yml", new YmlConfigType());
