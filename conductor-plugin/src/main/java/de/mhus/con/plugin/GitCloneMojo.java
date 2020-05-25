@@ -52,6 +52,7 @@ public class GitCloneMojo extends MLog implements ExecutePlugin {
                         + (gitBranch != null ? " -b " + gitBranch : "");
         String[] res =
                 ConUtil.execute(
+                        context.getConductor(),
                         context.getStep().getTitle() + " " + context.getProject().getName(),
                         dir,
                         cmd,

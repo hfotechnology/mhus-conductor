@@ -31,7 +31,12 @@ public class MavenVersionValue extends MLog implements ValuePlugin {
         if (versions != null) return;
         String mvnPath = ConUtil.cmdLocation(context.getConductor(), "mvn");
         String cmd = mvnPath + " --version";
-        String[] res = ConUtil.execute("maven version", new File("."), cmd, false);
+        String[] res = ConUtil.execute(
+                context.getConductor(),
+                "maven version", 
+                new File("."), 
+                cmd, 
+                false);
         if (!res[2].equals("0"))
             throw new MojoException(context, "not successful", cmd, res[1], res[2]);
         

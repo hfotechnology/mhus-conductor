@@ -13,9 +13,9 @@
  */
 package de.mhus.con.api;
 
-import de.mhus.lib.errors.MException;
+import de.mhus.lib.errors.MRuntimeException;
 
-public class StopLifecycleException extends MException {
+public class StopLifecycleException extends MRuntimeException {
 
     private static final long serialVersionUID = 1L;
     private Context context;

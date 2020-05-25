@@ -28,7 +28,12 @@ public class MavenMojo extends AbstractMavenExecute {
     public boolean execute2(File dir, String moduleName, Context context) throws Exception {
         String mvnPath = ConUtil.cmdLocation(context.getConductor(), "mvn");
         String cmd = mvnPath + " " + MString.join(context.getStep().getArguments(), " ");
-        String[] res = ConUtil.execute(getCmdName(context, moduleName), dir, cmd, true);
+        String[] res = ConUtil.execute(
+                context.getConductor(),
+                getCmdName(context, moduleName), 
+                dir, 
+                cmd, 
+                true);
         if (!res[2].equals("0")
                 && !context.getProperties()
                         .getBoolean(ConUtil.PROPERTY_STEP_IGNORE_RETURN_CODE, false))

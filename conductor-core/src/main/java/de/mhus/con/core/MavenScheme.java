@@ -38,6 +38,7 @@ public class MavenScheme extends MLog implements Scheme {
             String mvnPath = ConUtil.cmdLocation(con, "mvn");
             repositoryLocation =
                     ConUtil.execute(
+                            con,
                             "MVN",
                             con.getRoot(),
                             mvnPath
@@ -80,6 +81,7 @@ public class MavenScheme extends MLog implements Scheme {
         // -Dartifact=com.google.guava:guava:15.0 -DrepoUrl=
         String mvnPath = ConUtil.cmdLocation(con, "mvn");
         ConUtil.execute(
+                con,
                 uri.getPath(),
                 con.getRoot(),
                 mvnPath

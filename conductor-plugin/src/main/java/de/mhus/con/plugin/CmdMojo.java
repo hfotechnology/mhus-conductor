@@ -29,7 +29,12 @@ public class CmdMojo extends AbstractMavenExecute {
         String cmd =
                 MString.join(
                         context.getStep().getArguments(), " "); // TODO add quotes and or escapes
-        String[] res = ConUtil.execute(getCmdName(context, moduleName), dir, cmd, true);
+        String[] res = ConUtil.execute(
+                context.getConductor(),
+                getCmdName(context, moduleName), 
+                dir, 
+                cmd, 
+                true);
         if (!res[2].equals("0")
                 && !context.getProperties()
                         .getBoolean(ConUtil.PROPERTY_STEP_IGNORE_RETURN_CODE, false))

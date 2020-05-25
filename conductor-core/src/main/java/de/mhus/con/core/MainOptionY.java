@@ -28,7 +28,7 @@ public class MainOptionY implements MainOptionHandler {
     public void execute(Cli cli, String cmd, LinkedList<String> queue) {
         ((MainCli) cli).getOverlayProperties().setBoolean(ConUtil.PROPERTY_Y, cmd.equals("-y"));
         if (((MainCli)cli).isConductor())
-            ((MProperties)cli.getConductor().getProperties()).setBoolean(ConUtil.PROPERTY_VERBOSE, cmd.equals("-y"));
+            ((MProperties)cli.getConductor().getProperties()).setBoolean(ConUtil.PROPERTY_Y, cmd.equals("-y"));
     }
 
     @Override

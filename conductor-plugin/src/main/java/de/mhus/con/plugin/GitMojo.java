@@ -33,6 +33,7 @@ public class GitMojo extends MLog implements ExecutePlugin {
             String cmd = gitPath + " " + arg;
             String[] res =
                     ConUtil.execute(
+                            context.getConductor(),
                             context.getStep().getTitle() + " " + context.getProject().getName(),
                             dir,
                             cmd,

@@ -56,7 +56,9 @@ public class ConUtil {
     public static final String PROPERTY_THREADS = "conductor.threads";
     private static final Object[] SCAN_PACKAGES = new Object[] {"de.mhus.con"};
     public static final String PROPERTY_STEP_IGNORE_RETURN_CODE = "step.ignoreReturnCode";
-    public static final String PROPERTY_Y = "conductor.confirm";
+    public static final String PROPERTY_Y = "conductor.confirm.confirm";
+    public static final String PROPERTY_CONFIRM_STEPS = "conductor.confirm.steps";
+    public static final String PROPERTY_CONFIRM_CMDS = "conductor.confirm.cmds";
     public static final String PROPERTY_VERBOSE = "conductor.verbose";
 
     public static void orderProjects(List<Project> projects, String order, boolean orderAsc) {
@@ -84,15 +86,21 @@ public class ConUtil {
                 });
     }
 
-    public static String[] execute(String name, File rootDir, String cmd, boolean infoOut)
+    public static String[] execute(Conductor con, String name, File rootDir, String cmd, boolean infoOut)
             throws IOException {
 
+        if (con != null && con.getProperties().getBoolean(PROPERTY_CONFIRM_CMDS, false)) {
+            if (!confirmAction(con, null, "Press ENTER to execute " + cmd))
+                return new String[] {"","","0"};
+        }
+        
         log.i(name, "execute", cmd, rootDir);
 
         final String shortName = MString.truncateNice(name, 40, 15);
         final Console console = getConsole();
         final boolean output = infoOut || log.isLevelEnabled(LEVEL.DEBUG);
 
+        
         final StringBuilder stdOutBuilder = new StringBuilder();
         final StringBuilder stdErrBuilder = new StringBuilder();
 
@@ -143,6 +151,45 @@ public class ConUtil {
         String stdout = stdOutBuilder.toString();
         log.i(name, "exitCode", exitCode);
         return new String[] {stdout, stderr, String.valueOf(exitCode)};
+    }
+
+    public static boolean confirmAction(Conductor con, List<Project> projects, String msg) {
+        final Console console = getConsole();
+        console.cleanup();
+        console.setColor(COLOR.RED, COLOR.BLUE);
+        console.println("================================================");
+        console.println(" c - cancel, s - skip, ENTER - run, i - inspect ");
+        console.println("================================================");
+        console.cleanup();
+        console.print(msg);
+        console.flush();
+        while (true) {
+            int c = console.read();
+            if (c == '\n') {
+                console.println();
+                return true;
+            }
+            if (c == 'i') {
+                console.println();
+                if (projects != null) {
+                    for (Project project : projects) {
+                        System.out.println(">>> " + project.getName());
+                        System.out.println("    Directory : " + project.getRootDir());
+                        System.out.println("    Path      : " + project.getPath());
+                        System.out.println("    Labels    : " + project.getLabels());
+                        System.out.println("    Properties: " + project.getProperties());
+                    }
+                }
+            }
+            if (c == 's') {
+                console.println();
+                return false;
+            }
+            if (c == 'c') {
+                console.println();
+                throw new StopLifecycleException(null, "Canceled by user");
+            }
+        }
     }
 
     public static Console getConsole() {

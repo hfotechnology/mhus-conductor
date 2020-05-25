@@ -115,6 +115,10 @@ public class ExecutorDefault extends MLog implements Executor {
     }
     
     public boolean executeInternalStep(Step step, List<Project> projects) {
+        if (con != null && con.getProperties().getBoolean(ConUtil.PROPERTY_CONFIRM_STEPS, false)) {
+            if (!ConUtil.confirmAction(con, projects, "Execute Sub-Step " + step))
+                return false;
+        }
         log().d("executeInternalStep", step);
         boolean done = false;
         String target = step.getTarget();
@@ -142,6 +146,8 @@ public class ExecutorDefault extends MLog implements Executor {
                 project = ((ContextProject)project).getInstance();
             
             return execute(step, project, plugin, null);
+        } catch (StopLifecycleException t) {
+            throw t;
         } catch (Throwable t) {
             throw new MRuntimeException(step, t);
         }
@@ -160,6 +166,10 @@ public class ExecutorDefault extends MLog implements Executor {
 
             if (plugin.getScope() == SCOPE.STEP) {
                 // scope: step
+                if (con != null && con.getProperties().getBoolean(ConUtil.PROPERTY_CONFIRM_STEPS, false)) {
+                    if (!ConUtil.confirmAction(con, null, "Execute Step " + step))
+                        return;
+                }
                 execute(step, (Project) null, plugin, null);
                 return;
             }
@@ -182,6 +192,8 @@ public class ExecutorDefault extends MLog implements Executor {
             }
 
             execute(step, projects, plugin);
+        } catch (StopLifecycleException t) {
+            throw t;
         } catch (Throwable t) {
             throw new MRuntimeException(step, t);
         }
@@ -190,6 +202,11 @@ public class ExecutorDefault extends MLog implements Executor {
     protected void execute(Step step, LinkedList<Project> projects, Plugin plugin) {
         if (projects == null || projects.size() == 0) log().w("no projects selected", step);
 
+        if (con != null && con.getProperties().getBoolean(ConUtil.PROPERTY_CONFIRM_STEPS, false)) {
+            if (!ConUtil.confirmAction(con, projects, "Execute Step " + step + " on " + projects ))
+                return;
+        }
+        
         if (con.getProperties().getBoolean(ConUtil.PROPERTY_PARALLEL, false)
                 && step.getProperties().getInt(ConUtil.PROPERTY_THREADS, 0) > 0) {
             LinkedList<Project> queue = new LinkedList<>(projects);

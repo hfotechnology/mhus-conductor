@@ -135,6 +135,7 @@ public abstract class AbstractMavenExecute extends MLog implements ExecutePlugin
                 String cmd = mvnPath + " help:evaluate -Dexpression=project.modules";
                 String[] res =
                         ConUtil.execute(
+                                context.getConductor(),
                                 context.getStep().getTitle() + " " + context.getProject().getName(),
                                 rootDir,
                                 cmd,

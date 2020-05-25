@@ -51,7 +51,11 @@ public class DockerMojo extends MLog implements ExecutePlugin {
 
         String[] res =
                 ConUtil.execute(
-                        "docker " + context.getProject().getName() + "/" + path, dir, cmd, true);
+                        context.getConductor(),
+                        "docker " + context.getProject().getName() + "/" + path, 
+                        dir, 
+                        cmd, 
+                        true);
         if (!res[2].equals("0"))
             throw new MojoException(context, "not successful", cmd, res[1], res[2]);
         return true;

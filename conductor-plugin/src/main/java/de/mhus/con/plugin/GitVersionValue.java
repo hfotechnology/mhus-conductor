@@ -28,7 +28,12 @@ public class GitVersionValue extends MLog implements ValuePlugin {
         if (version != null) return;
         String gitPath = ConUtil.cmdLocation(context.getConductor(), "git");
         String cmd = gitPath + " --version";
-        String[] res = ConUtil.execute("maven version", new File("."), cmd, false);
+        String[] res = ConUtil.execute(
+                context.getConductor(),
+                "maven version", 
+                new File("."), 
+                cmd, 
+                false);
         if (!res[2].equals("0"))
             throw new MojoException(context, "not successful", cmd, res[1], res[2]);
 
