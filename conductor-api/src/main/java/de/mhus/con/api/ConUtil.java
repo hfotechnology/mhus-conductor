@@ -156,7 +156,7 @@ public class ConUtil {
     public static boolean confirmAction(Conductor con, List<Project> projects, String msg) {
         final Console console = getConsole();
         console.cleanup();
-        console.setColor(COLOR.RED, COLOR.BLUE);
+        console.setColor(COLOR.BRIGHT_RED, COLOR.BRIGHT_BLACK);
         console.println("================================================");
         console.println(" c - cancel, s - skip, ENTER - run, i - inspect ");
         console.println("================================================");

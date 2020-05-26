@@ -22,7 +22,7 @@ lifecycles:
   - title: Reset
     target: con.git
     arguments:
-    - "reset --HARD"
+    - "reset --hard"
     - pull
 
 - name: reset
