@@ -84,8 +84,8 @@
 	                               <type>jar</type>
 	                           </artifact>
                                <artifact>
-                                   <file>src/main/launch/download.sh</file>
-                                   <classifier>download</classifier>
+                                   <file>src/main/launch/install.sh</file>
+                                   <classifier>install</classifier>
                                    <type>sh</type>
                                </artifact>
                                <artifact>

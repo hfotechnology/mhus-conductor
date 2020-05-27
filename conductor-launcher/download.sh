@@ -1,4 +1,3 @@
-
 #!/bin/sh
 
 # Copyright Mike Hummel
@@ -26,20 +25,8 @@ if [ "x${CON_VERSION}" = "x" ] ; then
   exit;
 fi
 
-CON_JAR_NAME="conductor-launcher-${CON_VERSION}-con.jar"
-URL="https://repo1.maven.org/maven2/de/mhus/conductor/conductor-launcher/1.1.0-SNAPSHOT/$CON_JAR_NAME"
-
-printf "Downloading %s ..." "$URL"
-if ! curl -fsLO "$URL"
-then
-    printf "\n\n"
-    printf "Unable to download Conductor %s at this moment!\n" "$CON_VERSION"
-    printf "Please verify the version you are trying to download.\n\n"
-    exit
-fi
-
-CON_SH_NAME="conductor-launcher-${CON_VERSION}-con.sh"
-URL="https://repo1.maven.org/maven2/de/mhus/conductor/conductor-launcher/1.1.0-SNAPSHOT/$CON_SH_NAME"
+CON_INSTALLER="conductor-launcher-${CON_VERSION}-install.sh"
+URL="https://repo1.maven.org/maven2/de/mhus/conductor/conductor-launcher/${CON_VERSION}/$CON_JAR_NAME"
 
 printf "Downloading %s ..." "$URL"
 if ! curl -fsLO "$URL"
@@ -51,23 +38,6 @@ then
 fi
 
 # install
+. $CON_INSTALLER
 
-
-mkdir ~/.conductor
-mkdir ~/.conductor/lib
-mkdir ~/.conductor/bin
-mkdir ~/.conductor/tmp
-
-cp $CON_JAR_NAME ~/.conductor/lib/con.jar
-cp $CON_SH_NAME ~/.conductor/bin/con
-chmod +x ~/.conductor/bin/con
-
-rm $CON_JAR_NAME
-rm $CON_SH_NAME
-
-echo "Installed in ~/.conductor"
-echo "Add directory to \$PATH or link ~/.conductor/bin/con"
-
-~/.conductor/bin/con -version
-
-
+rm $CON_INSTALLER
