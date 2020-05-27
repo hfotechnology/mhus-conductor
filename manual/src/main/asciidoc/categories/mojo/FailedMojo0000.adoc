@@ -6,11 +6,9 @@ _/de/mhus/con/plugin/FailedMojo.java_
 The plugin will stop execution of the lifecycle. It can be used
 in plugin and step scope.
 
-* Target: failed
-* Scope: STEP
+Target: failed
+Scope: STEP
 
 Properties:
 
-* reason: Message why execution is stopped.
-
-
+reason: Message why execution is stopped.

@@ -32,5 +32,3 @@ The following step properties are used the will be searched recursively:
 * #buildnr uses the previous number and increase it by one.
 
 
-
-
