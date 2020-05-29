@@ -61,7 +61,7 @@ done
 
 saveddir=`pwd`
 
-CONDUCTOR_HOME=`dirname "$PRG"`/..
+CONDUCTOR_HOME=`dirname "$PRG"`/../..
 
 # make it fully qualified
 CONDUCTOR_HOME=`cd "$CONDUCTOR_HOME" && pwd`

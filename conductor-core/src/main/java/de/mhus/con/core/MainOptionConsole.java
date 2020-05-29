@@ -36,7 +36,6 @@ import de.mhus.lib.core.config.IConfig;
 import de.mhus.lib.core.config.IConfigFactory;
 import de.mhus.lib.core.config.MConfig;
 import de.mhus.lib.core.console.Console;
-import de.mhus.lib.core.console.Console.COLOR;
 import de.mhus.lib.core.yaml.MYaml;
 import de.mhus.lib.core.yaml.YList;
 import de.mhus.lib.errors.MException;
@@ -64,11 +63,11 @@ public class MainOptionConsole implements MainOptionHandler {
 
             console.println("Conductor console");
             while (true) {
-                console.setColor(COLOR.GREEN, null);
-                console.print("> ");
-                console.cleanup();
-                console.flush();
-                String line = console.readLine(history);
+//                console.setColor(COLOR.GREEN, null);
+//                console.print("> ");
+//                console.cleanup();
+//                console.flush();
+                String line = console.readLine("> ", history);
                 try {
                     if (line == null || line.equals("quit")) break;
                     execute(line);
@@ -166,11 +165,11 @@ public class MainOptionConsole implements MainOptionHandler {
             } else {
                 System.out.println("Finish the input with '---' in a single line:");
                 while (true) {
-                    console.setColor(COLOR.RED, null);
-                    console.print("$ ");
-                    console.cleanup();
-                    console.flush();
-                    String line2 = console.readLine(historySteps);
+//                    console.setColor(COLOR.RED, null);
+//                    console.print("$ ");
+//                    console.cleanup();
+//                    console.flush();
+                    String line2 = console.readLine("$ ", historySteps);
                     if (line2.equals("---")) break;
                     stepDef.append(line2).append('\n');
                 }
