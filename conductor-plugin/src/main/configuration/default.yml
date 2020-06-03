@@ -62,7 +62,7 @@ lifecycles:
     properties:
       touchDirectory: ${touchDirectory:true}
       processSubModules: ${processSubModules:false}
-      modifiedOnly: ${modifiedOnly:true}
+      modifiedOnly: ${modifiedOnly:false}
     sort: order
 
 - name: build
