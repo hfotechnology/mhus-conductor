@@ -8,7 +8,7 @@ import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.MainOptionHandler;
 import de.mhus.lib.core.MProperties;
 
-@AOption(alias = {"-CS","-CCMD","-CC"})
+@AOption(alias = {"-CS","-CCMD","-CC","-CBEEP"})
 public class MainOptionConfirm implements MainOptionHandler {
 
     @Override
@@ -22,6 +22,11 @@ public class MainOptionConfirm implements MainOptionHandler {
             ((MainCli) cli).getOverlayProperties().setBoolean(ConUtil.PROPERTY_CONFIRM_CMDS, cmd.equals("-CCMD"));
             if (((MainCli)cli).isConductor())
                 ((MProperties)cli.getConductor().getProperties()).setBoolean(ConUtil.PROPERTY_CONFIRM_CMDS, cmd.equals("-CCMD"));
+        }
+        if (cmd.equals("-CBEEP") || cmd.equals("-CC")) {
+            ((MainCli) cli).getOverlayProperties().setBoolean(ConUtil.PROPERTY_CONFIRM_BEEP, cmd.equals("-CBEEP"));
+            if (((MainCli)cli).isConductor())
+                ((MProperties)cli.getConductor().getProperties()).setBoolean(ConUtil.PROPERTY_CONFIRM_BEEP, cmd.equals("-CBEEP"));
         }
     }
 

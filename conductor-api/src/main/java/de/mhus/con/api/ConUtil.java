@@ -25,6 +25,7 @@ import de.mhus.lib.core.MCast;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.MSystem.ExecuteControl;
+import de.mhus.lib.core.MThread;
 import de.mhus.lib.core.MValidator;
 import de.mhus.lib.core.console.Console;
 import de.mhus.lib.core.console.Console.COLOR;
@@ -59,6 +60,7 @@ public class ConUtil {
     public static final String PROPERTY_Y = "conductor.confirm.confirm";
     public static final String PROPERTY_CONFIRM_STEPS = "conductor.confirm.steps";
     public static final String PROPERTY_CONFIRM_CMDS = "conductor.confirm.cmds";
+    public static final String PROPERTY_CONFIRM_BEEP = "conductor.confirm.beep";
     public static final String PROPERTY_VERBOSE = "conductor.verbose";
 
     public static void orderProjects(List<Project> projects, String order, boolean orderAsc) {
@@ -163,6 +165,11 @@ public class ConUtil {
         console.cleanup();
         console.print(msg);
         console.flush();
+        if (con != null && con.getProperties().getBoolean(PROPERTY_CONFIRM_BEEP, false))
+            for (int i = 0; i < 3; i++) {
+                console.beep();
+                MThread.sleep(200);
+            }
         while (true) {
             int c = console.read();
             if (c == '\n') {

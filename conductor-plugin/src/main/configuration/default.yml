@@ -17,6 +17,15 @@ lifecycles:
     arguments:
     - pull
 
+- name: git
+  steps:
+  - title: Clone
+    target: con.git.clone
+  - title: Pull
+    target: con.git
+    arguments:
+    - ${cmd}
+
 - name: git.reset
   steps:
   - title: Reset
@@ -59,6 +68,18 @@ lifecycles:
     arguments:
     - clean
     - install
+    properties:
+      touchDirectory: ${touchDirectory:true}
+      processSubModules: ${processSubModules:false}
+      modifiedOnly: ${modifiedOnly:false}
+    sort: order
+
+- name: maven
+  steps:
+  - title: Maven Rebuild
+    target: con.maven
+    arguments:
+    - ${cmd}
     properties:
       touchDirectory: ${touchDirectory:true}
       processSubModules: ${processSubModules:false}
