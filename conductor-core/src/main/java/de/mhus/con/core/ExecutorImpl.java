@@ -116,7 +116,7 @@ public class ExecutorImpl extends MLog implements Executor {
     
     public boolean executeInternalStep(Step step, List<Project> projects) {
         if (con != null && con.getProperties().getBoolean(ConUtil.PROPERTY_CONFIRM_STEPS, false)) {
-            if (!ConUtil.confirmAction(con, projects, "Execute Sub-Step " + step))
+            if (!ConUtil.confirmAction(con, step, projects, "Execute Sub-Step " + step))
                 return false;
         }
         log().d("executeInternalStep", step);
@@ -167,7 +167,7 @@ public class ExecutorImpl extends MLog implements Executor {
             if (plugin.getScope() == SCOPE.STEP) {
                 // scope: step
                 if (con != null && con.getProperties().getBoolean(ConUtil.PROPERTY_CONFIRM_STEPS, false)) {
-                    if (!ConUtil.confirmAction(con, null, "Execute Step " + step))
+                    if (!ConUtil.confirmAction(con, step, null, "Execute Step " + step))
                         return;
                 }
                 execute(step, (Project) null, plugin, null);
@@ -203,7 +203,7 @@ public class ExecutorImpl extends MLog implements Executor {
         if (projects == null || projects.size() == 0) log().w("no projects selected", step);
 
         if (con != null && con.getProperties().getBoolean(ConUtil.PROPERTY_CONFIRM_STEPS, false)) {
-            if (!ConUtil.confirmAction(con, projects, "Execute Step " + step + " on " + projects ))
+            if (!ConUtil.confirmAction(con, step, projects, "Execute Step " + step + " on " + projects ))
                 return;
         }
         

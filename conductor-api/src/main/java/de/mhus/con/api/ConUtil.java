@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import de.mhus.conductor.api.meta.Version;
 import de.mhus.lib.core.MCast;
+import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.MSystem.ExecuteControl;
@@ -92,7 +93,7 @@ public class ConUtil {
             throws IOException {
 
         if (con != null && con.getProperties().getBoolean(PROPERTY_CONFIRM_CMDS, false)) {
-            if (!confirmAction(con, null, "Press ENTER to execute " + cmd))
+            if (!confirmAction(con, null, null, "Press ENTER to execute " + cmd))
                 return new String[] {"","","0"};
         }
         
@@ -155,12 +156,13 @@ public class ConUtil {
         return new String[] {stdout, stderr, String.valueOf(exitCode)};
     }
 
-    public static boolean confirmAction(Conductor con, List<Project> projects, String msg) {
+    public static boolean confirmAction(Conductor con, Step step, List<Project> projects, String msg) {
         final Console console = getConsole();
         console.cleanup();
         console.setColor(COLOR.BRIGHT_RED, COLOR.BRIGHT_BLACK);
         console.println("================================================");
-        console.println(" c - cancel, s - skip, ENTER - run, i - inspect ");
+        console.println(" ENTER - run, c - cancel, s - skip, i - inspect ");
+        console.println(" x - run and disable configrmation mode");
         console.println("================================================");
         console.cleanup();
         console.print(msg);
@@ -176,16 +178,36 @@ public class ConUtil {
                 console.println();
                 return true;
             }
+            if (c == 'x') {
+                console.println();
+                if (con != null) {
+                    ((MProperties)con.getProperties()).setBoolean(ConUtil.PROPERTY_CONFIRM_STEPS, false);
+                    ((MProperties)con.getProperties()).setBoolean(ConUtil.PROPERTY_CONFIRM_CMDS, false);
+                }
+                return true;
+            }
             if (c == 'i') {
                 console.println();
                 if (projects != null) {
                     for (Project project : projects) {
-                        System.out.println(">>> " + project.getName());
+                        System.out.println("- Project " + project.getName());
                         System.out.println("    Directory : " + project.getRootDir());
                         System.out.println("    Path      : " + project.getPath());
                         System.out.println("    Labels    : " + project.getLabels());
                         System.out.println("    Properties: " + project.getProperties());
                     }
+                }
+                if (step != null) {
+                    System.out.println("- Step " + step.getTitle());
+                    System.out.println("    Target    : " + step.getTarget());
+                    System.out.println("    Condition : " + step.getCondition());
+                    System.out.println("    Selector  : " + step.getSelector());
+                    System.out.println(
+                            "    Order     : "
+                                    + step.getSortBy()
+                                    + " "
+                                    + (step.isOrderAsc() ? "ASC" : "DESC"));
+                    System.out.println("    Properties: " + step.getProperties());
                 }
             }
             if (c == 's') {
