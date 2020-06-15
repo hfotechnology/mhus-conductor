@@ -44,11 +44,20 @@ public class MavenVersionValue extends MLog implements ValuePlugin {
         
         try {
             String[] lines = res[0].split("\n");
-            versions.setString("maven.version", lines[0].split(" ")[2]);
-            versions.setString("os.name", lines[4].split("\"")[1]);
-            versions.setString("os.version", lines[4].split("\"")[3]);
-            versions.setString("os.arch", lines[4].split("\"")[5]);
-            versions.setString("os.family", lines[4].split("\"")[7]);
+            for (String line : lines) {
+                if (line.startsWith("Apache Maven")) {
+                    // Apache Maven 3.2.5 (12a6b3acb947671f09b81f49094c53f426d8cea1; 2014-12-14T18:29:23+01:00)
+                    versions.setString("maven.version", line.split(" ")[2]);
+                } else
+                if (line.startsWith("OS name:")) {
+                    // OS name: "linux", version: "4.12.14-94.41-default", arch: "amd64", family: "unix"
+                    String[] parts = line.split("\"");
+                    versions.setString("os.name", parts[1]);
+                    versions.setString("os.version", parts[3]);
+                    versions.setString("os.arch", parts[5]);
+                    versions.setString("os.family", parts[7]);
+                }
+            }
         } catch (Throwable t) {
             t.printStackTrace();
         }
