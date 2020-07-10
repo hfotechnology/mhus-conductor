@@ -37,14 +37,11 @@ import de.mhus.con.core.ProjectsValidator;
 import de.mhus.con.core.SchemesImpl;
 import de.mhus.con.core.YmlConfigType;
 import de.mhus.lib.errors.MException;
+import de.mhus.lib.tests.TestCase;
+import de.mhus.lib.tests.TestUtil;
 
-public class ConfiguratorTest {
+public class ConfiguratorTest extends TestCase {
 
-    @BeforeEach
-    public void beforeEach(TestInfo testInfo) {
-        TestUtil.start(testInfo);
-    }
-    
     @Test
     public void testLoading() throws MException {
 

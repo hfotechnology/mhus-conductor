@@ -63,6 +63,11 @@
         <artifactId>lib-core</artifactId>
         <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>de.mhus.lib</groupId>
+        <artifactId>lib-tests</artifactId>
+        <scope>test</scope>
+    </dependency>
 	<!-- 
 	<dependency>
 	    <groupId>org.bouncycastle</groupId>

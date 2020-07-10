@@ -23,9 +23,7 @@ import java.net.URI;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -46,14 +44,11 @@ import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MSystem;
 import de.mhus.lib.core.MXml;
 import de.mhus.lib.errors.MException;
+import de.mhus.lib.tests.TestCase;
+import de.mhus.lib.tests.TestUtil;
 
-public class ExecutionTest {
+public class ExecutionTest extends TestCase {
 
-    @BeforeEach
-    public void beforeEach(TestInfo testInfo) {
-        TestUtil.start(testInfo);
-    }
-    
     @Test
     public void testNewVersion() throws Exception {
         File to = new File("target/scenario");

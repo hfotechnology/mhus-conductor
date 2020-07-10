@@ -16,22 +16,15 @@ package de.mhus.con.core.test;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
-
 import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
 import de.mhus.con.api.Scheme;
 import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.util.MUri;
+import de.mhus.lib.tests.TestCase;
 
-public class DummyScheme implements Scheme {
+public class DummyScheme extends TestCase implements Scheme {
 
-    @BeforeEach
-    public void beforeEach(TestInfo testInfo) {
-        TestUtil.start(testInfo);
-    }
-    
     @Override
     public File load(Conductor con, MUri uri) throws IOException {
         File f = ConUtil.createTempFile(con, DummyScheme.class, ".yml");

@@ -13,9 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import de.mhus.con.core.MainCli;
 import de.mhus.con.core.MainOptionConsole;
@@ -24,8 +22,9 @@ import de.mhus.lib.core.console.Console;
 import de.mhus.lib.core.console.SimpleConsole;
 import de.mhus.lib.core.io.YOutputStream;
 import de.mhus.lib.errors.MException;
+import de.mhus.lib.tests.TestCase;
 
-public class PluginsTest {
+public class PluginsTest extends TestCase {
 
     private static MainCli cli;
     private static MainOptionConsole console;
@@ -214,11 +213,6 @@ public class PluginsTest {
     public static void deinit() {
         System.setOut(orgOut);
         Console.resetConsole();
-    }
-    
-    @BeforeEach
-    public void beforeEach(TestInfo testInfo) {
-        TestUtil.start(testInfo);
     }
     
 }

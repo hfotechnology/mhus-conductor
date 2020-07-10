@@ -22,9 +22,7 @@ import java.net.URI;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.xml.sax.SAXException;
 
 import de.mhus.con.api.ConUtil;
@@ -47,13 +45,10 @@ import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.util.MUri;
 import de.mhus.lib.errors.NotFoundException;
+import de.mhus.lib.tests.TestCase;
+import de.mhus.lib.tests.TestUtil;
 
-public class SchemeTest {
-
-    @BeforeEach
-    public void beforeEach(TestInfo testInfo) {
-        TestUtil.start(testInfo);
-    }
+public class SchemeTest extends TestCase {
 
     @Test
     public void testClassifier()
