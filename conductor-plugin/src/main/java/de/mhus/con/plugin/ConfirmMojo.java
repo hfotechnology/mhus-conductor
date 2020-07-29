@@ -59,7 +59,7 @@ public class ConfirmMojo implements ExecutePlugin {
                 console.println();
                 if (mode.equals("execute")) {
                     for (Step caze : context.getStep().getSubSteps()) {
-                        ((ExecutorImpl)context.getExecutor()).executeInternalStep( ((ContextStep)caze).getInstance(), context.getProjects() );
+                        ((ExecutorImpl)context.getExecutor()).executeInternalStep( ((ContextStep)caze).getInstance(), context.getProjects(), context.getCallLevel() );
                     }
                 }
                 return true;

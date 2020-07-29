@@ -115,6 +115,36 @@ lifecycles:
       modifiedOnly: ${modifiedOnly:true}
     sort: order
 
+- name: update
+  steps:
+  - title: Update
+    target: kind
+    sort: order
+    steps:
+    - target: maven
+      steps:
+      - target: include
+        arguments:
+        - maven.update
+    - target: gradel
+      steps:
+      - target: include
+        arguments:
+        - gradel.update
+        
+- name: maven.update
+  steps:
+  - title: Maven Update
+    target: con.maven
+    arguments:
+    - clean
+    - install
+    properties:
+      touchDirectory: ${touchDirectory:true}
+      processSubModules: ${processSubModules:true}
+      modifiedOnly: ${modifiedOnly:true}
+    sort: order
+
 - name: clean
   steps:
   - title: Clean

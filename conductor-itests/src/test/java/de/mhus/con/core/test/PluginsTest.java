@@ -84,14 +84,14 @@ public class PluginsTest extends TestCase {
         String str = new String(out.toByteArray()).trim();
         System.out.println("out> " + str);
         
-        String[] parts = str.split("------------------------------------------------------------------------");
+        String[] parts = str.split("  ---");
         
         assertEquals(
-                "Test: Step 2 1.0", parts[4].trim());
+                "Test: Step 2 1.0", parts[1].split("\n")[1].trim());
         assertEquals(
-                "Test: Step 2 3.0", parts[6].trim());
+                "Test: Step 2 3.0", parts[2].split("\n")[1].trim());
         assertEquals(
-                "Test: Step 2 5.0", parts[8].trim());
+                "Test: Step 2 5.0", parts[3].split("\n")[1].trim());
     
     }
     
@@ -142,12 +142,12 @@ public class PluginsTest extends TestCase {
         String str = new String(out.toByteArray()).trim();
         System.out.println("out> " + str);
         
-        String[] parts = str.split("------------------------------------------------------------------------");
+        String[] parts = str.split("  ---");
         
         assertEquals(
-                "Test: Step 1", parts[4].trim());
+                "Test: Step 1", parts[1].split("\n")[1].trim());
         assertEquals(
-                "Test: Step 2", parts[6].trim());
+                "Test: Step 2", parts[2].split("\n")[1].trim());
     }
     
     @Test

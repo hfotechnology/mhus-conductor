@@ -30,7 +30,7 @@ public class IncludeLifecycle extends MLog implements ExecutePlugin {
             log().d(">>> Include Lifecycle", arg);
             Lifecycle lifecycle = context.getConductor().getLifecycles().get(arg);
             for (Step step : lifecycle.getSteps()) {
-            	((ExecutorImpl)context.getExecutor()).executeInternal(step, context.getProject());
+            	((ExecutorImpl)context.getExecutor()).executeInternal(step, context.getProject(), context.getCallLevel()+1);
             }
             log().d("<<< End Lifecycle ", arg);
         }

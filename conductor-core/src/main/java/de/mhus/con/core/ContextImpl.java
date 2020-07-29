@@ -40,9 +40,11 @@ public class ContextImpl extends MLog implements Context {
     private Executor executor;
     private List<Project> projects;
     private StringCompiler compiler = new ContextCompiler(this);
+    private int callLevel = 0;
     
-    public ContextImpl(Conductor con) {
+    public ContextImpl(Conductor con, int callLevel) {
         this.con = con;
+        this.callLevel = callLevel;
         properties = new MProperties();
         putReadProperties("", con.getProperties());
     }
@@ -147,5 +149,10 @@ public class ContextImpl extends MLog implements Context {
         }
         if (value == null) value = def;
         return value;
+    }
+
+    @Override
+    public int getCallLevel() {
+        return callLevel;
     }
 }

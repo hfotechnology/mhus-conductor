@@ -27,7 +27,7 @@ public class ExecuteMojo extends MLog implements ExecutePlugin {
         try ( Closeable x = ((ExecutorImpl)context.getExecutor()).enterSubSteps(context.getStep()) ) {
             for (Step caze : context.getStep().getSubSteps()) {
                 done = true;
-                ((ExecutorImpl)context.getExecutor()).executeInternal( ((ContextStep)caze).getInstance(), context.getProject() );
+                ((ExecutorImpl)context.getExecutor()).executeInternal( ((ContextStep)caze).getInstance(), context.getProject(), context.getCallLevel()+1 );
             }
         }
         return done;

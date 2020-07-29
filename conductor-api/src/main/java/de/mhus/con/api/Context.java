@@ -50,4 +50,7 @@ public interface Context {
      * @return Value or default
      */
     String getRecursiveProperty(String key, String def);
+    
+    int getCallLevel();
+    
 }

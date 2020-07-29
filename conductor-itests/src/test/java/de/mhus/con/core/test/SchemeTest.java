@@ -130,7 +130,7 @@ public class SchemeTest extends TestCase {
             ((SchemesImpl) con.getSchemes()).put("mvn", new MavenScheme());
 
             StepImpl step = new StepImpl();
-            ContextImpl context = new ContextImpl(con);
+            ContextImpl context = new ContextImpl(con, 0);
             context.init(null, null, null, con.getPlugins().get("test"), step);
 
             ExecutorImpl exec = new ExecutorImpl();

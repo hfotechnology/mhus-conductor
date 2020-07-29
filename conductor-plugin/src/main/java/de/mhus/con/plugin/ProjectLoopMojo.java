@@ -34,7 +34,7 @@ public class ProjectLoopMojo extends MLog implements ExecutePlugin {
                 done = true;
                 try ( Closeable x = ((ExecutorImpl)context.getExecutor()).enterSubSteps(context.getStep()) ) {
                     for (Step caze : context.getStep().getSubSteps()) {
-                        ((ExecutorImpl)context.getExecutor()).executeInternal( ((ContextStep)caze).getInstance(), context.getProject() );
+                        ((ExecutorImpl)context.getExecutor()).executeInternal( ((ContextStep)caze).getInstance(), context.getProject(), context.getCallLevel()+1 );
                     }
                 }
             }

@@ -44,9 +44,11 @@ public class ExecutionInterceptorDefault extends MLog implements ExecutionInterc
         Console console = ConUtil.getConsole();
         console.flush();
         console.println();
-        console.setBold(true);
-        console.println("------------------------------------------------------------------------");
-        console.setBold(false);
+        if (context.getCallLevel() == 0) {
+            console.setBold(true);
+            console.println("------------------------------------------------------------------------");
+            console.setBold(false);
+        }
         console.print("[");
         console.print(context.getExecutor().getCurrentStepCount());
         console.print("/");
@@ -76,11 +78,13 @@ public class ExecutionInterceptorDefault extends MLog implements ExecutionInterc
             console.print(context.getProject().getName());
         }
         console.println();
-        console.setBold(true);
-        console.println("------------------------------------------------------------------------");
-        console.println();
-        console.setBold(false);
-        console.flush();
+        if (context.getCallLevel() == 0) {
+            console.setBold(true);
+            console.println("------------------------------------------------------------------------");
+            console.println();
+            console.setBold(false);
+            console.flush();
+        }
     }
 
     @Override

@@ -19,9 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.File;
 import java.net.URI;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import de.mhus.con.api.ConUtil;
 import de.mhus.con.api.Conductor;
@@ -82,7 +80,7 @@ public class ConfiguratorTest extends TestCase {
             LabelsImpl labels = new LabelsImpl();
             assertEquals(4, con.getProjects().select(labels).size());
         }
-        Context context = new ContextImpl(con);
+        Context context = new ContextImpl(con, 0);
 
         // test plugins
         assertEquals(8, con.getPlugins().size());

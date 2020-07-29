@@ -114,7 +114,7 @@ public class ExecutorImpl extends MLog implements Executor {
         interceptors.forEach(i -> i.leaveSubSteps(con, step));
     }
     
-    public boolean executeInternalStep(Step step, List<Project> projects) {
+    public boolean executeInternalStep(Step step, List<Project> projects, int callLevel) {
         if (con != null && con.getProperties().getBoolean(ConUtil.PROPERTY_CONFIRM_STEPS, false)) {
             if (!ConUtil.confirmAction(con, step, projects, "Execute Sub-Step " + step))
                 return false;
@@ -124,17 +124,17 @@ public class ExecutorImpl extends MLog implements Executor {
         String target = step.getTarget();
         Plugin plugin = con.getPlugins().get(target);
         if (plugin.getScope() == SCOPE.STEP) {
-            done = executeInternal(step, null);
+            done = executeInternal(step, null, callLevel);
         } else {
             for (Project project : projects) {
-                if (executeInternal(step, project))
+                if (executeInternal(step, project, callLevel))
                     done = true;
             }
         }
         return done;
     }
     
-    public boolean executeInternal(Step step, Project project) {
+    public boolean executeInternal(Step step, Project project, int callLevel) {
         log().d("executeInternal", step, project);
         try {
             // load plugin
@@ -145,7 +145,7 @@ public class ExecutorImpl extends MLog implements Executor {
             if (project != null && project instanceof ContextProject)
                 project = ((ContextProject)project).getInstance();
             
-            return execute(step, project, plugin, null);
+            return execute(step, project, plugin, null, callLevel);
         } catch (StopLifecycleException t) {
             throw t;
         } catch (Throwable t) {
@@ -170,7 +170,7 @@ public class ExecutorImpl extends MLog implements Executor {
                     if (!ConUtil.confirmAction(con, step, null, "Execute Step " + step))
                         return;
                 }
-                execute(step, (Project) null, plugin, null);
+                execute(step, (Project) null, plugin, null, 0);
                 return;
             }
 
@@ -231,7 +231,7 @@ public class ExecutorImpl extends MLog implements Executor {
                                             }
                                             if (task == null) break; // paranoia
                                             log().d(Thread.currentThread().getId(), "Task", task);
-                                            execute(step, task, plugin, projects);
+                                            execute(step, task, plugin, projects, 0);
                                         }
                                         log().d(Thread.currentThread().getId(), "Finished");
                                     }
@@ -262,16 +262,16 @@ public class ExecutorImpl extends MLog implements Executor {
             }
 
         } else {
-            for (Project project : projects) execute(step, project, plugin, projects);
+            for (Project project : projects) execute(step, project, plugin, projects, 0);
         }
     }
 
     protected boolean execute(
-            Step step, Project project, Plugin plugin, LinkedList<Project> projectList) {
+            Step step, Project project, Plugin plugin, LinkedList<Project> projectList, int callLevel) {
         log().d(">>>", step.getTitle(), project == null ? "-none-" : project.getName());
         log().t("execute", step, project, plugin);
         try {
-            ContextImpl context = new ContextImpl(con);
+            ContextImpl context = new ContextImpl(con, callLevel);
 
             context.init(this, projectList, project, plugin, step);
 

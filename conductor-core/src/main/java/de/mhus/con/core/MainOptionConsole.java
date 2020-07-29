@@ -199,7 +199,7 @@ public class MainOptionConsole implements MainOptionHandler {
         } else if (line.startsWith("get ")) {
             System.out.println(con().getProperties().get(MString.afterIndex(line, ' ')));
         } else if (line.startsWith("print ")) {
-            ContextImpl context = new ContextImpl(con());
+            ContextImpl context = new ContextImpl(con(), 0);
             context.init(exec, new LinkedList<>(), null, new PluginImpl(), new StepImpl());
             System.out.println(context.make(MString.afterIndex(line, ' ')));
         } else if (line.equals("help")) {
