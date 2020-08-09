@@ -67,6 +67,23 @@
                 </executions>
             </plugin>
 	       <plugin>
+	         <artifactId>maven-assembly-plugin</artifactId>
+	         <executions>
+	           <execution>
+	             <id>assembly</id>
+	             <phase>package</phase>
+	             <goals><goal>single</goal></goals>
+	             <configuration>
+	               <descriptors>
+	                 <descriptor>assembly.xml</descriptor>
+	               </descriptors>
+	             </configuration>
+	           </execution>
+	         </executions>
+	       </plugin>        
+            
+            
+	       <plugin>
 	           <groupId>org.codehaus.mojo</groupId>
 	           <artifactId>build-helper-maven-plugin</artifactId>
 	           <executions>
@@ -78,19 +95,16 @@
 	                   </goals>
 	                   <configuration>
 	                       <artifacts>
+	                       <!-- 
 	                           <artifact>
-	                               <file>target/con.jar</file>
-	                               <classifier>con</classifier>
-	                               <type>jar</type>
+	                               <file>target/doc-install.zip</file>
+	                               <classifier>install</classifier>
+	                               <type>zip</type>
 	                           </artifact>
+	                        -->
                                <artifact>
                                    <file>src/main/launch/install.sh</file>
                                    <classifier>install</classifier>
-                                   <type>sh</type>
-                               </artifact>
-                               <artifact>
-                                   <file>src/main/launch/con.sh</file>
-                                   <classifier>con</classifier>
                                    <type>sh</type>
                                </artifact>
 	                       </artifacts>
@@ -98,25 +112,6 @@
 	               </execution>
 	           </executions>
 	       </plugin>
-             
-                  
-		<!-- 
-        <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>assembly</id>
-              <phase>package</phase>
-              <goals><goal>single</goal></goals>
-              <configuration>
-                <descriptors>
-                  <descriptor>assembly.xml</descriptor>
-                </descriptors>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>        
-		 --> 
         
     </plugins>
   </build>

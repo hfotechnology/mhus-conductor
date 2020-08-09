@@ -15,7 +15,9 @@
 # limitations under the License.
 #
 
+mvn de.mhus.mvn.plugin:tmpl-maven-plugin:1.1.0-SNAPSHOT:tmpl 
 mvn install $@ || exit 1
+
 cd conductor-launcher
 ./src/main/launch/install.sh
 

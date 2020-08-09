@@ -15,33 +15,18 @@
 # limitations under the License.
 #
 
-LOCAL_REPO_PATH_JAR="$HOME/.m2/repository/de/mhus/conductor/conductor-launcher/{{project.version}}/conductor-launcher-{{project.version}}-con.jar"
+LOCAL_REPO_PATH_ZIP="$HOME/.m2/repository/de/mhus/conductor/conductor-launcher/{{project.version}}/conductor-launcher-{{project.version}}-install.zip"
 
-if [ ! -e $LOCAL_REPO_PATH_JAR ]; then
+if [ ! -e $LOCAL_REPO_PATH_ZIP ]; then
 mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.2:get \
-    -Dartifact=de.mhus.conductor:conductor-launcher:{{project.version}}:jar:con
+    -Dartifact=de.mhus.conductor:conductor-launcher:{{project.version}}:zip:install
 fi
 
-if [ ! -e $LOCAL_REPO_PATH_JAR ]; then
-  echo "Can't download conductor binary"
+if [ ! -e $LOCAL_REPO_PATH_ZIP ]; then
+  echo "Can't download conductor install zip"
   exit 1
 fi
 
-LOCAL_REPO_PATH_SH="$HOME/.m2/repository/de/mhus/conductor/conductor-launcher/{{project.version}}/conductor-launcher-{{project.version}}-con.sh"
-
-if [ ! -e $LOCAL_REPO_PATH_SH ]; then
-mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.2:get \
-    -Dartifact=de.mhus.conductor:conductor-launcher:{{project.version}}:sh:con
-fi
-
-if [ ! -e $LOCAL_REPO_PATH_SH ]; then
-  echo "Can't download conductor start script"
-  exit 1
-fi
-
-if [ ! -d $HOME/.conductor/lib/{{project.version}} ]; then
-  mkdir -p $HOME/.conductor/lib/{{project.version}}
-fi
 if [ ! -d $HOME/.conductor/bin/{{project.version}} ]; then
   mkdir -p $HOME/.conductor/bin/{{project.version}}
 fi
@@ -49,13 +34,14 @@ if [ ! -d $HOME/.conductor/tmp ]; then
   mkdir -p $HOME/.conductor/tmp
 fi
 
-cp $LOCAL_REPO_PATH_JAR $HOME/.conductor/lib/{{project.version}}/con.jar
-cp $LOCAL_REPO_PATH_SH $HOME/.conductor/bin/{{project.version}}/con
-chmod +x $HOME/.conductor/bin/{{project.version}}/con
+cd $HOME/.conductor/bin/{{project.version}}
+unzip $LOCAL_REPO_PATH_ZIP
+chmod +x $HOME/.conductor/bin/{{project.version}}/*.sh
+
 if [ -e $HOME/.conductor/bin/con ]; then
   rm $HOME/.conductor/bin/con
 fi
-ln -s $HOME/.conductor/bin/{{project.version}}/con $HOME/.conductor/bin/con
+ln -s $HOME/.conductor/bin/{{project.version}}/con.sh $HOME/.conductor/bin/con
 
-echo "Installed in $HOME/.conductor"
+echo "Installed {{project.version}} in $HOME/.conductor"
 echo "Add directory to \$PATH or link $HOME/.conductor/bin/con"
