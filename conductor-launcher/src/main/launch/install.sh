@@ -15,33 +15,18 @@
 # limitations under the License.
 #
 
-LOCAL_REPO_PATH_JAR="$HOME/.m2/repository/de/mhus/conductor/conductor-launcher/1.1.0-SNAPSHOT/conductor-launcher-1.1.0-SNAPSHOT-con.jar"
+LOCAL_REPO_PATH_ZIP="$HOME/.m2/repository/de/mhus/conductor/conductor-launcher/1.1.0-SNAPSHOT/conductor-launcher-1.1.0-SNAPSHOT-install.zip"
 
-if [ ! -e $LOCAL_REPO_PATH_JAR ]; then
+if [ ! -e $LOCAL_REPO_PATH_ZIP ]; then
 mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.2:get \
-    -Dartifact=de.mhus.conductor:conductor-launcher:1.1.0-SNAPSHOT:jar:con
+    -Dartifact=de.mhus.conductor:conductor-launcher:1.1.0-SNAPSHOT:zip:install
 fi
 
-if [ ! -e $LOCAL_REPO_PATH_JAR ]; then
-  echo "Can't download conductor binary"
+if [ ! -e $LOCAL_REPO_PATH_ZIP ]; then
+  echo "Can't download conductor install zip"
   exit 1
 fi
 
-LOCAL_REPO_PATH_SH="$HOME/.m2/repository/de/mhus/conductor/conductor-launcher/1.1.0-SNAPSHOT/conductor-launcher-1.1.0-SNAPSHOT-con.sh"
-
-if [ ! -e $LOCAL_REPO_PATH_SH ]; then
-mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.2:get \
-    -Dartifact=de.mhus.conductor:conductor-launcher:1.1.0-SNAPSHOT:sh:con
-fi
-
-if [ ! -e $LOCAL_REPO_PATH_SH ]; then
-  echo "Can't download conductor start script"
-  exit 1
-fi
-
-if [ ! -d $HOME/.conductor/lib/1.1.0-SNAPSHOT ]; then
-  mkdir -p $HOME/.conductor/lib/1.1.0-SNAPSHOT
-fi
 if [ ! -d $HOME/.conductor/bin/1.1.0-SNAPSHOT ]; then
   mkdir -p $HOME/.conductor/bin/1.1.0-SNAPSHOT
 fi
@@ -49,13 +34,14 @@ if [ ! -d $HOME/.conductor/tmp ]; then
   mkdir -p $HOME/.conductor/tmp
 fi
 
-cp $LOCAL_REPO_PATH_JAR $HOME/.conductor/lib/1.1.0-SNAPSHOT/con.jar
-cp $LOCAL_REPO_PATH_SH $HOME/.conductor/bin/1.1.0-SNAPSHOT/con
-chmod +x $HOME/.conductor/bin/1.1.0-SNAPSHOT/con
+cd $HOME/.conductor/bin/1.1.0-SNAPSHOT
+unzip -o $LOCAL_REPO_PATH_ZIP
+chmod +x $HOME/.conductor/bin/1.1.0-SNAPSHOT/*.sh
+
 if [ -e $HOME/.conductor/bin/con ]; then
   rm $HOME/.conductor/bin/con
 fi
-ln -s $HOME/.conductor/bin/1.1.0-SNAPSHOT/con $HOME/.conductor/bin/con
+ln -s $HOME/.conductor/bin/1.1.0-SNAPSHOT/con.sh $HOME/.conductor/bin/con
 
-echo "Installed in $HOME/.conductor"
-echo "Add directory to \$PATH or link $HOME/.conductor/bin/con"
+echo "Installed 1.1.0-SNAPSHOT in $HOME/.conductor"
+echo "Add directory $HOME/.conductor/bin to \$PATH or link $HOME/.conductor/bin/con in a binary directory like /usr/local/bin"

@@ -35,7 +35,7 @@ if [ ! -d $HOME/.conductor/tmp ]; then
 fi
 
 cd $HOME/.conductor/bin/{{project.version}}
-unzip $LOCAL_REPO_PATH_ZIP
+unzip -o $LOCAL_REPO_PATH_ZIP
 chmod +x $HOME/.conductor/bin/{{project.version}}/*.sh
 
 if [ -e $HOME/.conductor/bin/con ]; then
@@ -44,4 +44,4 @@ fi
 ln -s $HOME/.conductor/bin/{{project.version}}/con.sh $HOME/.conductor/bin/con
 
 echo "Installed {{project.version}} in $HOME/.conductor"
-echo "Add directory to \$PATH or link $HOME/.conductor/bin/con"
+echo "Add directory $HOME/.conductor/bin to \$PATH or link $HOME/.conductor/bin/con in a binary directory like /usr/local/bin"
