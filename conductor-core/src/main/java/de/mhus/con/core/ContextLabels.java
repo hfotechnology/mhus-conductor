@@ -28,7 +28,7 @@ public class ContextLabels implements Labels {
     }
 
     @Override
-    public String get(String name) {
+    public String[] get(String name) {
         return context.make(inst.get(name));
     }
 
@@ -38,7 +38,7 @@ public class ContextLabels implements Labels {
     }
 
     @Override
-    public String getOrNull(String name) {
+    public String[] getOrNull(String name) {
         return context.make(inst.getOrNull(name));
     }
 
@@ -48,20 +48,45 @@ public class ContextLabels implements Labels {
     }
 
     @Override
-    public Iterator<String> iterator() {
+    public Iterator<String[]> iterator() {
         return inst.iterator();
     }
 
+    
     @Override
     public boolean matches(Labels selector) {
         for (String sKey : selector.keys()) {
-            String sValue = selector.get(sKey);
-            String lValue = getOrNull(sKey);
-            if (lValue == null) return false;
-            if (!lValue.matches(sValue)) return false;
+            String sValue = selector.get(sKey)[0];
+            String[] lValues = getOrNull(sKey);
+            if (lValues == null) {
+//                log().t(sKey, "not found in project");
+                return false;
+            }
+            boolean ok = false;
+            x: for (String lValue : lValues) {
+                if (lValue.equals(sValue) || lValue.matches(sValue)) {
+                    ok = true;
+                    break x;
+                }
+            }
+            if (!ok) {
+//                log().t(lValues, "not matches", sValue);
+                return false;
+            }
         }
         return true;
     }
+
+//    @Override
+//    public boolean matches(Labels selector) {
+//        for (String sKey : selector.keys()) {
+//            String sValue = selector.get(sKey);
+//            String lValue = getOrNull(sKey);
+//            if (lValue == null) return false;
+//            if (!lValue.matches(sValue)) return false;
+//        }
+//        return true;
+//    }
 
     @Override
     public String toString() {

@@ -78,13 +78,13 @@ public class ConUtil {
                         return ret;
                     }
 
-                    private int compare(String o1, String o2) {
+                    private int compare(String[] o1, String[] o2) {
                         if (o1 == null && o2 == null) return 0;
-                        if (o1 == null) return -1;
-                        if (o2 == null) return 1;
-                        if (MValidator.isNumber(o1) && MValidator.isNumber(o2))
-                            return Double.compare(MCast.todouble(o1, 0), MCast.todouble(o2, 0));
-                        return o1.compareTo(o2);
+                        if (o1 == null || o1.length == 0) return -1;
+                        if (o2 == null || o2.length == 0) return 1;
+                        if (MValidator.isNumber(o1[0]) && MValidator.isNumber(o2[0]))
+                            return Double.compare(MCast.todouble(o1[0], 0), MCast.todouble(o2[0], 0));
+                        return o1[0].compareTo(o2[0]);
                     }
                 });
     }

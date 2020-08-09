@@ -354,7 +354,7 @@ public class ConfiguratorImpl extends MLog implements Configurator {
         else if (l == null && merge != null) project.labels = merge.getLabels();
         else {
             project.labels = new LabelsImpl();
-            for (String key : l.getKeys()) ((LabelsImpl) project.labels).put(key, l.getString(key));
+            for (String key : l.getKeys()) ((LabelsImpl) project.labels).put(key, l.getStringArray(key));
             ((LabelsImpl) project.labels).put("_name", project.name);
         }
         YMap propertiesE = map.getMap("properties");

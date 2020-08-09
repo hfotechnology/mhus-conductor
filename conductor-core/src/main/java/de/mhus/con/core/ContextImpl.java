@@ -74,6 +74,15 @@ public class ContextImpl extends MLog implements Context {
             throw new MRuntimeException(in, e);
         }
     }
+    
+    public String[] make(String[] in) {
+        if (in == null) return null;
+        String[] out = new String[in.length];
+        for (int i = 0; i < in.length; i++)
+            out[i] = make(in[i]);
+        return out;
+    }
+    
 
     public void init(
             Executor executor, List<Project> projects, Project project, Plugin plugin, Step step) {

@@ -15,19 +15,30 @@ package de.mhus.con.core;
 
 import de.mhus.con.api.Labels;
 
-public class LabelsImpl extends XCollection<String> implements Labels {
+public class LabelsImpl extends XCollection<String[]> implements Labels {
 
+    public void put(String name, String entry) {
+        collection.put(name, new String[] {entry});
+    }
+    
     @Override
     public boolean matches(Labels selector) {
         for (String sKey : selector.keys()) {
-            String sValue = selector.get(sKey);
-            String lValue = getOrNull(sKey);
-            if (lValue == null) {
+            String sValue = selector.get(sKey)[0];
+            String[] lValues = getOrNull(sKey);
+            if (lValues == null) {
                 log().t(sKey, "not found in project");
                 return false;
             }
-            if (!lValue.equals(sValue) && !lValue.matches(sValue)) {
-                log().t(lValue, "not matches", sValue);
+            boolean ok = false;
+            x: for (String lValue : lValues) {
+                if (lValue.equals(sValue) || lValue.matches(sValue)) {
+                    ok = true;
+                    break x;
+                }
+            }
+            if (!ok) {
+                log().t(lValues, "not matches", sValue);
                 return false;
             }
         }
