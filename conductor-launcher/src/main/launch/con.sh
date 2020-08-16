@@ -1,12 +1,12 @@
 #!/bin/sh
 #
-# Copyright 2018 Mike Hummel
+# Copyright (C) 2020 Mike Hummel (mh@mhus.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#         http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -100,7 +100,7 @@ if [ ! -x "$JAVACMD" ] ; then
   exit 1
 fi
 
-CONDUCTOR_JAR=`echo "${CONDUCTOR_HOME}"/bin/1.1.0/con.jar`
+CONDUCTOR_JAR=`echo "${CONDUCTOR_HOME}"/bin/1.1.1-SNAPSHOT/con.jar`
 
 # For Cygwin, switch paths to Windows format before running java
 if $cygwin ; then
