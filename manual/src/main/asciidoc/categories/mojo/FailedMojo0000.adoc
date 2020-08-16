@@ -1,6 +1,10 @@
 ==== Failed
 
-_/de/mhus/con/plugin/FailedMojo.java_
+.Source
+[%collapsible]
+====
+/de/mhus/con/plugin/FailedMojo.java
+====
 
 
 The plugin will stop execution of the lifecycle. It can be used

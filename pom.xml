@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.mhus.lib</groupId>
-        <version>7.1.0-SNAPSHOT</version>
+        <version>7.1.0</version>
         <artifactId>mhus-oss</artifactId>
     </parent>
 	<groupId>de.mhus.conductor</groupId>
@@ -58,18 +58,18 @@
 		<plugins>
 			<plugin>
 			    <groupId>de.mhus.mvn.plugin</groupId>
-				<version>1.1.0-SNAPSHOT</version>
+				<version>1.1.0</version>
 				<artifactId>manual-collector-maven-plugin</artifactId>
 				<configuration>
 					<outputDirectory>manual/src/main/asciidoc/categories</outputDirectory>
 					<cleanupOutputDirectory>true</cleanupOutputDirectory>
 					<generateIndexFiles>true</generateIndexFiles>
-					<textHeader>"==== {{title}}&#xA;&#xA;_{{file.path}}_&#xA;&#xA;"</textHeader>
+					<textHeader>"==== {{title}}&#xA;&#xA;.Source&#xA;[%collapsible]&#xA;====&#xA;{{file.path}}&#xA;====&#xA;&#xA;"</textHeader>
 				</configuration>
 			</plugin>
 			<plugin>
 			    <groupId>de.mhus.mvn.plugin</groupId>
-				<version>1.1.0-SNAPSHOT</version>
+				<version>1.1.0</version>
 				<artifactId>tmpl-maven-plugin</artifactId>
 				<configuration>
 					<files>

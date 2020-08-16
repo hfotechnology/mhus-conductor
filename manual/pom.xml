@@ -34,7 +34,7 @@
 			<plugin>
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>1.5.6</version>
+				<version>2.0.0</version>
 				<executions>
 					<execution>
 						<id>output-html</id>
@@ -46,6 +46,7 @@
 							<sourceHighlighter>coderay</sourceHighlighter>
 							<backend>html5</backend>
 							<doctype>article</doctype>
+							<preserveDirectories>true</preserveDirectories>
 							<attributes>
 								<toc />
 								<linkcss>false</linkcss>

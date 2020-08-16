@@ -1,6 +1,10 @@
 ==== Execute Sub Steps
 
-_/de/mhus/con/plugin/ExecuteMojo.java_
+.Source
+[%collapsible]
+====
+/de/mhus/con/plugin/ExecuteMojo.java
+====
 
 
 For each project execute the sub steps in a row.
