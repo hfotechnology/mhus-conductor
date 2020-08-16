@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2018 Mike Hummel
+    Copyright (C) 2020 Mike Hummel (mh@mhus.de)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+            http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.mhus.lib</groupId>
-        <version>7.1.0</version>
+        <version>7.2.0-SNAPSHOT</version>
         <artifactId>mhus-oss</artifactId>
     </parent>
 	<groupId>de.mhus.conductor</groupId>
@@ -32,6 +32,7 @@
 	<description>MHUS tools to work with multiple projects in complex scenarios</description>
 	<url>http://www.mhus.de</url>
 	<properties>
+  	   <maven-site-plugin.skip>false</maven-site-plugin.skip>
 	   <mhus-osgi-cache.version>${project.version}</mhus-osgi-cache.version>
 	</properties>
 	<licenses>
@@ -56,6 +57,16 @@
 
 	<build>
 		<plugins>
+
+		    <plugin>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-site-plugin</artifactId>
+		      <version>3.9.1</version>
+		      <configuration>
+		            <skip>${maven-site-plugin.skip}</skip>
+		      </configuration>
+		    </plugin>
+		    		
 			<plugin>
 			    <groupId>de.mhus.mvn.plugin</groupId>
 				<version>1.1.0</version>
@@ -88,6 +99,66 @@
 					</execution>
 				</executions>
 			</plugin>
+
+                    <plugin>
+                        <groupId>org.apache.rat</groupId>
+                        <artifactId>apache-rat-plugin</artifactId>
+                        <version>0.13</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <reportFile>${project.build.directory}/${project.build.finalName}.rat</reportFile>
+                            <excludeSubProjects>false</excludeSubProjects>
+                            <excludes>
+                                <exclude>**/*.pub</exclude>
+                                <exclude>**/target/**/*</exclude>
+                                <!-- GIT files -->
+                                <exclude>**/.git/**/*</exclude>
+                                <!-- IDEA files -->
+                                <exclude>**/.idea/**/*</exclude>
+                                <exclude>**/*.iml</exclude>
+                                <exclude>**/*.ipr</exclude>
+                                <exclude>**/*.iws</exclude>
+                                <!-- Eclipse files -->
+                                <exclude>**/.*</exclude>
+                                <exclude>**/eclipse-classes/**/*</exclude>
+                                <exclude>**/dependency-reduced-pom.xml</exclude>
+                                <exclude>**/.settings/**</exclude>
+                                <exclude>**/bin/**</exclude>
+                                <!-- resources file -->
+                                <exclude>**/goal.txt</exclude>
+                                <exclude>**/grep.txt</exclude>
+                                <exclude>**/edit.txt</exclude>
+                                <exclude>**/wc.txt</exclude>
+                                <exclude>**/foo</exclude>
+                                <exclude>**/org.ops4j.pax.exam.TestContainerFactory</exclude>
+                                <exclude>**/maven-metadata-local.xml</exclude>
+                                <!-- test manifests -->
+                                <exclude>**/*.mf</exclude>
+                                <!-- test json files -->
+                                <exclude>**/*.json</exclude>
+                                <!-- test adoc files -->
+                                <exclude>**/*.adoc</exclude>
+                                <!-- test md files -->
+                                <exclude>**/*.md</exclude>
+                                <!-- test wiring resource files -->
+                                <exclude>**/src/test/resources/wirings/*</exclude>
+                                <!-- SSH keys -->
+                                <exclude>**/*.key</exclude>
+                                <exclude>**/*.id_rsa</exclude>
+                                <!-- For Jenkins, ignore the .repository -->
+                                <exclude>.repository/**</exclude>
+                                <!-- jar files -->
+                                <exclude>**/*.jar</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
 			
 		</plugins>
 	</build>
@@ -100,4 +171,95 @@
         <module>conductor-launcher</module>
 		<module>manual</module>
 	</modules>
+	
+	
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.1.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+            <failOnError>false</failOnError>
+        </configuration>
+        <reportSets>
+          <reportSet><!-- by default, id = "default" -->
+            <reports><!-- select non-aggregate reports -->
+              <report>javadoc</report>
+              <report>test-javadoc</report>
+            </reports>
+          </reportSet>
+          <reportSet><!-- aggregate reportSet, to define in poms having modules -->
+            <id>aggregate</id>
+            <inherited>false</inherited><!-- don't run aggregate in child modules -->
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>3.0.0-M5</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>3.0.0</version>
+        <reportSets>
+          <reportSet>
+            <id>aggregate</id>
+            <inherited>false</inherited>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+            
+     <plugin>
+        <artifactId>maven-clover-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>2.4</version>
+      </plugin>
+      
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-pmd-plugin</artifactId>
+         <version>3.13.0</version>
+         <configuration>
+            <targetjdk>11</targetjdk>
+            <rulesets>
+               <ruleset>/rulesets/java/maven-pmd-plugin-default.xml</ruleset>
+            </rulesets>
+            <format>xml</format>
+            <linkXref>true</linkXref>
+            <sourceEncoding>utf-8</sourceEncoding>
+            <minimumTokens>100</minimumTokens>
+         </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <version>2.4</version>
+      </plugin>
+      
+    </plugins>
+    </reporting>
+
+  <distributionManagement>
+    <site>
+      <id>www.mhus.info</id>
+      <url>scp://www.mhus.info/www/docs/project/</url>
+    </site>
+  </distributionManagement>
+  
 </project>
