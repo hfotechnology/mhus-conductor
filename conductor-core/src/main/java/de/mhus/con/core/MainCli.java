@@ -65,7 +65,7 @@ public class MainCli extends MLog implements Cli {
         ConUtil.getConsole();
 
         if (args == null || args.length == 0) {
-            System.out.println("Try --help");
+            System.out.println("Try -help");
             return;
         }
 
