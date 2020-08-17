@@ -27,6 +27,7 @@
   </parent>
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
+       <site.path>..</site.path>
     </properties>
   
    <build>

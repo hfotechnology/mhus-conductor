@@ -34,6 +34,7 @@
 	<properties>
   	   <maven-site-plugin.skip>false</maven-site-plugin.skip>
 	   <mhus-osgi-cache.version>${project.version}</mhus-osgi-cache.version>
+	   <site.path>.</site.path>
 	</properties>
 	<licenses>
 		<license>
@@ -64,9 +65,31 @@
 		      <version>3.9.1</version>
 		      <configuration>
 		            <skip>${maven-site-plugin.skip}</skip>
+		            <siteDirectory>${session.executionRootDirectory}/src/site</siteDirectory>
 		      </configuration>
 		    </plugin>
-		    		
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>id.pre-site</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                            <target>
+	                            <ant antfile="${basedir}/src/site/prepare-site.xml">
+				                  <target name="prepare"/>
+				                </ant>
+			                </target>
+                        </configuration>
+                    </execution>
+                  </executions>
+            </plugin>		    		
 			<plugin>
 			    <groupId>de.mhus.mvn.plugin</groupId>
 				<version>1.1.0</version>

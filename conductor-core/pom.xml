@@ -26,10 +26,9 @@
         <version>1.1.1-SNAPSHOT</version>
   </parent>
   
-   <build>
-    <plugins>
-    </plugins>
-  </build>
+  <properties>
+       <site.path>..</site.path>
+  </properties>
   
   <dependencies>
     <dependency>
