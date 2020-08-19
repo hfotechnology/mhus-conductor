@@ -1,10 +1,6 @@
 ==== Next Snapshot Version
 
-.Source
-[%collapsible]
-====
-/de/mhus/con/plugin/NextSnapshotVersions.java
-====
+// /de/mhus/con/plugin/NextSnapshotVersions.java
 
 
 Target: nextSnapshotVersions

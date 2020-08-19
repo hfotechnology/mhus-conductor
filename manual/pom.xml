@@ -35,31 +35,6 @@
 			<plugin>
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>2.0.0</version>
-				<executions>
-					<execution>
-						<id>output-html</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<configuration>
-							<sourceHighlighter>coderay</sourceHighlighter>
-							<backend>html5</backend>
-							<doctype>article</doctype>
-							<preserveDirectories>true</preserveDirectories>
-							<attributes>
-								<toc />
-								<linkcss>false</linkcss>
-							</attributes>
-						</configuration>
-					</execution>
-				</executions>
-				<configuration>
-					<sourceDirectory>src/main/asciidoc</sourceDirectory>
-					<headerFooter>true</headerFooter>
-					<imagesDir>src/main/asciidoc/images</imagesDir>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -72,66 +47,8 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.karaf.tooling
-										</groupId>
-										<artifactId>
-											karaf-maven-plugin
-										</artifactId>
-										<versionRange>
-											[4.2.5,)
-										</versionRange>
-										<goals>
-											<goal>
-												commands-generate-help
-											</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.asciidoctor
-										</groupId>
-										<artifactId>
-											asciidoctor-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.5.6,)
-										</versionRange>
-										<goals>
-											<goal>
-												process-asciidoc
-											</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
-				<profiles>
+    <profiles>
 		<profile>
 			<id>pdf</id>
 			<build>

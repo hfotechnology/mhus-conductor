@@ -20,9 +20,9 @@ Create Report:
 
 https://maven.apache.org/plugins/maven-site-plugin/usage.html
 
-mvn site
+mvn site -P site-mhus
 
-mvn site:stage -DstagingDirectory=~/tmp/site
+mvn site:stage -DstagingDirectory=~/tmp/site -P site-mhus
 
 Create Manual:
 

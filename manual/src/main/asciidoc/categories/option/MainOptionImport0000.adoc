@@ -1,10 +1,6 @@
 ==== Include additional configuration file
 
-.Source
-[%collapsible]
-====
-/de/mhus/con/core/MainOptionImport.java
-====
+// /de/mhus/con/core/MainOptionImport.java
 
 
 Include an additional configuration file before processing the project configuration file.
