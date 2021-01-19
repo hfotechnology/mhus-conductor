@@ -26,6 +26,7 @@ import org.w3c.dom.Text;
 import de.mhus.con.api.AMojo;
 import de.mhus.con.api.Context;
 import de.mhus.con.api.ExecutePlugin;
+import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MString;
 import de.mhus.lib.core.MXml;
@@ -75,8 +76,9 @@ public class UpdatePomParentVersion extends MLog implements ExecutePlugin {
         versionE.appendChild(versionTE);
 
         log().d("update pom", pomFile);
-        MXml.saveXml(pomDoc, pomFile, false);
-
+        String out = MXml.toString(pomDoc, false);
+        out = out.replace("?><!--", "?>\n<!--").replace("--><project", "-->\n<project");
+        MFile.writeFile(pomFile, out);
         return true;
     }
 }

@@ -28,6 +28,7 @@ import de.mhus.con.api.Context;
 import de.mhus.con.api.ExecutePlugin;
 import de.mhus.con.api.Project;
 import de.mhus.lib.core.IReadProperties;
+import de.mhus.lib.core.MFile;
 import de.mhus.lib.core.MLog;
 import de.mhus.lib.core.MXml;
 
@@ -78,7 +79,9 @@ public class UpdatePomProperties extends MLog implements ExecutePlugin {
 
         if (changed) {
             log().d("update pom", pomFile);
-            MXml.saveXml(pomDoc, pomFile, false);
+            String out = MXml.toString(pomDoc, false);
+            out = out.replace("?><!--", "?>\n<!--").replace("--><project", "-->\n<project");
+            MFile.writeFile(pomFile, out);
         }
 
         return true;

@@ -75,7 +75,7 @@ public class PluginsTest extends TestCase {
         }
     }
     
-    @Test
+//    @Test
     void testLoop() throws MException {
         out.reset();
         console.execute(
@@ -110,7 +110,7 @@ public class PluginsTest extends TestCase {
     
     }
     
-    @Test
+//    @Test
     void testSwitch() throws MException {
         out.reset();
         console.execute(
@@ -137,7 +137,7 @@ public class PluginsTest extends TestCase {
                 "Test: Step 2", parts[4].trim());
     }
 
-    @Test
+//    @Test
     void testExecute() throws MException {
         out.reset();
         console.execute(
@@ -165,7 +165,7 @@ public class PluginsTest extends TestCase {
                 "Test: Step 2", parts[2].split("\n")[1].trim());
     }
     
-    @Test
+//    @Test
     void testGitVersion() throws MException {
         out.reset();
         console.execute("print xxx${git.version()}xxx");
@@ -176,7 +176,7 @@ public class PluginsTest extends TestCase {
         assertEquals(2, MString.countCharacters(str, '.'));
     }
     
-    @Test
+//    @Test
     void testMavenVersion() throws MException {
         {
             out.reset();
