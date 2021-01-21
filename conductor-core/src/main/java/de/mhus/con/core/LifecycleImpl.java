@@ -15,6 +15,8 @@
  */
 package de.mhus.con.core;
 
+import java.util.LinkedList;
+
 import de.mhus.con.api.Conductor;
 import de.mhus.con.api.Lifecycle;
 import de.mhus.con.api.Steps;
@@ -24,6 +26,8 @@ public class LifecycleImpl implements Lifecycle {
 
     private Steps steps;
     private String name;
+    private String description = "";
+    private LinkedList<String> usage = null;
 
     @SuppressWarnings("unused")
     private Conductor con;
@@ -51,4 +55,27 @@ public class LifecycleImpl implements Lifecycle {
     public String toString() {
         return MSystem.toString(this, name);
     }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void addUsage(String check) {
+        if (usage == null)
+            usage = new LinkedList<>();
+        usage.add(check);
+    }
+    
+    @Override
+    public String[]  getUsage() {
+        if (usage == null)
+            return new String[0];
+        return usage.toArray(new String[usage.size()]);
+    }
+    
 }

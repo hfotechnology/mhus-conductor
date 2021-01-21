@@ -78,6 +78,7 @@ public class ExecutorImpl extends MLog implements Executor {
         ((ConductorImpl) con).properties.put(ConUtil.PROPERTY_LIFECYCLE, lifecycle);
 
         currentLifecycle = con.getLifecycles().get(lifecycle);
+        checkUsage();
         try {
             log().d("executeLifecycle", currentLifecycle);
             Steps steps = currentLifecycle.getSteps();
@@ -88,6 +89,49 @@ public class ExecutorImpl extends MLog implements Executor {
         } finally {
             errors.clear();
         }
+    }
+
+    public void checkUsage() {
+        boolean error = false;
+        for (String arg : currentLifecycle.getUsage()) {
+            String[] parts = arg.split(" ",3);
+            log().d("validate",arg,parts);
+            if (parts.length < 3)
+                throw new MRuntimeException(currentLifecycle, "Usage rule malformed",arg);
+            String name = parts[0];
+            String check = parts[1];
+            String msg = parts[2];
+            String value = con.getProperties().getString(name, null);
+            
+            if (check.equals("isset")) {
+                if (!MString.isSet(value)) {
+                    error = true;
+                    log().e(name, check, msg);
+                }
+            } else
+            if (check.equals("notnull")) {
+                if (value != null) {
+                    error = true;
+                    log().e(name, check, msg);
+                }
+            } else
+            if (check.equals("isint")) {
+                try {
+                    Integer.valueOf(value);
+                } catch (NumberFormatException e) {
+                    error = true;
+                    log().e(name, check, msg);
+                }
+            } else
+            if (check.equals("couldset")) {
+                if (!MString.isSet(value)) {
+                    log().w(name, check, msg);
+                }
+            }
+        }
+        
+        if (error)
+            throw new MRuntimeException(currentLifecycle, "usage checks failed");
     }
 
     public void execute(String lifecycle, Steps steps) {

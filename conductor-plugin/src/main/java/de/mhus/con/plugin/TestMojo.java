@@ -27,6 +27,7 @@ public class TestMojo extends AbstractMavenExecute {
     public boolean execute2(File dir, String moduleName, Context context) {
         System.err.println("TestPlugin for: " + context + "/" + moduleName + " - Dir: " + dir);
         System.out.println("Test: " + context.getStep().getProperties().getString("message", "Hello"));
+        System.out.println("Arguments: " + context.getStep().getArguments());
         return true;
     }
 }

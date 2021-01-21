@@ -20,4 +20,8 @@ public interface Lifecycle {
     Steps getSteps();
 
     String getName();
+
+    String getDescription();
+
+    String[] getUsage();
 }

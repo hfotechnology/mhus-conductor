@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.mhus.lib</groupId>
-        <version>7.2.0-SNAPSHOT</version>
+        <version>7.3.0-SNAPSHOT</version>
         <artifactId>mhus-oss</artifactId>
     </parent>
 	<groupId>de.mhus.conductor</groupId>
@@ -36,6 +36,7 @@
 	   <mhus-osgi-cache.version>${project.version}</mhus-osgi-cache.version>
 	   <site.path>.</site.path>
 	</properties>
+    <inceptionYear>2020</inceptionYear>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>

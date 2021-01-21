@@ -245,7 +245,18 @@ public class ConfiguratorImpl extends MLog implements Configurator {
 
         loadSteps(stepsE, steps);
 
-        ((LifecyclesImpl) con.getLifecycles()).put(name, new LifecycleImpl(name, steps));
+        LifecycleImpl lf = new LifecycleImpl(name, steps);
+        lf.setDescription( map.getString("description") );
+        YList usageE = map.getList("usage");
+        loadUsage(usageE, lf);
+        ((LifecyclesImpl) con.getLifecycles()).put(name, lf);
+    }
+
+    protected void loadUsage(YList usageE, LifecycleImpl lf) {
+        if (usageE == null) return;
+        for (String check : usageE.toStringList()) {
+            lf.addUsage(check);
+        }
     }
 
     protected void loadSteps(YList executeE, StepsImpl steps) {

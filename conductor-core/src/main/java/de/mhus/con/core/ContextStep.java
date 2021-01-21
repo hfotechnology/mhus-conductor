@@ -42,7 +42,8 @@ public class ContextStep implements Step {
     public LinkedList<String> getArguments() {
         if (parameters == null) {
             parameters = new LinkedList<>();
-            inst.getArguments().forEach(v -> parameters.add(context.make(v)));
+            if (inst.getArguments() != null)
+                inst.getArguments().forEach(v -> parameters.add(context.make(v)));
         }
         return parameters;
     }

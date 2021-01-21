@@ -107,6 +107,8 @@ public class ContextImpl extends MLog implements Context {
             for (Project p : con.getProjects())
                 putReadProperties("projects." + p.getName() + ".", p.getProperties());
 
+        putReadProperties("", con.getProperties());
+
         log().t("init", project, plugin, step, properties);
     }
 

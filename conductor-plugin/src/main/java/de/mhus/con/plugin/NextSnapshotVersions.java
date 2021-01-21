@@ -69,14 +69,18 @@ public class NextSnapshotVersions extends MLog implements ExecutePlugin {
         String orgiginalVersion = ((MProperties) project.getProperties()).getString("version", null);
         String staticVersion = context.getRecursiveProperty("nextVersionStatic", null);
         String version = null;
+        
         if (staticVersion != null) {
-            version = staticVersion;
+            if (orgiginalVersion != null && orgiginalVersion.equals("0.0.0"))
+                log().i("Ignore project version",project.getName());
+            else
+                version = staticVersion;
         } else {
             String next = context.getRecursiveProperty("nextVersionStep", "minor").toLowerCase().trim();
             String suffix = context.getRecursiveProperty("netVersionSuffix", "SNAPSHOT");
             String vs = null;
             String v = orgiginalVersion;
-            if (v != null) {
+            if (v != null && !v.equals("0.0.0")) {
                 if (MString.isIndex(v, '-')) {
                     vs = MString.afterIndex(v, '-');
                     v = MString.beforeIndex(v, '-');
@@ -119,9 +123,11 @@ public class NextSnapshotVersions extends MLog implements ExecutePlugin {
                         version = version + "-" + suffix;
                     }
                 }
-            }
+            } else
+                log().i("Ignore project version",project.getName());
+
         }
-        
+
         if (version != null) {
             log().i("Next project version", project.getName(), version);
             ((MProperties) ((ContextProject) project).getInstance().getProperties())

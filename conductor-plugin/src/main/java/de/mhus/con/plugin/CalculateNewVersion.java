@@ -56,6 +56,10 @@ public class CalculateNewVersion extends MLog implements ExecutePlugin {
                 boolean changed = true;
                 String name = project.getName();
                 String version = versions.getString(name, null);
+                if (version != null && version.equals("0.0.0")) {
+                    log().i("Ignore project version",project.getName());
+                    changed = false;
+                } else
                 if (version == null) {
                     version = history.getString(name, null);
                     changed = false;
