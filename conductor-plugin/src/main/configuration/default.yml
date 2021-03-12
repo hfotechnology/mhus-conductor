@@ -162,6 +162,18 @@ lifecycles:
       modifiedOnly: ${modifiedOnly:true}
     sort: order
 
+- name: buildall
+  steps:
+  - title: Maven Build
+    target: con.maven
+    arguments:
+    - install
+    properties:
+      touchDirectory: ${touchDirectory:false}
+      processSubModules: ${processSubModules:false}
+      modifiedOnly: ${modifiedOnly:false}
+    sort: order
+
 - name: update
   steps:
   - title: Update
