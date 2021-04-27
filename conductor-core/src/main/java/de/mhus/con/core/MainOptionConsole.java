@@ -33,11 +33,11 @@ import de.mhus.lib.core.M;
 import de.mhus.lib.core.MCast;
 import de.mhus.lib.core.MProperties;
 import de.mhus.lib.core.MString;
-import de.mhus.lib.core.config.ConfigList;
-import de.mhus.lib.core.config.IConfig;
-import de.mhus.lib.core.config.IConfigFactory;
-import de.mhus.lib.core.config.MConfig;
 import de.mhus.lib.core.console.Console;
+import de.mhus.lib.core.node.NodeList;
+import de.mhus.lib.core.node.INode;
+import de.mhus.lib.core.node.INodeFactory;
+import de.mhus.lib.core.node.MNode;
 import de.mhus.lib.core.yaml.MYaml;
 import de.mhus.lib.core.yaml.YList;
 import de.mhus.lib.errors.MException;
@@ -227,41 +227,41 @@ public class MainOptionConsole implements MainOptionHandler {
             String file = MString.afterIndex(line, ' ').trim();
             if (!file.endsWith(".yaml")) file = file + ".yaml";
             System.out.println(">>> Save to " + file);
-            MConfig out = new MConfig();
+            MNode out = new MNode();
             Conductor con = cli.getConductor();
             {
-                MConfig p = new MConfig();
+                MNode p = new MNode();
                 p.putReadProperties(con.getProperties());
                 out.addObject("properties", p);
             }
-            ConfigList projectsC = out.getArrayOrCreate("projects");
+            NodeList projectsC = out.getArrayOrCreate("projects");
             for (Project project : con.getProjects()) {
-                MConfig pp = new MConfig();
-                MConfig p = new MConfig();
+                MNode pp = new MNode();
+                MNode p = new MNode();
                 pp.setString("name", project.getName());
                 p.putReadProperties(project.getProperties());
                 pp.setObject("properties", p);
                 projectsC.add(pp);
             }
-            M.l(IConfigFactory.class).write(out, new File(file));
+            M.l(INodeFactory.class).write(out, new File(file));
         } else if (line.startsWith("restore ")) {
             String file = MString.afterIndex(line, ' ').trim();
             if (!file.endsWith(".yaml")) file = file + ".yaml";
             System.out.println(">>> Load from " + file);
             File f = new File(file);
             if (f.exists()) {
-                IConfig in = M.l(IConfigFactory.class).read(f);
+                INode in = M.l(INodeFactory.class).read(f);
                 Conductor con = cli.getConductor();
                 {
-                    IConfig p = in.getObjectOrNull("properties");
+                    INode p = in.getObjectOrNull("properties");
                     if (p != null) {
                         ((MProperties) con.getProperties()).putReadProperties(p);
                     }
                 }
-                ConfigList projectsC = in.getArrayOrCreate("projects");
-                for (IConfig projectC : projectsC) {
+                NodeList projectsC = in.getArrayOrCreate("projects");
+                for (INode projectC : projectsC) {
                     String name = projectC.getString("name", null);
-                    IConfig p = in.getObjectOrNull("properties");
+                    INode p = in.getObjectOrNull("properties");
                     if (name != null && p != null) {
                         Project project = con.getProjects().getOrNull(name);
                         if (project != null) {
