@@ -84,11 +84,23 @@ public class ExecutorImpl extends MLog implements Executor {
             Steps steps = currentLifecycle.getSteps();
             execute(lifecycle, steps);
         } catch (Throwable t) {
-            log().d(currentLifecycle, t);
+            printError(t,currentLifecycle);
             throw new MRuntimeException(currentLifecycle, t);
         } finally {
             errors.clear();
         }
+    }
+
+    private void printError(Throwable t, Object ... list ) {
+        log().e("===================================================");
+        log().e("*** Error: " + t);
+        log().e(list);
+        while (t != null) {
+            t = t.getCause();
+            log().e("--- Cause: " + t);
+        }
+        if (con.isVerboseOutput())
+            log().e(t);
     }
 
     public void checkUsage() {
