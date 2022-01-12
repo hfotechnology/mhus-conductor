@@ -296,8 +296,12 @@ public class ConfiguratorImpl extends MLog implements Configurator {
             YMap selectorE = map.getMap("selector");
             step.selector = new LabelsImpl();
             if (selectorE != null) {
-                for (String key : selectorE.getKeys())
-                    step.selector.put(key, selectorE.getString(key));
+                for (String key : selectorE.getKeys()) {
+                    if (selectorE.isList(key))
+                        step.selector.put(key, selectorE.getStringArray(key));
+                    else
+                        step.selector.put(key, selectorE.getString(key));
+                }
             }
 
             // order:
